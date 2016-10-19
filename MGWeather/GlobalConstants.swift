@@ -10,6 +10,8 @@ import UIKit
 
 class GlobalConstants: NSObject {
 
+    static let AppName = "SkyCast"
+    
    // http://www.developerdave.co.uk/2015/09/better-completion-handlers-in-swift/
     typealias CompletionHandlerType = (CompletionResult) -> Void
     

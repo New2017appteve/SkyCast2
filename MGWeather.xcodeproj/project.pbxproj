@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C0042E831DB81F09007506AC /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0042E821DB81F09007506AC /* Reachability.swift */; };
 		C018BA061DA2FE64009706F9 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = C018BA051DA2FE64009706F9 /* Toast.swift */; };
 		C7175A9C1D31683700788F09 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7175A9B1D31683700788F09 /* AppDelegate.swift */; };
 		C7175AA11D31683700788F09 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7175A9F1D31683700788F09 /* Main.storyboard */; };
@@ -42,6 +43,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C0042E821DB81F09007506AC /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		C018BA051DA2FE64009706F9 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		C7175A981D31683700788F09 /* MGWeather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MGWeather.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7175A9B1D31683700788F09 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -224,6 +226,7 @@
 		C73F897E1DAE3527009FCC30 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				C0042E821DB81F09007506AC /* Reachability.swift */,
 				C73F897F1DAE355C009FCC30 /* UIDeviceHardware.swift */,
 			);
 			name = Utils;
@@ -318,6 +321,7 @@
 				C7C437621D79850200A6386D /* Location.swift in Sources */,
 				C7175ACF1D316CCC00788F09 /* DailyTabVC.swift in Sources */,
 				C7175AB61D31698700788F09 /* DailyBreakdown.swift in Sources */,
+				C0042E831DB81F09007506AC /* Reachability.swift in Sources */,
 				C7175AB91D31698700788F09 /* Weather.swift in Sources */,
 				C73F89801DAE355C009FCC30 /* UIDeviceHardware.swift in Sources */,
 				C7F712051D78746000B4404D /* HourWeatherCell.swift in Sources */,

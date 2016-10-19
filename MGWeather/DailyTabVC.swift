@@ -104,16 +104,15 @@ extension DailyTabVC : UITableViewDataSource {
         
         // Alternate the shading of each table view cell
         if (indexPath.row % 2 == 0) {
-            cell.backgroundColor = GlobalConstants.TableViewAlternateShading.Darkest
+            cell.backgroundColor = GlobalConstants.TableViewAlternateShading.Darker
         }
         else {
             cell.backgroundColor = UIColor.white // GlobalConstants.TableViewAlternateShading.Lightest
         }
 
-        cell.contentView.layer.borderColor = UIColor.gray.cgColor
-        cell.contentView.layer.borderWidth = 1.5
-//        cell.contentView.layer.cornerRadius = 10.0
-        cell.contentView.clipsToBounds = true
+//        cell.contentView.layer.borderColor = UIColor.gray.cgColor
+//        cell.contentView.layer.borderWidth = 1.5
+//        cell.contentView.clipsToBounds = true
   
         return cell
     }

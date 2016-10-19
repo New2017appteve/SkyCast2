@@ -79,6 +79,8 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
         iconSource.backgroundColor = GlobalConstants.ViewShading.Darker
         photoSource.backgroundColor = GlobalConstants.ViewShading.Darker
 
+        aboutTitle.text = GlobalConstants.AppName
+        
         // Make the label to the credits clickable
         let urlString = "Weather API powered By Dark Sky API"
         let attributedString = NSMutableAttributedString(string: urlString)

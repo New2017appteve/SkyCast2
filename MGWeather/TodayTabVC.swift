@@ -68,9 +68,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         // Do any additional setup after loading the view, typically from a nib.
         
         setupSwipeGestures()
-        
         initialScreenSetup ()
-        
         populateTodayWeatherDetails()
         
 
@@ -173,7 +171,19 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             case UISwipeGestureRecognizerDirection.down:
                 print("Swiped Down")
                 
-                refreshWeatherDataFromService()
+                if Reachability.isConnectedToNetwork() == true
+                {
+                    refreshWeatherDataFromService()
+                    // TODO:  May want to retrieve location data incase user has moved
+                }
+                else
+                {
+                    // Internet Connection not Available!
+                    let messageText = "You are not connected to the internet.  Please check your cellular or wi-fi settings"
+                    let alertView = UIAlertView(title: "Error", message: messageText, delegate: nil, cancelButtonTitle: "OK")
+                    alertView.show()
+                }
+
             default:
                 break
             }
@@ -510,7 +520,18 @@ extension TodayTabVC : SettingsViewControllerDelegate {
     // Refresh data after pressing 'OK' in the settings screen
     func refreshData() {
         print("Refreshing data")
-        self.refreshWeatherDataFromService()
+        
+        if Reachability.isConnectedToNetwork() == true
+        {
+            self.refreshWeatherDataFromService()
+        }
+        else
+        {
+            // Internet Connection not Available!
+            let messageText = "You are not connected to the internet.  Please check your cellular or wi-fi settings"
+            let alertView = UIAlertView(title: "Error", message: messageText, delegate: nil, cancelButtonTitle: "OK")
+            alertView.show()
+        }
     }
 }
 

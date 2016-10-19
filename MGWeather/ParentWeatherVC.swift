@@ -21,17 +21,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     @IBOutlet weak var segmentedControl: WeatherSegmentedControl!
     @IBOutlet weak var titleBar: UINavigationBar!
     @IBOutlet weak var contentView: UIView!
-    
-//    typealias CompletionHandlerType = (CompletionResult) -> Void
-//    
-//    enum CompletionResult {
-//        case Success(AnyObject?)
-//        case Failure(Error)
-//    }
-//    
-//    enum CompletionError: Error {
-//        case AuthenticationFailure
-//    }
+    @IBOutlet weak var refreshButton : UIButton!
 
     enum Menu: String {
         case Weather = "Weather"
@@ -62,6 +52,30 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        segmentedControl.isEnabled = false
+        
+        if Reachability.isConnectedToNetwork() == true
+        {
+            retrieveWeatherAndLocationData()
+        }
+        else
+        {
+            // Internet Connection not Available!
+            let messageText = "You are not connected to the internet.  Please check your cellular or wi-fi settings"
+            let alertView = UIAlertView(title: "Error", message: messageText, delegate: nil, cancelButtonTitle: "OK")
+            alertView.show()
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if let currentViewController = currentViewController {
+            currentViewController.viewWillDisappear(animated)
+        }
+    }
+    
+    func retrieveWeatherAndLocationData () {
+       
         // Get the current location and the weather data based on location
         
         locationFound = getLocation()
@@ -73,21 +87,10 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         // Make a toast to say data is refreshing
         self.view.makeToast("Refreshing weather data", duration: 1.0, position: .bottom)
         self.view.makeToastActivity(.center)
-
+        
         getWeatherDataFromService()
         
         // NOTE:  The setup of the screen in the tabs will be done after getWeatherDataFromService() has finished
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        if let currentViewController = currentViewController {
-            currentViewController.viewWillDisappear(animated)
-        }
-    }
-    
-    func setupScreen () {
-        
     }
     
     func setupTabs () {
@@ -102,7 +105,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.frame.size.width - 120, height: 44))
         titleLabel.backgroundColor = UIColor.clear
         titleLabel.numberOfLines = 1
-        // titleLabel.font = UIFont(name: UIConfig.Fonts.OswaldRegular,  size: 16)
+        //titleLabel.font = UIFont(name: UIConfig.Fonts.OswaldRegular,  size: 16)
         titleLabel.textAlignment = NSTextAlignment.center
         titleLabel.text = weatherLocation.currentCity! + ", " + weatherLocation.currentCountry!
         titleBar.topItem?.titleView = titleLabel
@@ -244,8 +247,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                     self.weather = self.tmpWeather
                     
                     DispatchQueue.main.async {
+                        self.segmentedControl.isEnabled = true
                         self.setupTabs()
-                        self.setupScreen()
                         self.view.hideToastActivity()
                     }
                     
@@ -513,6 +516,22 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         }
     }
     
+    @IBAction func refreshButtonPressed(_ sender: AnyObject) {
+        
+        if Reachability.isConnectedToNetwork() == true
+        {
+            retrieveWeatherAndLocationData()
+        }
+        else
+        {
+            // Internet Connection not Available!
+            let messageText = "You are not connected to the internet.  Please check your cellular or wi-fi settings"
+            let alertView = UIAlertView(title: "Error", message: messageText, delegate: nil, cancelButtonTitle: "OK")
+            alertView.show()
+        }
+    }
+    
+    
     @IBAction func barBtnActionPressed(_ sender: AnyObject) {
         
         let actionMenu = UIAlertController(title: "Actions", message: "", preferredStyle: UIAlertControllerStyle.actionSheet)
@@ -565,24 +584,6 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         // infoScreenSegue
         
         self.performSegue(withIdentifier: "infoScreenSegue", sender: self)
-        
-        
-        /*
-         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-         let controller = storyboard.instantiateViewControllerWithIdentifier("InfoPopupViewControllerID") as! InfoPopupViewController
-         
-         controller.informationTitleString = "Weather Alert"
-         controller.informationString = "Description of alert"
-         // controller.modalPresentationStyle = .Popover
-         
-         let popController = controller.popoverPresentationController
-         popController?.permittedArrowDirections = .Any
-         popController?.sourceRect = CGRect(x: 0, y: 0, width: 22, height: 22)
-         popController?.sourceView = sender
-         popController?.delegate = self
-         
-         self.presentViewController(controller, animated: true, completion: nil)
-         */
     }
 
     func refreshData() {
@@ -590,13 +591,4 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     }
 
 }
-
-
-//extension TodayTabVC : DailyTabVCDelegate {
-//    
-//    // Refresh data after pressing 'OK' in the settings screen
-//    func refreshDataFromTodayScreen() {
-////        self.getWeatherDataFromService()
-//    }
-//}
 
