@@ -54,9 +54,6 @@ class DailyTabVC: UIViewController {
 
 // MARK: UITableViewDataSource
 
-// extension DailyTabVC : UITableViewDataSource {
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-
 extension DailyTabVC : UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -109,10 +106,6 @@ extension DailyTabVC : UITableViewDataSource {
         else {
             cell.backgroundColor = UIColor.white // GlobalConstants.TableViewAlternateShading.Lightest
         }
-
-//        cell.contentView.layer.borderColor = UIColor.gray.cgColor
-//        cell.contentView.layer.borderWidth = 1.5
-//        cell.contentView.clipsToBounds = true
   
         return cell
     }

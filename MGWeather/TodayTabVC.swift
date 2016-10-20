@@ -49,8 +49,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     
     private let cellId = "cellId"
     
-//    @IBOutlet weak var weatherCreditLabel : UITextView!
-    
     @IBOutlet weak var hourlyWeatherTableView : UITableView!
     @IBOutlet weak var hourlyWeatherTableViewHeight : NSLayoutConstraint!
     
@@ -190,7 +188,33 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         }
     }
     
+ 
+    func removeSwipeGestures() {
+        
+        if self.view.gestureRecognizers != nil {
+            for gesture in view.gestureRecognizers! {
+                if let recognizer = gesture as? UISwipeGestureRecognizer {
+                    view.removeGestureRecognizer(recognizer)
+                }
+            }
+        }
+    }
+   
+    
+    func disableScreen() {
+        self.outerScreenView.isUserInteractionEnabled = false
+        removeSwipeGestures()
+    }
+    
+    func enableScreen() {
+        self.outerScreenView.isUserInteractionEnabled = true
+        setupSwipeGestures ()
+    }
+    
+    
     func refreshWeatherDataFromService() {
+
+        disableScreen()
         
         // Make a toast to say data is refreshing
         self.view.makeToast("Refreshing weather data", duration: 1.0, position: .bottom)
@@ -210,6 +234,8 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
 
                         self.populateTodayWeatherDetails()
                         self.hourlyWeatherTableView.reloadData()
+                        self.enableScreen()
+                        
                         self.view.hideToastActivity()
                         
                         // Scroll to the top of the icon list
@@ -218,10 +244,12 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                     
                     break;
                 case .Failure(let error):
-                    // Make a toast to say data is refreshing
-                    self.view.makeToast("Error retrieving weather data", duration: 3.0, position: .bottom)
+                    let messageText = "Error retrieving weather data.  Please try again"
+                    let alertView = UIAlertView(title: "Error", message: messageText, delegate: nil, cancelButtonTitle: "OK")
+                    alertView.show()
                     
                     print("\(error)")
+                    self.enableScreen()
                     break;
                 }
         }

@@ -139,7 +139,6 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
     }
     
     @IBAction func backButtonPressed(_ sender: AnyObject) {
- 
         // Dismiss view
         self.dismiss(animated: true, completion: nil)
     }

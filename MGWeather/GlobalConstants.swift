@@ -61,9 +61,6 @@ class GlobalConstants: NSObject {
     struct ViewShading {
         static var Darker = UIColor(red: 227/255, green: 230/255, blue: 232/255, alpha: 0.95) // Darker Shade
         static var Lighter = UIColor(red: 245/255, green: 247/255, blue: 245/255, alpha: 0.95) // Lighter Shade
-        
-//        static var ShadeA = UIColor(red: 227/255, green: 230/255, blue: 232/255, alpha: 0.95) // Darker Shade
-//        static var ShadeB = UIColor(red: 245/255, green: 247/255, blue: 245/255, alpha: 0.95) // Lighter Shade
     }
     
     
