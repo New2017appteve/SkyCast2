@@ -54,7 +54,6 @@ class GlobalConstants: NSObject {
     }
     
     // Tableview 
-    
     static let NumberOfHoursToShowFromNow = 12
     
     // Weather Screen View Shaiding

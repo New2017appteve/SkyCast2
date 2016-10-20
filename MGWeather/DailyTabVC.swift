@@ -22,6 +22,7 @@ class DailyTabVC: UIViewController {
     // Outlets
     @IBOutlet weak var dailyWeatherTableView : UITableView!
     @IBOutlet weak var weatherImage : UIImageView!
+    @IBOutlet weak var nextDaysSummary : UITextView!
     
     @IBOutlet weak var dailyWeather : Weather!  // This is passed in from ParentWeatherVC
 
@@ -29,8 +30,26 @@ class DailyTabVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setupScreen()
         populateDailyWeatherDetails()
         
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+//        nextDaysSummary.addObserver(self, forKeyPath: "contentSize", options: NSKeyValueObservingOptions.new, context: nil)
+    }
+
+    
+    func setupScreen () {
+        
+        nextDaysSummary.backgroundColor = GlobalConstants.ViewShading.Darker
+        
+        nextDaysSummary.alpha = 0.80
+        nextDaysSummary.layer.cornerRadius = 10.0
+        nextDaysSummary.clipsToBounds = true
+        
+    //    nextDaysSummary.textAlignment = NSTextAlignment.center
     }
     
     func populateDailyWeatherDetails() {
@@ -40,6 +59,7 @@ class DailyTabVC: UIViewController {
             // Populate the weather image
             let icon = dailyWeather2.currentBreakdown.icon
             let enumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
+            let nextDaysSummaryString = dailyWeather2.dailyBreakdown.summary
             
             let iconName = Utility.getWeatherImage(serviceIcon: (enumVal?.rawValue)!)
             
@@ -47,8 +67,20 @@ class DailyTabVC: UIViewController {
                 weatherImage.image = UIImage(named: iconName)!
             }
             
+            if nextDaysSummaryString?.isEmpty != nil {
+                nextDaysSummary.text = nextDaysSummaryString
+            }
+            
             dailyWeatherTableView.reloadData()
         }
+    }
+    
+    /// Force the text in a UITextView to always center itself.
+    func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutableRawPointer) {
+        let textView = object as! UITextView
+        var topCorrect = (textView.bounds.size.height - textView.contentSize.height * textView.zoomScale) / 2
+        topCorrect = topCorrect < 0.0 ? 0.0 : topCorrect;
+        textView.contentInset.top = topCorrect
     }
 }
 
