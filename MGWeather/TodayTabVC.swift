@@ -19,6 +19,11 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     var delegate:TodayTabVCDelegate?
     var dayOrNightColourSetting: String?
     
+    var sunriseTimeStamp: NSDate?
+    var sunsetTimeStamp: NSDate?
+    var tomorrowSunriseTimeStamp: NSDate?
+    var tomorrowSunsetTimeStamp: NSDate?
+    
     // MARK: Outlets
     
     @IBOutlet weak var outerScreenView : UIView!
@@ -42,6 +47,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     
     @IBOutlet weak var sunriseStackView : UIStackView!
     @IBOutlet weak var sunrise : UILabel!
+    @IBOutlet weak var sunsetStackView : UIStackView!
     @IBOutlet weak var sunset : UILabel!
     @IBOutlet weak var humidity : UILabel!
     @IBOutlet weak var weatherAlertButton : UIButton!
@@ -171,15 +177,13 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                 
                 if Reachability.isConnectedToNetwork() == true
                 {
-                    refreshWeatherDataFromService()
+                    refreshDataAfterSwipe()
                     // TODO:  May want to retrieve location data incase user has moved
                 }
                 else
                 {
                     // Internet Connection not Available!
-                    let messageText = "You are not connected to the internet.  Please check your cellular or wi-fi settings"
-                    let alertView = UIAlertView(title: "Error", message: messageText, delegate: nil, cancelButtonTitle: "OK")
-                    alertView.show()
+                    Utility.showMessage(titleString: "Error", messageString: "You are not connected to the internet.  Please check your cellular or wi-fi settings" )
                 }
 
             default:
@@ -212,7 +216,12 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     }
     
     
-    func refreshWeatherDataFromService() {
+    func refreshDataAfterSettingChange() {
+        
+        refreshDataAfterSwipe()
+    }
+    
+    func refreshDataAfterSwipe() {
 
         disableScreen()
         
@@ -244,11 +253,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                     
                     break;
                 case .Failure(let error):
-                    let messageText = "Error retrieving weather data.  Please try again"
-                    let alertView = UIAlertView(title: "Error", message: messageText, delegate: nil, cancelButtonTitle: "OK")
-                    alertView.show()
-                    
-                    print("\(error)")
+                    let messageText = "Weather data cannot be retrieved at this moment.  Please try again later"
+                    Utility.showMessage(titleString: "Error", messageString: messageText )
+
                     self.enableScreen()
                     break;
                 }
@@ -297,7 +304,19 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                     sunrise.text = String(days.sunriseTimeStamp!.shortTimeString())
                     sunset.text = String(days.sunsetTimeStamp!.shortTimeString())
                     
+                    sunriseTimeStamp = days.sunriseTimeStamp as NSDate?
+                    sunsetTimeStamp = days.sunsetTimeStamp as NSDate?
+                    
                     todayHighLowTemp.text = maxTempString + " / " + minTempString
+                }
+                
+                // We want tomorrows sunrise and sunset times as well
+                
+                let tomorrow = isTomorrow(date1: days.dateAndTimeStamp!)
+                
+                if tomorrow {
+                    tomorrowSunriseTimeStamp = days.sunriseTimeStamp as NSDate?
+                    tomorrowSunsetTimeStamp = days.sunsetTimeStamp as NSDate?
                 }
             }
             
@@ -382,6 +401,52 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         
         if compareDateString1 == compareDateString2 {
             retVal = true
+        }
+        
+        return retVal
+    }
+    
+    func isTomorrow (date1: NSDate) -> Bool {
+
+        var retVal = false
+        
+        let today = Date()
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)
+
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd"  // Remove timestamp for comparison
+        
+        let compareDateString1 = df.string(from: date1 as Date)
+        let compareDateString2 = df.string(from: tomorrow!)
+        
+        if compareDateString1 == compareDateString2 {
+            retVal = true
+        }
+        
+        return retVal
+    }
+    
+
+    func processDayAndNightHours() {
+      
+        // We know the dat we are working with, so populate whether teh hour withing it is a day or a night
+        
+    }
+    
+    
+    func isDayTime (dateTime : NSDate) -> Bool {
+        
+        var retVal : Bool!
+        
+        // Calculate whether current time is in the day or the night
+        // Look at tomorrows sunrise and sunset times too incase the results span days
+        
+        if (dateTime.isBetweeen(date: sunsetTimeStamp!, andDate: sunriseTimeStamp!) ||
+            dateTime.isBetweeen(date: tomorrowSunsetTimeStamp!, andDate: tomorrowSunriseTimeStamp!) ) {
+            retVal = true
+        }
+        else {
+            retVal = false
         }
         
         return retVal
@@ -482,6 +547,8 @@ extension TodayTabVC : UITableViewDataSource {
         
         let cell:HourlyWeatherCell = self.hourlyWeatherTableView.dequeueReusableCell(withIdentifier: "HourWeatherCellID") as! HourlyWeatherCell
         
+        var hourTimeStamp = hourWeather?.dateAndTimeStamp
+        
         cell.hourLabel.text = hourWeather?.dateAndTimeStamp!.shortHourTimeString()
         cell.temperatureLabel.text = String(Int(round(hourWeather!.temperature!))) + GlobalConstants.degreesSymbol
         
@@ -498,7 +565,7 @@ extension TodayTabVC : UITableViewDataSource {
             if (indexPath.row % 2 == 0) {
                 // Lighter Shade
                 
-                if hourWeather?.dayOrNight == "DAY" {
+                if isDayTime(dateTime: hourTimeStamp!) { // if hourWeather?.dayOrNight == "DAY" {
                     cell.backgroundColor = GlobalConstants.TableViewAlternateShadingDay.Darker
                 }
                 else {
@@ -506,7 +573,7 @@ extension TodayTabVC : UITableViewDataSource {
                 }
             }
             else {
-                if hourWeather?.dayOrNight == "DAY" {
+                if isDayTime(dateTime: hourTimeStamp!) { //if hourWeather?.dayOrNight == "DAY" {
                     cell.backgroundColor = GlobalConstants.TableViewAlternateShadingDay.Lighter
                 }
                 else {
@@ -551,14 +618,12 @@ extension TodayTabVC : SettingsViewControllerDelegate {
         
         if Reachability.isConnectedToNetwork() == true
         {
-            self.refreshWeatherDataFromService()
+            self.refreshDataAfterSwipe()
         }
         else
         {
             // Internet Connection not Available!
-            let messageText = "You are not connected to the internet.  Please check your cellular or wi-fi settings"
-            let alertView = UIAlertView(title: "Error", message: messageText, delegate: nil, cancelButtonTitle: "OK")
-            alertView.show()
+            Utility.showMessage(titleString: "Error", messageString: "You are not connected to the internet.  Please check your cellular or wi-fi settings" )
         }
     }
 }

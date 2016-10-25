@@ -141,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				C7FC06291D75C76200B6280B /* ParentWeatherVC.swift */,
+				C7175AB11D31698700788F09 /* DailyBreakdown.swift */,
 				C7FC062B1D75C82F00B6280B /* WeatherSegmentedControl.swift */,
 				C7175ACB1D316CCC00788F09 /* BaseWeatherVC.swift */,
 				C7175ACD1D316CCC00788F09 /* TodayTabVC.swift */,
@@ -156,7 +157,6 @@
 		C7175AB01D31692A00788F09 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				C7175AB11D31698700788F09 /* DailyBreakdown.swift */,
 				C7175AB21D31698700788F09 /* HourBreakdown.swift */,
 				C7175AB31D31698700788F09 /* MinuteBreakdown.swift */,
 				C7175AB41D31698700788F09 /* Weather.swift */,

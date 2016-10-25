@@ -11,7 +11,7 @@ import UIKit
 protocol SettingsViewControllerDelegate
 {
 //    func refreshData()
-    func refreshWeatherDataFromService()
+    func refreshDataAfterSettingChange()
 }
 
 class SettingsViewController: UIViewController {
@@ -112,7 +112,7 @@ class SettingsViewController: UIViewController {
         userDefaults.set(dayOrNightColours, forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
         
        //self.delegate?.refreshData()
-        self.delegate?.refreshWeatherDataFromService()
+        self.delegate?.refreshDataAfterSettingChange()
     }
     
     

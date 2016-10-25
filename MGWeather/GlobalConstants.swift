@@ -101,8 +101,9 @@ class GlobalConstants: NSObject {
     static let DefaultTemperatureUnit = "celsuis"
     static let DefaultDayOrNightSwitch = "ON"
     
-    // Icon Constants  (Icons from https://icons8.com/web-app/category/Weather)
-
+    // Icon Constants  (Icons from https://icons8.com/web-app/category/Weather) //TODO:  Include Credits for each icon
+    // https://makeappicon.com/
+    
     struct Images {
         enum ServiceIcon : String {
             
@@ -126,6 +127,7 @@ class GlobalConstants: NSObject {
     }
     
     // http://www.freedigitalphotos.net/  (photos with ID-100....)
+    // https://www.pexels.com/
     
     struct ImageFile {
         enum FileName : String {
@@ -137,9 +139,9 @@ class GlobalConstants: NSObject {
             case sleet = "sleet"
             case wind = "windy.jpg"
             case fog = "ID-10010583_Atmosphere Of Haze_dan.jpg"
-            case cloudy = "ID-100202953_White And Gray Clouds_Stoonn.jpg"
+            case cloudy = "overcast_27194_PEXELS.jpg" //"ID-100202953_White And Gray Clouds_Stoonn.jpg"
             case partlyCloudyDay = "partial_clouds_day-53594_PEXELS.jpeg"
-            case partlyCloudyNight = "ID-100403699_Corona Full Moon In The Cloudy Day_voraorn.jpg"
+            case partlyCloudyNight = "night-clouds-trees_PEXELS.jpg"
             
             // Future
             case hail = "hail"
@@ -156,10 +158,16 @@ class GlobalConstants: NSObject {
         static var snow = "Snow-50"
         static var sleet = "Sleet-50"
         static var wind = "Cloud-50"  // TODO:  Find icon
-        static var fog = "Fog Day-50"
+        static var fog = "Fog Day-50"  // TODO:  Do Fog Day/Night
         static var cloudy = "Cloud-50"
         static var partlyCloudyDay = "Partly Cloudy Day-50"
         static var partlyCloudyNight = "Partly Cloudy Night-50"
+        
+        // Future
+        static var hail = "Hail-50"
+        static var thunderstorm = "Storm-50"
+        static var tornado = "tornado"
+
 
     }
     

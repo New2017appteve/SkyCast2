@@ -73,4 +73,11 @@ class Utility: NSObject {
         
         return imageName
     }
+    
+    
+    class func showMessage(titleString : String, messageString : String)
+    {
+        let alertView = UIAlertView(title: titleString, message: messageString, delegate: nil, cancelButtonTitle: "OK")
+        alertView.show()
+    }
 }

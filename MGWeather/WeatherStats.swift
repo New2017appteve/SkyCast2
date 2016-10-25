@@ -13,7 +13,7 @@ class WeatherStats: NSObject {
     // NOTE:  Ties are in Unix timestamps (e.g. 1467154800 = 06/28/2016 @ 11:00pm (UTC) )
     var dateAndTime : Double? // NOTE:  We may need bigger than an Int for future robustness
     var dateAndTimeStamp : NSDate?
-    var dayOrNight : String?
+//    var dayOrNight : String?
     var summary : String?
     var icon : String?
     var sunriseTime : Double?
@@ -59,7 +59,6 @@ class WeatherStats: NSObject {
             let formatter = DateFormatter()
             //formatter.dateFormat = "h:mm a"
             formatter.timeZone = NSTimeZone(forSecondsFromGMT: 7 * 3600) as TimeZone!  // original string in GMT
-
         }
 
         if let lSummary  = weatherDict["summary"] as? String {
@@ -69,12 +68,12 @@ class WeatherStats: NSObject {
         if let lIcon  = weatherDict["icon"] as? String {
             icon = lIcon
             
-            if lIcon.contains("night") {
-                dayOrNight = "NIGHT"
-            }
-            else {
-                dayOrNight = "DAY"
-            }
+//            if lIcon.contains("night") {
+//                dayOrNight = "NIGHT"
+//            }
+//            else {
+//                dayOrNight = "DAY"
+//            }
         }
         
         if let lSunriseTime  = weatherDict["sunriseTime"] as? Double {
@@ -85,6 +84,7 @@ class WeatherStats: NSObject {
         if let lSunsetTime = weatherDict["sunsetTime"] as? Double {
             sunsetTime = lSunsetTime
             sunsetTimeStamp = NSDate(timeIntervalSince1970: sunsetTime!)  // NOTE:  Remember to add offset etc
+            
         }
         
         if let lMoonPhase  = weatherDict["moonPhase"] as? Float {
@@ -179,13 +179,6 @@ class WeatherStats: NSObject {
             cloudCover = lCloudCover
         }
         
-        // Calculate whether current time is in the day or the night
-//        if (dateAndTimeStamp?.isBetweeen(date: sunriseTimeStamp!, andDate: sunsetTimeStamp!))! {
-//            dayOrNight = "DAY"
-//        }
-//        else {
-//            dayOrNight = "NIGHT"
-//        }
 
     }
 }

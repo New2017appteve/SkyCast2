@@ -27,11 +27,14 @@ class WeatherSegmentedControl: UISegmentedControl {
         self.setDividerImage(dividerImage, forLeftSegmentState: .normal, rightSegmentState: .selected, barMetrics: .default)
         self.setDividerImage(dividerImage, forLeftSegmentState: .selected, rightSegmentState: .normal, barMetrics: .default)
         self.setDividerImage(dividerImage, forLeftSegmentState: .normal, rightSegmentState: .normal, barMetrics: .default)
+        
+        
+//        var subViewOfSegment: UIView = self.subviews[0] as UIView
+//        subViewOfSegment.tintColor = UIColor.blue
     }
     
     func setupFonts(){
         let font = UIFont.systemFont(ofSize: 15.0)
-        
         
         let normalTextAttributes = [
             NSForegroundColorAttributeName: UIColor.black,

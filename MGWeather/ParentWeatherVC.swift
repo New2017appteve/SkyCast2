@@ -61,10 +61,9 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         else
         {
             // Internet Connection not Available!
-            let messageText = "You are not connected to the internet.  Please check your cellular or wi-fi settings"
-            let alertView = UIAlertView(title: "Error", message: messageText, delegate: nil, cancelButtonTitle: "OK")
-            alertView.show()
+            Utility.showMessage(titleString: "Error", messageString: "You are not connected to the internet.  Please check your cellular or wi-fi settings" )
         }
+
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -218,7 +217,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     func getWeatherDataFromService(){
         
         // NOTE:  This function is called from a background thread
-        //let url = GlobalConstants.WeatherURL
+
         let url = getURL()
         
         print("URL= " + url)
@@ -234,21 +233,17 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 
                 do {
                     let getResponse = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! NSDictionary
-                    
-                    // self.customerDataDictionary = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as! NSDictionary
-                    
-                    // Hide animation on the main thread, once finished background task
-                    //dispatch_async(dispatch_get_main_queue()) {
-                    //                       self.view.hideToastActivity()
+
                     print("Weather search finished")
-                    //}
-                    
+
                     self.tmpWeather = Weather(fromDictionary: getResponse )
                     self.weather = self.tmpWeather
                     
                     DispatchQueue.main.async {
                         self.segmentedControl.isEnabled = true
                         self.setupTabs()
+                        
+                        // Hide animation on the main thread, once finished background task
                         self.view.hideToastActivity()
                     }
                     
@@ -279,10 +274,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     }
     
     func refreshWeatherDataFromService2(completionHandler: @escaping GlobalConstants.CompletionHandlerType) {
-//      func refreshWeatherDataFromService(completionHandler: (_ data: NSData, _ error: NSError) -> Void){
 
         // NOTE:  This function is called from a background thread
-        //let url = GlobalConstants.WeatherURL
         let url = getURL()
         
         print("URL= " + url)
@@ -299,13 +292,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 do {
                     let getResponse = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! NSDictionary
                     
-                    // self.customerDataDictionary = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as! NSDictionary
-                    
-                    // Hide animation on the main thread, once finished background task
-                    //dispatch_async(dispatch_get_main_queue()) {
-                    //                       self.view.hideToastActivity()
                     print("Weather search finished")
-                    //}
                     
                     self.tmpWeather = Weather(fromDictionary: getResponse )
                     self.weather = self.tmpWeather
@@ -321,21 +308,23 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             } else if statusCode == 404 {
                 // Create default message, may be overridden later if we have found something in response
                 var message = "Weather details cannot be retrieved at this time.  Please try again"
-                
+                Utility.showMessage(titleString: "Error", messageString: message )
+
                 // Check to see why we got a 404.
-                if let errorString = error?.localizedDescription , !errorString.isEmpty {
-                    // "No customers found for search"
-                    
-                    if errorString.lowercased().range(of: "custaa_cpva_9003") != nil {
-                        message = "Weather details cannot be retrieved at this time.  Please try again"
-                    }
-                    
-                }
+//                if let errorString = error?.localizedDescription , !errorString.isEmpty {
+//                    // "No customers found for search"
+//                    
+//                    if errorString.lowercased().range(of: "custaa_cpva_9003") != nil {
+//                        message = "Weather details cannot be retrieved at this time.  Please try again"
+//                    }
+//                    
+//                }
                 completionHandler(GlobalConstants.CompletionResult.Failure(GlobalConstants.CompletionError.AuthenticationFailure))
 
                 //             self.serviceCallFailure(alertTitle: "Error", withMessage: message)
             } else {
-                //              self.serviceCallFailure(alertTitle: "Error", withMessage: "Customer service cannot be retrieved.  Please try again later.  If it persists, please raise a fault with ITSC")
+                var message = "Weather details cannot be retrieved at this time.  Please try again"
+                Utility.showMessage(titleString: "Error", messageString: message )
             }
         }
     }
@@ -384,20 +373,21 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             } else if statusCode == 404 {
                 // Create default message, may be overridden later if we have found something in response
                 var message = "Weather details cannot be retrieved at this time.  Please try again"
+                Utility.showMessage(titleString: "Error", messageString: message )
                 
-                // Check to see why we got a 404.
-                if let errorString = error?.localizedDescription , !errorString.isEmpty {
-                    // "No customers found for search"
-                    
-                    if errorString.lowercased().range(of: "custaa_cpva_9003") != nil {
-                        message = "Weather details cannot be retrieved at this time.  Please try again"
-                    }
-                    
-                }
+//                // Check to see why we got a 404.
+//                if let errorString = error?.localizedDescription , !errorString.isEmpty {
+//                    // "No customers found for search"
+//                    
+//                    if errorString.lowercased().range(of: "custaa_cpva_9003") != nil {
+//                        message = "Weather details cannot be retrieved at this time.  Please try again"
+//                    }
+//                    
+//                }
                 
-                //             self.serviceCallFailure(alertTitle: "Error", withMessage: message)
             } else {
-                //              self.serviceCallFailure(alertTitle: "Error", withMessage: "Customer service cannot be retrieved.  Please try again later.  If it persists, please raise a fault with ITSC")
+                var message = "Weather details cannot be retrieved at this time.  Please try again"
+                Utility.showMessage(titleString: "Error", messageString: message )
             }
         }
     }
@@ -457,8 +447,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             }
             
         } else {
-            //            labelLatitude.text = "Location not authorized"
-            //            labelLongitude.text = "Location not authorized"
+            Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
         }
         
         return locationFound
@@ -525,9 +514,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         else
         {
             // Internet Connection not Available!
-            let messageText = "You are not connected to the internet.  Please check your cellular or wi-fi settings"
-            let alertView = UIAlertView(title: "Error", message: messageText, delegate: nil, cancelButtonTitle: "OK")
-            alertView.show()
+            Utility.showMessage(titleString: "Error", messageString: "You are not connected to the internet.  Please check your cellular or wi-fi settings" )
         }
     }
     
@@ -588,6 +575,21 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
 
     func refreshData() {
         print("refreshing data")
+    }
+    
+    // SettingsViewControllerDelegate delegate Methods
+    func refreshDataAfterSettingChange() {
+        
+        if Reachability.isConnectedToNetwork() == true
+        {
+            retrieveWeatherAndLocationData()
+        }
+        else
+        {
+            // Internet Connection not Available!
+            Utility.showMessage(titleString: "Error", messageString: "You are not connected to the internet.  Please check your cellular or wi-fi settings" )
+        }
+
     }
 
 }

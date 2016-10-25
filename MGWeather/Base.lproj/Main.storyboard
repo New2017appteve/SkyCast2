@@ -178,11 +178,12 @@
                                                                         </stackView>
                                                                     </subviews>
                                                                 </stackView>
-                                                                <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="pbG-Xr-4yO">
+                                                                <stackView opaque="NO" contentMode="scaleToFill" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="pbG-Xr-4yO">
                                                                     <subviews>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rain Probability:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r0Y-Jd-yRP">
                                                                             <constraints>
                                                                                 <constraint firstAttribute="height" constant="22" id="dCI-jg-Ovt"/>
+                                                                                <constraint firstAttribute="width" constant="101" id="hur-vu-Bu3"/>
                                                                             </constraints>
                                                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="12"/>
                                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -202,24 +203,21 @@
                                                             </subviews>
                                                             <constraints>
                                                                 <constraint firstAttribute="trailing" secondItem="oDe-Y1-9kM" secondAttribute="trailing" constant="7" id="2CJ-ci-QCk"/>
-                                                                <constraint firstItem="pbG-Xr-4yO" firstAttribute="top" secondItem="oDe-Y1-9kM" secondAttribute="bottom" constant="3" id="2Js-vD-aZq"/>
-                                                                <constraint firstItem="pbG-Xr-4yO" firstAttribute="trailing" secondItem="oDe-Y1-9kM" secondAttribute="trailing" id="2fX-Ai-o9A"/>
                                                                 <constraint firstItem="oDe-Y1-9kM" firstAttribute="top" secondItem="23o-hg-qw2" secondAttribute="bottom" constant="9" id="5eU-c5-xC4"/>
                                                                 <constraint firstItem="bT2-G4-tTa" firstAttribute="top" secondItem="cDW-f7-Ynh" secondAttribute="bottom" constant="8" id="68R-5j-PgB"/>
+                                                                <constraint firstAttribute="bottom" secondItem="pbG-Xr-4yO" secondAttribute="bottom" constant="4" id="9pY-Un-JxP"/>
                                                                 <constraint firstAttribute="bottom" secondItem="DVg-6b-hfN" secondAttribute="bottom" constant="4" id="IqO-01-E2w"/>
                                                                 <constraint firstItem="bT2-G4-tTa" firstAttribute="centerY" secondItem="D0g-eO-EDm" secondAttribute="centerY" constant="0.5" id="Jh9-o9-0m5"/>
                                                                 <constraint firstItem="bT2-G4-tTa" firstAttribute="leading" secondItem="D0g-eO-EDm" secondAttribute="leadingMargin" constant="-1" id="LS3-MI-ku1"/>
                                                                 <constraint firstItem="DVg-6b-hfN" firstAttribute="top" secondItem="bT2-G4-tTa" secondAttribute="bottom" constant="1" id="LY2-mn-gRF"/>
-                                                                <constraint firstItem="pbG-Xr-4yO" firstAttribute="trailing" secondItem="23o-hg-qw2" secondAttribute="trailing" id="Oxk-ec-cNh"/>
                                                                 <constraint firstItem="23o-hg-qw2" firstAttribute="top" secondItem="D0g-eO-EDm" secondAttribute="top" constant="5" id="T6D-UI-Fea"/>
                                                                 <constraint firstItem="cDW-f7-Ynh" firstAttribute="leading" secondItem="D0g-eO-EDm" secondAttribute="leading" constant="5" id="WXz-fB-E7a"/>
-                                                                <constraint firstAttribute="bottom" secondItem="pbG-Xr-4yO" secondAttribute="bottom" constant="4.5" id="crk-2X-RCd"/>
+                                                                <constraint firstAttribute="trailing" secondItem="pbG-Xr-4yO" secondAttribute="trailing" constant="8" id="dT5-LB-FYa"/>
                                                                 <constraint firstItem="cDW-f7-Ynh" firstAttribute="top" secondItem="D0g-eO-EDm" secondAttribute="top" constant="4" id="e83-hh-0kT"/>
                                                                 <constraint firstItem="oDe-Y1-9kM" firstAttribute="leading" secondItem="bT2-G4-tTa" secondAttribute="trailing" constant="8.5" id="eFQ-hL-WiE"/>
-                                                                <constraint firstItem="pbG-Xr-4yO" firstAttribute="leading" secondItem="DVg-6b-hfN" secondAttribute="trailing" constant="80" id="l4b-IM-k7k"/>
                                                                 <constraint firstAttribute="trailing" secondItem="23o-hg-qw2" secondAttribute="trailing" constant="8" id="oSp-Up-CrR"/>
                                                                 <constraint firstItem="DVg-6b-hfN" firstAttribute="leading" secondItem="D0g-eO-EDm" secondAttribute="leading" constant="6" id="uYg-yQ-Tjq"/>
-                                                                <constraint firstAttribute="trailing" secondItem="pbG-Xr-4yO" secondAttribute="trailing" constant="9" id="zuo-9l-cpz"/>
+                                                                <constraint firstItem="pbG-Xr-4yO" firstAttribute="top" secondItem="oDe-Y1-9kM" secondAttribute="bottom" constant="1" id="v9b-CR-P86"/>
                                                             </constraints>
                                                         </tableViewCellContentView>
                                                         <connections>
@@ -797,6 +795,7 @@
                         <outlet property="sunrise" destination="Tok-m7-auy" id="8jq-4N-w29"/>
                         <outlet property="sunriseStackView" destination="c8k-b8-weU" id="THh-77-zF4"/>
                         <outlet property="sunset" destination="uov-4M-n5n" id="ljU-Wq-N11"/>
+                        <outlet property="sunsetStackView" destination="aoL-9b-nLT" id="Mbw-p4-Og9"/>
                         <outlet property="todayHighLowTemp" destination="AJd-lh-avM" id="lxY-x2-Y4e"/>
                         <outlet property="weatherAlertButton" destination="PyO-qQ-dXS" id="AYQ-fN-g7x"/>
                         <outlet property="weatherDetailView" destination="x0T-OF-9ud" id="19Z-mI-sUi"/>
@@ -1098,6 +1097,9 @@
                                 </items>
                             </navigationBar>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Sp5-WY-IFe" customClass="WeatherSegmentedControl" customModule="MGWeather" customModuleProvider="target">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="34" id="N4D-Sn-LH4"/>
+                                </constraints>
                                 <segments>
                                     <segment title="Today"/>
                                     <segment title="Next 7 Days"/>
