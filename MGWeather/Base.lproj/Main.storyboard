@@ -793,8 +793,10 @@
                         <outlet property="poweredByDarkSkyText" destination="g14-fQ-5lr" id="vTA-DV-rNY"/>
                         <outlet property="rainProbability" destination="159-eq-Swr" id="8s6-aA-lUI"/>
                         <outlet property="sunrise" destination="Tok-m7-auy" id="8jq-4N-w29"/>
+                        <outlet property="sunriseIcon" destination="RiX-F0-Bsh" id="yCr-dD-gKD"/>
                         <outlet property="sunriseStackView" destination="c8k-b8-weU" id="THh-77-zF4"/>
                         <outlet property="sunset" destination="uov-4M-n5n" id="ljU-Wq-N11"/>
+                        <outlet property="sunsetIcon" destination="QG2-RL-uOn" id="WR5-wY-3Uf"/>
                         <outlet property="sunsetStackView" destination="aoL-9b-nLT" id="Mbw-p4-Og9"/>
                         <outlet property="todayHighLowTemp" destination="AJd-lh-avM" id="lxY-x2-Y4e"/>
                         <outlet property="weatherAlertButton" destination="PyO-qQ-dXS" id="AYQ-fN-g7x"/>
@@ -1156,9 +1158,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Cloud-50" width="50" height="50"/>
+        <image name="Cloud-50" width="76" height="76"/>
         <image name="ID-100200369_Dramatic Sky_Supertrooper" width="400" height="244"/>
-        <image name="Rain-50" width="50" height="50"/>
+        <image name="Rain-50" width="76" height="76"/>
         <image name="Sunrise-50" width="50" height="50"/>
         <image name="Sunset-50" width="50" height="50"/>
         <image name="sky_background_PEXELS" width="640" height="811"/>

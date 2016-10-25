@@ -46,8 +46,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     @IBOutlet weak var rainProbability : UILabel!
     
     @IBOutlet weak var sunriseStackView : UIStackView!
+    @IBOutlet weak var sunriseIcon : UIImageView!
     @IBOutlet weak var sunrise : UILabel!
     @IBOutlet weak var sunsetStackView : UIStackView!
+    @IBOutlet weak var sunsetIcon : UIImageView!
     @IBOutlet weak var sunset : UILabel!
     @IBOutlet weak var humidity : UILabel!
     @IBOutlet weak var weatherAlertButton : UIButton!
@@ -72,7 +74,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         // Do any additional setup after loading the view, typically from a nib.
         
         setupSwipeGestures()
-        initialScreenSetup ()
+        setupScreen ()
         populateTodayWeatherDetails()
         
 
@@ -112,7 +114,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
 }
     
     
-    func initialScreenSetup () {
+    func setupScreen () {
                       
         // Make the credit label clickable
         let urlString = "Powered By Dark Sky API"
@@ -128,10 +130,28 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
 //                                        length:23))
         
         poweredByDarkSkyText.attributedText = attributedString
+    
+        let userDefaults = UserDefaults.standard
+        dayOrNightColourSetting = userDefaults.string(forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
 
         currentTempView.backgroundColor = GlobalConstants.ViewShading.Lighter
         weatherDetailView.backgroundColor = GlobalConstants.ViewShading.Darker
         sunriseStackView.backgroundColor = GlobalConstants.TableViewAlternateShadingDay.Darker
+        
+        // Make round corners for the outerviews
+        sunriseIcon.layer.cornerRadius = 2.0
+        sunriseIcon.clipsToBounds = true
+        sunsetIcon.layer.cornerRadius = 2.0
+        sunsetIcon.clipsToBounds = true
+        
+        if dayOrNightColourSetting == "ON" {
+            sunriseIcon.backgroundColor = GlobalConstants.TableViewAlternateShadingDay.Lighter
+            sunsetIcon.backgroundColor = GlobalConstants.TableViewAlternateShadingNight.Lighter
+        }
+        else {
+            sunriseIcon.backgroundColor = UIColor.clear
+            sunsetIcon.backgroundColor = UIColor.clear
+        }
     }
     
 
@@ -534,8 +554,6 @@ extension TodayTabVC : UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if indexPath.row == 0 {
-            let userDefaults = UserDefaults.standard
-            dayOrNightColourSetting = userDefaults.string(forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
             
             if (dayOrNightColourSetting == nil) {
                 dayOrNightColourSetting = GlobalConstants.DefaultDayOrNightSwitch  // ON
@@ -560,7 +578,6 @@ extension TodayTabVC : UITableViewDataSource {
         }
         
         // Alternate the shading of each table view cell
-
         if dayOrNightColourSetting == "ON" {
             if (indexPath.row % 2 == 0) {
                 // Lighter Shade
