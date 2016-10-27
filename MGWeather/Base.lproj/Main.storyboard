@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Cf7-eg-bSk">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Cf7-eg-bSk">
     <dependencies>
         <deployment version="2304" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -26,6 +27,7 @@
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hBH-bh-8Tf">
                                                 <constraints>
                                                     <constraint firstAttribute="height" relation="lessThanOrEqual" constant="166" id="iwE-PP-gaK"/>
+                                                    <constraint firstAttribute="width" secondItem="hBH-bh-8Tf" secondAttribute="height" multiplier="160:83" id="vbh-MQ-juj"/>
                                                 </constraints>
                                             </imageView>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" editable="NO" text="Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut l" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i2J-tw-OLN">
@@ -40,6 +42,7 @@
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="height" relation="lessThanOrEqual" constant="166" id="2Mv-3r-Uuw"/>
+                                            <constraint firstAttribute="width" secondItem="GgD-QZ-EzZ" secondAttribute="height" multiplier="160:83" id="4bE-lX-Yvp"/>
                                             <constraint firstAttribute="bottom" secondItem="i2J-tw-OLN" secondAttribute="bottom" constant="46" id="7Ss-lh-4My"/>
                                             <constraint firstItem="i2J-tw-OLN" firstAttribute="top" secondItem="GgD-QZ-EzZ" secondAttribute="top" constant="46" id="Klv-my-D9M"/>
                                             <constraint firstItem="i2J-tw-OLN" firstAttribute="leading" secondItem="GgD-QZ-EzZ" secondAttribute="leading" constant="69" id="L9v-aD-Uc4"/>
@@ -60,7 +63,7 @@
                                                         <rect key="frame" x="0.0" y="28" width="320" height="110"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="loz-Uw-vwq" id="D0g-eO-EDm">
-                                                            <frame key="frameInset" width="320" height="109"/>
+                                                            <frame key="frameInset" width="320" height="109.5"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wednesday" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cDW-f7-Ynh">
@@ -407,6 +410,7 @@
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstItem="XL5-W3-RM3" firstAttribute="leading" secondItem="ICw-tv-Nwt" secondAttribute="leading" id="BEM-KX-JQ0"/>
+                                            <constraint firstAttribute="width" secondItem="ICw-tv-Nwt" secondAttribute="height" multiplier="160:83" id="C7u-hg-ezd"/>
                                             <constraint firstAttribute="trailing" secondItem="XL5-W3-RM3" secondAttribute="trailing" id="NIQ-pT-RKV"/>
                                             <constraint firstItem="XL5-W3-RM3" firstAttribute="top" secondItem="ICw-tv-Nwt" secondAttribute="top" id="kHy-6z-xdt"/>
                                             <constraint firstAttribute="bottom" secondItem="XL5-W3-RM3" secondAttribute="bottom" id="p2J-MI-AKR"/>
@@ -425,7 +429,7 @@
                                                         <rect key="frame" x="0.0" y="28" width="66" height="62"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hdU-2Z-8id" id="bz7-Vp-Tjj">
-                                                            <frame key="frameInset" width="66" height="61"/>
+                                                            <frame key="frameInset" width="66" height="61.5"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="20 d" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2vX-7S-bNT">
