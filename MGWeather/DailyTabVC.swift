@@ -43,12 +43,15 @@ class DailyTabVC: UIViewController {
     
     func setupScreen () {
         
-        nextDaysSummary.backgroundColor = GlobalConstants.ViewShading.Darker
+        nextDaysSummary.backgroundColor = GlobalConstants.ViewShading.Lighter
         
-        nextDaysSummary.alpha = 0.80
-        nextDaysSummary.layer.cornerRadius = 10.0
+        nextDaysSummary.alpha = 0.65
+        nextDaysSummary.layer.cornerRadius = 5.0
         nextDaysSummary.clipsToBounds = true
-        
+
+        dailyWeatherTableView.layer.cornerRadius = 10.0
+        dailyWeatherTableView.clipsToBounds = true
+
     //    nextDaysSummary.textAlignment = NSTextAlignment.center
     }
     

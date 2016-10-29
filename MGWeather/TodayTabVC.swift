@@ -27,12 +27,14 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     // MARK: Outlets
     
     @IBOutlet weak var outerScreenView : UIView!
+    @IBOutlet weak var weatherImageOuterView : UIView!
     
     @IBOutlet weak var weatherLabel : UILabel!
     @IBOutlet weak var weatherImage : UIImageView!
     @IBOutlet weak var lastUpdatedLabel : UILabel!
 
     @IBOutlet weak var currentTempView : UIView!
+    @IBOutlet weak var currentTempDetailView : UIView!
     @IBOutlet weak var currentTemp : UILabel!
     @IBOutlet weak var windspeed : UILabel!
     @IBOutlet weak var feelsLikeTemp : UILabel!
@@ -134,11 +136,14 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         let userDefaults = UserDefaults.standard
         dayOrNightColourSetting = userDefaults.string(forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
 
-        currentTempView.backgroundColor = GlobalConstants.ViewShading.Lighter
+        currentTempView.backgroundColor = UIColor.clear
         weatherDetailView.backgroundColor = GlobalConstants.ViewShading.Darker
         sunriseStackView.backgroundColor = GlobalConstants.TableViewAlternateShadingDay.Darker
         
         // Make round corners for the outerviews
+        currentTempDetailView.layer.cornerRadius = 10.0
+        currentTempDetailView.clipsToBounds = true
+        
         sunriseIcon.layer.cornerRadius = 2.0
         sunriseIcon.clipsToBounds = true
         sunsetIcon.layer.cornerRadius = 2.0
@@ -152,8 +157,32 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             sunriseIcon.backgroundColor = UIColor.clear
             sunsetIcon.backgroundColor = UIColor.clear
         }
+        
+
+//        weatherImageOuterView.contentMode = UIViewContentMode.scaleAspectFit
+//        weatherImage.contentMode = UIViewContentMode.scaleAspectFit
     }
     
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+
+        if (segue.identifier == "infoScreenSegue") {
+            
+            var weatherAlertDescription = ""
+            
+            // If weather alert, enable the button so user can bring up alert text view
+            
+            weatherAlertDescription = "A storm is approaching the south west of the country.  Amber alert has been raised"
+            // weatherAlertDescription = (weather?.weatherAlerts.description)!
+            
+            let vc:InfoPopupViewController = segue.destination as! InfoPopupViewController
+            vc.informationString = weatherAlertDescription
+            
+        }
+        
+    }
+
 
     // MARK:  Swipe Gesture functions
     
@@ -470,6 +499,14 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         }
         
         return retVal
+    }
+    
+    // MARK:  Button Press Methods
+
+    @IBAction func infoButtonPressed(_ sender: AnyObject) {
+        // infoScreenSegue
+        
+        self.performSegue(withIdentifier: "infoScreenSegue", sender: self)
     }
     
 //    func getRainIntensity (rainIntensity : Float) -> String {

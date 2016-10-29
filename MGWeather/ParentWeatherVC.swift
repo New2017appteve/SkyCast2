@@ -111,7 +111,6 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
 
     }
     
-   // func prepareForSegue(segue: UIStoryboardSegue, sender: Any!) {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         if (segue.identifier == "settingsScreenSegue") {
@@ -122,20 +121,6 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         
         if (segue.identifier == "aboutScreenSegue") {
             
-            
-        }
-        
-        if (segue.identifier == "infoScreenSegue") {
-            
-            var weatherAlertDescription = ""
-            
-            // If weather alert, enable the button so user can bring up alert text view
-            
-            weatherAlertDescription = "A storm is approaching the south west of the country.  Amber alert has been raised"
-            // weatherAlertDescription = (weather?.weatherAlerts.description)!
-            
-            let vc:InfoPopupViewController = segue.destination as! InfoPopupViewController
-            vc.informationString = weatherAlertDescription
             
         }
         
@@ -461,47 +446,66 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         {
             (placemarks, error) -> Void in
             
-            let placeArray = placemarks as [CLPlacemark]!
             
-            // Place details
-            var placeMark: CLPlacemark!
-            placeMark = placeArray?[0]  // Address dictionary
-            
-            // Location name
-            if let locationName = placeMark.addressDictionary?["Name"] as? NSString
-            {
-                print(locationName)
+            if error != nil {
+                print("Reverse geocoder failed with error" + (error?.localizedDescription)!)
+                Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
+                return
             }
-            
-            // Street address
-            if let street = placeMark.addressDictionary?["Thoroughfare"] as? NSString
-            {
-                print(street)
-            }
-            
-            // City
-            if let city = placeMark.addressDictionary?["City"] as? NSString
-            {
-                self.weatherLocation.currentCity = city as String
-                print(city)
-            }
-            
-            // Zip code
-            if let zip = placeMark.addressDictionary?["ZIP"] as? NSString
-            {
-                print(zip)
-            }
-            
-            // Country
-            if let country = placeMark.addressDictionary?["Country"] as? NSString
-            {
-                self.weatherLocation.currentCountry = country as String
-                print(country)
+            if (placemarks?.count)! > 0 {
+
+                // We have data
+                
+                let placeArray = placemarks as [CLPlacemark]!
+                
+                // Place details
+                var placeMark: CLPlacemark!
+                placeMark = placeArray?[0]  // Address dictionary
+                
+                // Location name
+                if let locationName = placeMark.addressDictionary?["Name"] as? NSString
+                {
+                    print(locationName)
+                }
+                
+                // Street address
+                if let street = placeMark.addressDictionary?["Thoroughfare"] as? NSString
+                {
+                    print(street)
+                }
+                
+                // City
+                if let city = placeMark.addressDictionary?["City"] as? NSString
+                {
+                    self.weatherLocation.currentCity = city as String
+                    print(city)
+                }
+                
+                // Zip code
+                if let zip = placeMark.addressDictionary?["ZIP"] as? NSString
+                {
+                    print(zip)
+                }
+                
+                // Country
+                if let country = placeMark.addressDictionary?["Country"] as? NSString
+                {
+                    self.weatherLocation.currentCountry = country as String
+                    print(country)
+                    
+                }
+                
+                self.setLocationInTitle()
                 
             }
-            
-            self.setLocationInTitle()
+                
+                
+            else {
+                print("Problem with the data received from geocoder")
+                Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
 
+            }
+            
         }
     }
     
@@ -566,12 +570,6 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         })
     }
     
-    @IBAction func infoButtonPressed(sender: UIButton) {
-        
-        // infoScreenSegue
-        
-        self.performSegue(withIdentifier: "infoScreenSegue", sender: self)
-    }
 
     func refreshData() {
         print("refreshing data")

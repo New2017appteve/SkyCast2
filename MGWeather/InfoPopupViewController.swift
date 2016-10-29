@@ -50,11 +50,11 @@ class InfoPopupViewController: UIViewController {
     
     // MARK: Button related methods
     
-    @IBAction func okButtonPressed(sender: AnyObject) {
+    @IBAction func backButtonPressed(_ sender: AnyObject) {
         
         // Dismiss view
         self.dismiss(animated: true, completion: nil)
+
     }
-    
 }
 
