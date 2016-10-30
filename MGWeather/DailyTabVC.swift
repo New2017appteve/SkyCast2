@@ -37,7 +37,8 @@ class DailyTabVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        nextDaysSummary.addObserver(self, forKeyPath: "contentSize", options: NSKeyValueObservingOptions.new, context: nil)
+        
+        populateDailyWeatherDetails()
     }
 
     
@@ -45,10 +46,11 @@ class DailyTabVC: UIViewController {
         
         nextDaysSummary.backgroundColor = GlobalConstants.ViewShading.Lighter
         
-        nextDaysSummary.alpha = 0.65
+        nextDaysSummary.alpha = 0.70
         nextDaysSummary.layer.cornerRadius = 5.0
         nextDaysSummary.clipsToBounds = true
 
+        dailyWeatherTableView.alpha = 0.70
         dailyWeatherTableView.layer.cornerRadius = 10.0
         dailyWeatherTableView.clipsToBounds = true
 

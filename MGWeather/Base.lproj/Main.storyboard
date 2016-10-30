@@ -24,12 +24,12 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GgD-QZ-EzZ">
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hBH-bh-8Tf"/>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" editable="NO" text="Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut l" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i2J-tw-OLN">
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" editable="NO" text="Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut l" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i2J-tw-OLN">
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="55" id="c2p-sA-YV4"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="12"/>
+                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="13"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                         </subviews>
@@ -44,9 +44,9 @@
                                             <constraint firstItem="i2J-tw-OLN" firstAttribute="centerX" secondItem="hBH-bh-8Tf" secondAttribute="centerX" id="aoa-Ur-8IX"/>
                                         </constraints>
                                     </view>
-                                    <view alpha="0.65000000000000002" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hKN-Iz-29H">
+                                    <view alpha="0.75" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hKN-Iz-29H">
                                         <subviews>
-                                            <tableView clipsSubviews="YES" alpha="0.75" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="110" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="f6d-mJ-ERr">
+                                            <tableView clipsSubviews="YES" alpha="0.80000000000000004" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="110" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="f6d-mJ-ERr">
                                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <prototypes>
@@ -416,7 +416,7 @@
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XLK-NC-WnV">
                                                 <subviews>
-                                                    <view alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cSO-mj-DBC">
+                                                    <view alpha="0.75" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cSO-mj-DBC">
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="23" translatesAutoresizingMaskIntoConstraints="NO" id="yLE-2m-AZC">
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -734,7 +734,7 @@
                                                 </constraints>
                                             </view>
                                         </subviews>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstItem="Z6j-sO-URi" firstAttribute="leading" secondItem="Mga-7M-e5M" secondAttribute="leading" id="042-Ja-yhc"/>
                                             <constraint firstItem="Z6j-sO-URi" firstAttribute="top" secondItem="Mga-7M-e5M" secondAttribute="top" id="5up-mj-X9X"/>
@@ -795,6 +795,7 @@
                         <outlet property="sunsetStackView" destination="aoL-9b-nLT" id="Mbw-p4-Og9"/>
                         <outlet property="todayHighLowTemp" destination="AJd-lh-avM" id="lxY-x2-Y4e"/>
                         <outlet property="weatherAlertButton" destination="PyO-qQ-dXS" id="AYQ-fN-g7x"/>
+                        <outlet property="weatherDetailOuterView" destination="Mga-7M-e5M" id="3Uk-Im-TAY"/>
                         <outlet property="weatherDetailView" destination="x0T-OF-9ud" id="19Z-mI-sUi"/>
                         <outlet property="weatherImage" destination="XL5-W3-RM3" id="g6t-mx-Uff"/>
                         <outlet property="weatherImageOuterView" destination="ICw-tv-Nwt" id="UJd-1B-Lq8"/>

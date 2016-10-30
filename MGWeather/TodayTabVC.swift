@@ -42,6 +42,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
 
     @IBOutlet weak var currentSummary : UILabel!
 
+    @IBOutlet weak var weatherDetailOuterView : UIView!
     @IBOutlet weak var weatherDetailView : UIView!
     @IBOutlet weak var todayHighLowTemp : UILabel!
     @IBOutlet weak var cloudCover : UILabel!
@@ -136,9 +137,12 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         let userDefaults = UserDefaults.standard
         dayOrNightColourSetting = userDefaults.string(forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
 
-        currentTempView.backgroundColor = UIColor.clear
-        weatherDetailView.backgroundColor = GlobalConstants.ViewShading.Darker
-        sunriseStackView.backgroundColor = GlobalConstants.TableViewAlternateShadingDay.Darker
+//        currentTempView.backgroundColor = UIColor.clear
+//        weatherDetailView.backgroundColor = GlobalConstants.ViewShading.Darker
+//        sunriseStackView.backgroundColor = GlobalConstants.TableViewAlternateShadingDay.Darker
+        
+        currentTempDetailView.alpha = 0.70
+        weatherDetailOuterView.alpha = 0.70
         
         // Make round corners for the outerviews
         currentTempDetailView.layer.cornerRadius = 10.0
