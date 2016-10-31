@@ -46,11 +46,11 @@ class DailyTabVC: UIViewController {
         
         nextDaysSummary.backgroundColor = GlobalConstants.ViewShading.Lighter
         
-        nextDaysSummary.alpha = 0.70
+        nextDaysSummary.alpha = 0.80
         nextDaysSummary.layer.cornerRadius = 5.0
         nextDaysSummary.clipsToBounds = true
 
-        dailyWeatherTableView.alpha = 0.70
+        dailyWeatherTableView.alpha = 0.80
         dailyWeatherTableView.layer.cornerRadius = 10.0
         dailyWeatherTableView.clipsToBounds = true
 

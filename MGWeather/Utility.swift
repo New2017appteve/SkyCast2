@@ -45,6 +45,7 @@ class Utility: NSObject {
     class func getWeatherImage(serviceIcon : String) -> String {
         
         var imageName : String!
+//        let now = NSDate()
         
         switch serviceIcon {
         case "clear-day":
@@ -60,6 +61,10 @@ class Utility: NSObject {
         case "wind":
             imageName  = GlobalConstants.ImageFile.FileName.wind.rawValue
         case "fog":
+            
+//            if isDayTime(dateTime: now! {
+//                
+//                }
             imageName  = GlobalConstants.ImageFile.FileName.fog.rawValue
         case "cloudy":
             imageName  = GlobalConstants.ImageFile.FileName.cloudy.rawValue

@@ -139,6 +139,7 @@ class GlobalConstants: NSObject {
             case sleet = "sleet_pexels-12875.jpeg" //"sleet"
             case wind = "wind_person-woman-girl-blonde-pexels.jpg" //"windy.jpg"
             case fog = "fog_day_road_foggy-mist-pexels.jpg" //"ID-10010583_Atmosphere Of Haze_dan.jpg"
+            case fogNight = "fog_night_foggy-mist-forest-trees-42263-pexels"
             case cloudy = "cloud_overcast-27194-pexels.jpg" //"ID-100202953_White And Gray Clouds_Stoonn.jpg"
             case partlyCloudyDay = "partial_cloud_day-28501-pexels.jpg" //"partial_clouds_day-53594_PEXELS.jpeg"
             case partlyCloudyNight = "partial_cloudy_night-98855-pexels.jpeg" //"night-clouds-trees_PEXELS.jpg"

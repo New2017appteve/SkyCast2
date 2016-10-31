@@ -33,6 +33,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     @IBOutlet weak var weatherImage : UIImageView!
     @IBOutlet weak var lastUpdatedLabel : UILabel!
 
+    @IBOutlet weak var infoView : UIView!
+    @IBOutlet weak var infoLabel : UILabel!
+    
     @IBOutlet weak var currentTempView : UIView!
     @IBOutlet weak var currentTempDetailView : UIView!
     @IBOutlet weak var currentTemp : UILabel!
@@ -64,6 +67,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     @IBOutlet weak var hourlyWeatherTableViewHeight : NSLayoutConstraint!
     
     @IBOutlet weak var dailyWeather : Weather!
+    @IBOutlet weak var weatherLocation : Location!
     
     enum Menu: String {
         case ShowSettings = "App Settings"
@@ -141,12 +145,19 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
 //        weatherDetailView.backgroundColor = GlobalConstants.ViewShading.Darker
 //        sunriseStackView.backgroundColor = GlobalConstants.TableViewAlternateShadingDay.Darker
         
-        currentTempDetailView.alpha = 0.70
-        weatherDetailOuterView.alpha = 0.70
+        currentTempDetailView.alpha = 0.80
+        weatherDetailOuterView.alpha = 0.80
+        infoView.alpha = 0.80
         
         // Make round corners for the outerviews
         currentTempDetailView.layer.cornerRadius = 10.0
         currentTempDetailView.clipsToBounds = true
+        
+        infoView.layer.cornerRadius = 5.0
+        infoView.clipsToBounds = true
+        
+        weatherDetailOuterView.layer.cornerRadius = 10.0
+        weatherDetailOuterView.clipsToBounds = true
         
         sunriseIcon.layer.cornerRadius = 2.0
         sunriseIcon.clipsToBounds = true
@@ -162,9 +173,26 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             sunsetIcon.backgroundColor = UIColor.clear
         }
         
-
-//        weatherImageOuterView.contentMode = UIViewContentMode.scaleAspectFit
-//        weatherImage.contentMode = UIViewContentMode.scaleAspectFit
+        // Ensure that weatherLocation has a value before setting
+        print("Getting Location Text")
+        
+        guard let loc = weatherLocation else {
+            infoLabel.text = "Location not found"
+            print("Location not found")
+            //
+            return
+        }
+        print("Setting Location Text")
+        
+        if loc.currentCity != nil && loc.currentCountry != nil {
+            infoLabel.text = loc.currentCity! + ", " + loc.currentCountry!
+        }
+        else if loc.currentCity != nil {
+            infoLabel.text = loc.currentCity!
+        }
+        else {
+            infoLabel.text = "Location not found"
+        }
     }
     
     

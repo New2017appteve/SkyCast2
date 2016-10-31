@@ -31,6 +31,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     
     var locationManager = CLLocationManager()
     var locationFound: Bool!
+    var locationName: String!
     
     var weather: Weather?
     var tmpWeather : Weather?
@@ -63,6 +64,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             // Internet Connection not Available!
             Utility.showMessage(titleString: "Error", messageString: "You are not connected to the internet.  Please check your cellular or wi-fi settings" )
         }
+        
+        setViewControllerTitle()
 
     }
     
@@ -99,6 +102,18 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         displayCurrentTab(tabIndex: TabIndex.FirstChildTab.rawValue)
     }
     
+    func setViewControllerTitle () {
+        
+        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.frame.size.width - 120, height: 44))
+        titleLabel.backgroundColor = UIColor.clear
+        titleLabel.numberOfLines = 1
+        //titleLabel.font = UIFont(name: UIConfig.Fonts.OswaldRegular,  size: 16)
+        titleLabel.textAlignment = NSTextAlignment.center
+        titleLabel.text = GlobalConstants.AppName
+        titleBar.topItem?.titleView = titleLabel
+
+    }
+/*
     func setLocationInTitle () {
         
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.frame.size.width - 120, height: 44))
@@ -108,9 +123,9 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         titleLabel.textAlignment = NSTextAlignment.center
         titleLabel.text = weatherLocation.currentCity! + ", " + weatherLocation.currentCountry!
         titleBar.topItem?.titleView = titleLabel
-
+        
     }
-    
+*/
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         if (segue.identifier == "settingsScreenSegue") {
@@ -156,6 +171,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             var vc1: TodayTabVC
             vc1 = firstChildTabVC as! TodayTabVC
             vc1.dailyWeather = weather
+            vc1.weatherLocation = weatherLocation
             vc1.delegate = self
             vc = vc1
         case TabIndex.SecondChildTab.rawValue :
@@ -446,7 +462,6 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         {
             (placemarks, error) -> Void in
             
-            
             if error != nil {
                 print("Reverse geocoder failed with error" + (error?.localizedDescription)!)
                 Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
@@ -495,7 +510,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                     
                 }
                 
-                self.setLocationInTitle()
+                //self.setLocationInTitle()
                 
             }
                 
