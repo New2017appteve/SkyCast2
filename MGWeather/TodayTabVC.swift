@@ -12,6 +12,8 @@ protocol TodayTabVCDelegate
 {
     func refreshWeatherDataFromService()
     func refreshWeatherDataFromService2(completionHandler: @escaping GlobalConstants.CompletionHandlerType)
+    func getAndSetLocation()
+    func switchViewControllers()
 }
 
 class TodayTabVC: UIViewController, UITextViewDelegate {
@@ -91,7 +93,19 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         // hourlyWeatherTableView.frame = CGRectMake(0, view.bounds.height/8, view.bounds.width, view.bounds.height)
 
         //hourlyWeatherTableViewHeight.constant = self.view.frame.width
+
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Ease in the outer screen view for effect
+        self.outerScreenView.alpha = 0.2
+        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.outerScreenView.alpha = 1
+            }, completion: nil)
+    }
+
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -145,9 +159,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
 //        weatherDetailView.backgroundColor = GlobalConstants.ViewShading.Darker
 //        sunriseStackView.backgroundColor = GlobalConstants.TableViewAlternateShadingDay.Darker
         
-        currentTempDetailView.alpha = 0.80
-        weatherDetailOuterView.alpha = 0.80
-        infoView.alpha = 0.80
+        currentTempDetailView.alpha = 0.85
+        weatherDetailOuterView.alpha = 0.85
+        infoView.alpha = 0.85
         
         // Make round corners for the outerviews
         currentTempDetailView.layer.cornerRadius = 10.0
@@ -177,21 +191,33 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         print("Getting Location Text")
         
         guard let loc = weatherLocation else {
-            infoLabel.text = "Location not found"
-            print("Location not found")
+            infoLabel.text = "Location name not found"
+            print("Location name not found")
             //
             return
         }
         print("Setting Location Text")
         
-        if loc.currentCity != nil && loc.currentCountry != nil {
-            infoLabel.text = loc.currentCity! + ", " + loc.currentCountry!
+        if loc.currentStreet != nil && loc.currentPostcode != nil {
+            infoLabel.text = loc.currentStreet! + ", " + loc.currentPostcode!
+        }
+        else if loc.currentCity != nil && loc.currentPostcode != nil {
+            infoLabel.text = loc.currentCity! + ", " + loc.currentPostcode!
+        }
+        else if loc.currentCity != nil && loc.currentStreet != nil {
+            infoLabel.text = loc.currentStreet! + ", " + loc.currentCity!
         }
         else if loc.currentCity != nil {
             infoLabel.text = loc.currentCity!
         }
+        else if loc.currentStreet != nil {
+            infoLabel.text = loc.currentStreet!
+        }
+        else if loc.currentPostcode != nil {
+            infoLabel.text = loc.currentPostcode!
+        }
         else {
-            infoLabel.text = "Location not found"
+            infoLabel.text = "Location name not found"
         }
     }
     
@@ -205,8 +231,21 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             
             // If weather alert, enable the button so user can bring up alert text view
             
-            weatherAlertDescription = "A storm is approaching the south west of the country.  Amber alert has been raised"
-            // weatherAlertDescription = (weather?.weatherAlerts.description)!
+            //weatherAlertDescription = "A storm is approaching the south west of the country.  Amber alert has been raised"
+            
+            // TODO:  Couild be more than 1 alert description
+            
+            let alertCount = dailyWeather.weatherAlerts.count
+            
+            for i in 0...alertCount - 1 {
+                
+                let alertTime = dailyWeather.weatherAlerts[i].alertDateAndTimeStamp
+                let alertExpiry = dailyWeather.weatherAlerts[i].alertExpiryDateAndTimeStamp
+                
+                let alertTimeDescription = (alertTime?.dayOfTheWeek())! + " " + (alertTime?.getDateSuffix())! + " to " + (alertExpiry?.dayOfTheWeek())! + " " + (alertExpiry?.getDateSuffix())!
+                
+                weatherAlertDescription = alertTimeDescription + "\r\n\n" + dailyWeather.weatherAlerts[i].alertDescription! + "\r\n\n"
+            }
             
             let vc:InfoPopupViewController = segue.destination as! InfoPopupViewController
             vc.informationString = weatherAlertDescription
@@ -246,6 +285,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                 
             case UISwipeGestureRecognizerDirection.right:
                 print("Swiped Right")
+                delegate?.switchViewControllers()
                 
             case UISwipeGestureRecognizerDirection.left:
                 print("Swiped Left")
@@ -310,6 +350,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         self.view.makeToast("Refreshing weather data", duration: 1.0, position: .bottom)
         self.view.makeToastActivity(.center)
         
+        self.delegate?.getAndSetLocation()
         self.delegate?.refreshWeatherDataFromService2
             { (result) -> Void in
                 switch (result) {
@@ -436,10 +477,11 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             // Populate the weather image
             let icon = todayArray.icon
             let enumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
-            let iconName = Utility.getWeatherImage(serviceIcon: (enumVal?.rawValue)!)
+            let backgroundImageName = Utility.getWeatherImage(serviceIcon: (enumVal?.rawValue)!)
             
-            if String(iconName).isEmpty != nil {
-                weatherImage.image = UIImage(named: iconName)!
+            if String(backgroundImageName).isEmpty != nil {
+                weatherImage.image = UIImage(named: backgroundImageName)!
+                Utility.setLastLoadedBackground(backgroundName: backgroundImageName)
             }
 
             // Populate the weather icon
@@ -453,11 +495,14 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             // If weather alert, enable the button so user can bring up alert text view
             if (dailyWeather?.weatherAlert == true) {
                 weatherAlertButton.isEnabled = true
-                weatherAlertButton.setTitle("YES", for: .normal)
+                weatherAlertButton.setTitle(nil, for: .normal)
+                weatherAlertButton.setImage(UIImage(named: "Alert"), for: UIControlState.normal)
             }
             else {
                 weatherAlertButton.isEnabled = false
+                weatherAlertButton.setImage(nil, for: UIControlState.normal)
                 weatherAlertButton.setTitle("NO", for: .normal)
+               // weatherAlertButton.setImage(UIImage(named: "Alert"), for: UIControlState.normal)
             }
         }
 
@@ -713,5 +758,6 @@ extension TodayTabVC : SettingsViewControllerDelegate {
         }
     }
 }
+
 
 

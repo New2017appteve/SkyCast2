@@ -13,6 +13,8 @@ class Location: NSObject {
     
     var currentLatitude: Double?
     var currentLongitude: Double?
+    var currentPostcode: String?
+    var currentStreet: String?
     var currentCity: String?
     var currentCountry: String?
     

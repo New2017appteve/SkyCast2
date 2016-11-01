@@ -12,7 +12,7 @@ protocol DailyTabVCDelegate
 {
     func refreshWeatherDataFromService()
     func refreshWeatherDataFromService2(completionHandler: @escaping GlobalConstants.CompletionHandlerType)
-
+    func switchViewControllers()
 }
 
 class DailyTabVC: UIViewController {
@@ -21,6 +21,7 @@ class DailyTabVC: UIViewController {
     
     // Outlets
     @IBOutlet weak var dailyWeatherTableView : UITableView!
+    @IBOutlet weak var outerScreenView : UIView!
     @IBOutlet weak var weatherImage : UIImageView!
     @IBOutlet weak var nextDaysSummary : UITextView!
     
@@ -31,13 +32,20 @@ class DailyTabVC: UIViewController {
         super.viewDidLoad()
 
         setupScreen()
+        setupSwipeGestures()
         populateDailyWeatherDetails()
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
+        // Ease in the outer screen view for effect
+        self.outerScreenView.alpha = 0.2
+        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.outerScreenView.alpha = 1
+            }, completion: nil)
+
         populateDailyWeatherDetails()
     }
 
@@ -46,11 +54,11 @@ class DailyTabVC: UIViewController {
         
         nextDaysSummary.backgroundColor = GlobalConstants.ViewShading.Lighter
         
-        nextDaysSummary.alpha = 0.80
+        nextDaysSummary.alpha = 0.8
         nextDaysSummary.layer.cornerRadius = 5.0
         nextDaysSummary.clipsToBounds = true
 
-        dailyWeatherTableView.alpha = 0.80
+        dailyWeatherTableView.alpha = 0.85
         dailyWeatherTableView.layer.cornerRadius = 10.0
         dailyWeatherTableView.clipsToBounds = true
 
@@ -87,6 +95,54 @@ class DailyTabVC: UIViewController {
         topCorrect = topCorrect < 0.0 ? 0.0 : topCorrect;
         textView.contentInset.top = topCorrect
     }
+    
+    // MARK:  Swipe Gesture functions
+    
+    func setupSwipeGestures () {
+        
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(DailyTabVC.swiped(gesture:)))
+        swipeDown.direction = .down
+        self.view.addGestureRecognizer(swipeDown)
+        
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(DailyTabVC.swiped(gesture:)))
+        swipeUp.direction = .up
+        self.view.addGestureRecognizer(swipeUp)
+        
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(DailyTabVC.swiped(gesture:)))
+        swipeRight.direction = .right
+        self.view.addGestureRecognizer(swipeRight)
+        
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(DailyTabVC.swiped(gesture:)))
+        swipeLeft.direction = .left
+        self.view.addGestureRecognizer(swipeLeft)
+    }
+    
+    func swiped(gesture: UIGestureRecognizer)
+    {
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer
+        {
+            switch swipeGesture.direction
+            {
+                
+            case UISwipeGestureRecognizerDirection.right:
+                print("Swiped Right")
+                
+            case UISwipeGestureRecognizerDirection.left:
+                print("Swiped Left")
+                delegate?.switchViewControllers()
+                
+            case UISwipeGestureRecognizerDirection.up:
+                print("Swiped Up")
+                
+            case UISwipeGestureRecognizerDirection.down:
+                print("Swiped Down")
+                
+            default:
+                break
+            }
+        }
+    }
+
 }
 
 // MARK: UITableViewDataSource
@@ -178,77 +234,3 @@ extension DailyTabVC : UITableViewDelegate {
     }
 }
 
-extension NSDate {
-    
-    func dayOfTheWeek() -> String? {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEEE"
-        return dateFormatter.string(from: self as Date)
-    }
-    
-    func shortTimeString() -> String
-    {
-        //Get Short Time String
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short //.ShortStyle
-        let timeString = formatter.string(from: self as Date)
-        
-        //Return Short Time String
-        return timeString
-    }
-    
-    func shortHourTimeString() -> String
-    {
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = "h:mm a 'on' MMMM dd, yyyy"
-        //Get Short hour Time String
-        var hour = Calendar.current.component(.hour, from: self as Date)
-        if hour == 0 {
-            hour = 12
-        }
-        
-        if hour > 12 {
-            hour = hour - 12
-        }
-        
-        // look for am or pm in string
-        let dateString = formatter.string(from: self as Date)
-        
-        var amPm = ""
-        if dateString.lowercased().range(of: "am") != nil {
-            amPm = "am"
-        }
-        else {
-            amPm = "pm"
-        }
-        
-        //Return Short Time String
-        return String(hour) + amPm
-    }
-    
-    func getDateSuffix() -> String {
-        
-        var suffix = ""
-        let day = NSCalendar.current.component(.day, from: self as Date)
-        
-        switch (day){
-        case 1, 21, 31:
-            suffix = "st"
-            break
-        case 2, 22:
-            suffix = "nd"
-            break
-        case 3, 23:
-            suffix = "rd"
-            break
-        default:
-            suffix = "th"
-            break
-        }  
-
-        return String(day) + suffix
-        
-    }
-
-}

@@ -12,6 +12,7 @@ import MessageUI
 class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate {
 
     @IBOutlet weak var backButton: UIButton!
+    @IBOutlet weak var weatherImage : UIImageView!
     @IBOutlet weak var aboutView: UIView!
     @IBOutlet weak var aboutTitle: UILabel!
     @IBOutlet weak var aboutVersion: UILabel!
@@ -34,6 +35,26 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
         // Do any additional setup after loading the view.
         setupScreen()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Ease in the outer screen view for effect
+        self.weatherImage.alpha = 0.2
+        self.aboutView.alpha = 0.2
+        self.emailView.alpha = 0.2
+        self.creditsView.alpha = 0.2
+        
+        UIView.animate(withDuration: 0.8, delay: 0.15, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            
+            self.weatherImage.alpha = 1
+            self.aboutView.alpha = 1
+            self.emailView.alpha = 1
+            self.creditsView.alpha = 1
+            
+            }, completion: nil)
+    }
+
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

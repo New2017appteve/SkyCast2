@@ -90,6 +90,7 @@ class GlobalConstants: NSObject {
     struct Defaults {
         static let SavedTemperatureUnits = "savedTemperatureUnits"
         static let SavedDayOrNightColourSetting = "savedDayOrNightColourSetting"
+        static let LastLoadedBackground = "lastLoadedBackground"
     }
     
     // Temperature Units
@@ -100,6 +101,7 @@ class GlobalConstants: NSObject {
     
     static let DefaultTemperatureUnit = "celsuis"
     static let DefaultDayOrNightSwitch = "ON"
+    static let DefaultBackgroundImage = "sky_background_PEXELS"
     
     // Icon Constants  (Icons from https://icons8.com/web-app/category/Weather) //TODO:  Include Credits for each icon
     // https://makeappicon.com/

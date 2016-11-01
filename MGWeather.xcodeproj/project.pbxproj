@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C003C60D1DC8CEA70064CE86 /* NSDate+Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C003C60C1DC8CEA70064CE86 /* NSDate+Conversions.swift */; };
 		C0042E831DB81F09007506AC /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0042E821DB81F09007506AC /* Reachability.swift */; };
 		C018BA061DA2FE64009706F9 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = C018BA051DA2FE64009706F9 /* Toast.swift */; };
 		C7175A9C1D31683700788F09 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7175A9B1D31683700788F09 /* AppDelegate.swift */; };
@@ -43,6 +44,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C003C60C1DC8CEA70064CE86 /* NSDate+Conversions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDate+Conversions.swift"; sourceTree = "<group>"; };
 		C0042E821DB81F09007506AC /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		C018BA051DA2FE64009706F9 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		C7175A981D31683700788F09 /* MGWeather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MGWeather.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -93,6 +95,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C003C60B1DC8CE790064CE86 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				C003C60C1DC8CEA70064CE86 /* NSDate+Conversions.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
 		C018BA041DA2FE02009706F9 /* Toast */ = {
 			isa = PBXGroup;
 			children = (
@@ -120,6 +130,7 @@
 		C7175A9A1D31683700788F09 /* MGWeather */ = {
 			isa = PBXGroup;
 			children = (
+				C003C60B1DC8CE790064CE86 /* Extensions */,
 				C730B9D31DAE3A1600872532 /* ObjC */,
 				C73F897E1DAE3527009FCC30 /* Utils */,
 				C018BA041DA2FE02009706F9 /* Toast */,
@@ -327,6 +338,7 @@
 				C7F712051D78746000B4404D /* HourWeatherCell.swift in Sources */,
 				C7175ABA1D31698700788F09 /* WeatherStats.swift in Sources */,
 				C7175ABE1D3169CB00788F09 /* GlobalConstants.swift in Sources */,
+				C003C60D1DC8CEA70064CE86 /* NSDate+Conversions.swift in Sources */,
 				C74B946F1D40284700BECDA3 /* SettingsViewController.swift in Sources */,
 				C7175AAF1D31690900788F09 /* WeatherTabBarVC.swift in Sources */,
 				C730B9D71DAE3A5900872532 /* UIDeviceHardware.m in Sources */,

@@ -18,6 +18,7 @@ class SettingsViewController: UIViewController {
 
     var delegate:SettingsViewControllerDelegate?
     
+    @IBOutlet weak var weatherImage : UIImageView!
     @IBOutlet weak var settingsView: UIView!
     
     @IBOutlet weak var backButton : UIButton!
@@ -33,6 +34,19 @@ class SettingsViewController: UIViewController {
         loadSettings()
         setupScreen()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Ease in the outer screen view for effect
+        self.weatherImage.alpha = 0.2
+        self.settingsView.alpha = 0.2
+        UIView.animate(withDuration: 0.8, delay: 0.15, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.weatherImage.alpha = 1
+            self.settingsView.alpha = 1
+            }, completion: nil)
+    }
+
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

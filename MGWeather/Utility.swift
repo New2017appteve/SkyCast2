@@ -85,4 +85,25 @@ class Utility: NSObject {
         let alertView = UIAlertView(title: titleString, message: messageString, delegate: nil, cancelButtonTitle: "OK")
         alertView.show()
     }
+    
+    // Methods to obtain ast loaded background image
+    
+    class func getLastLoadedBackground () -> String {
+        
+        let userDefaults = UserDefaults.standard
+        var lastBackground = userDefaults.string(forKey: GlobalConstants.Defaults.LastLoadedBackground)
+        
+        if lastBackground == nil {
+            lastBackground = GlobalConstants.DefaultBackgroundImage
+        }
+        return lastBackground!
+    }
+    
+    class func setLastLoadedBackground (backgroundName: String) {
+        
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(backgroundName, forKey: GlobalConstants.Defaults.LastLoadedBackground)
+        
+    }
+
 }

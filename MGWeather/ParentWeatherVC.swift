@@ -21,6 +21,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     @IBOutlet weak var segmentedControl: WeatherSegmentedControl!
     @IBOutlet weak var titleBar: UINavigationBar!
     @IBOutlet weak var contentView: UIView!
+    @IBOutlet weak var weatherImage : UIImageView!
     @IBOutlet weak var refreshButton : UIButton!
 
     enum Menu: String {
@@ -53,6 +54,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupScreen()
+        
         segmentedControl.isEnabled = false
         
         if Reachability.isConnectedToNetwork() == true
@@ -76,24 +79,23 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         }
     }
     
-    func retrieveWeatherAndLocationData () {
-       
-        // Get the current location and the weather data based on location
+    func setupScreen() {
         
-        locationFound = getLocation()
-        if locationFound == true {
-            setUsersClosestCity()
-        }
+        let lastLoadedBackground = Utility.getLastLoadedBackground()
+
+        // Ease in the image view
+        self.weatherImage.alpha = 0.2
+        weatherImage.image = UIImage(named: lastLoadedBackground)!
         
+        UIView.animate(withDuration: 0.5, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.weatherImage.alpha = 1
+            }, completion: nil)
         
-        // Make a toast to say data is refreshing
-        self.view.makeToast("Refreshing weather data", duration: 1.0, position: .bottom)
-        self.view.makeToastActivity(.center)
-        
-        getWeatherDataFromService()
-        
-        // NOTE:  The setup of the screen in the tabs will be done after getWeatherDataFromService() has finished
+        refreshButton.layer.cornerRadius = 5.0
+        refreshButton.clipsToBounds = true
+
     }
+    
     
     func setupTabs () {
 
@@ -140,17 +142,36 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         }
         
     }
-    
+        
     
     // MARK: - Switching Tabs Functions
     @IBAction func switchTabs(_ sender: AnyObject) {
+        
+        self.switchViewControllers(sender)
+    }
+    
+    func switchViewControllers(_ sender: AnyObject) {
         self.currentViewController!.view.removeFromSuperview()
         self.currentViewController!.removeFromParentViewController()
         
         displayCurrentTab(tabIndex: sender.selectedSegmentIndex)
     }
-    
-    
+
+    func switchViewControllers() {
+        
+        if segmentedControl.selectedSegmentIndex == 0 {
+            segmentedControl.selectedSegmentIndex = 1
+        }
+        else {
+            segmentedControl.selectedSegmentIndex = 0
+        }
+        
+        self.currentViewController!.view.removeFromSuperview()
+        self.currentViewController!.removeFromParentViewController()
+        
+        displayCurrentTab(tabIndex: segmentedControl.selectedSegmentIndex)
+    }
+
     func displayCurrentTab(tabIndex: Int){
         if let vc = viewControllerForSelectedSegmentIndex(index: tabIndex) {
             
@@ -186,8 +207,9 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         
         return vc
     }    
-
-    // MARK:  Customer Data Loading functions
+    
+    
+    // MARK:  Weather Data Loading functions
     
     func getURL () -> String {
         
@@ -403,7 +425,31 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
 //    }
 
     // MARK:- Location details
+
+    func getAndSetLocation() {
+        
+        // Get the current location and the weather data based on location
+        
+        locationFound = getLocation()
+        if locationFound == true {
+            setUsersClosestCity()
+        }
+        
+    }
     
+    func retrieveWeatherAndLocationData () {
+        
+        self.getAndSetLocation()
+        
+        // Make a toast to say data is refreshing
+        self.view.makeToast("Refreshing weather data", duration: 1.0, position: .bottom)
+        self.view.makeToastActivity(.center)
+        
+        getWeatherDataFromService()
+        
+        // NOTE:  The setup of the screen in the tabs will be done after getWeatherDataFromService() has finished
+    }
+
     func getLocation() -> Bool {
         
         var locationFound = false
@@ -486,6 +532,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 // Street address
                 if let street = placeMark.addressDictionary?["Thoroughfare"] as? NSString
                 {
+                    self.weatherLocation.currentStreet = street as String
                     print(street)
                 }
                 
@@ -500,6 +547,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 if let zip = placeMark.addressDictionary?["ZIP"] as? NSString
                 {
                     print(zip)
+                    self.weatherLocation.currentPostcode = zip as String
                 }
                 
                 // Country

@@ -183,8 +183,3 @@ class WeatherStats: NSObject {
     }
 }
 
-extension NSDate {
-    func isBetweeen(date date1: NSDate, andDate date2: NSDate) -> Bool {
-        return date1.compare(self as Date) == self.compare(date2 as Date)
-    }
-}
