@@ -47,10 +47,10 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
         
         UIView.animate(withDuration: 0.8, delay: 0.15, options: UIViewAnimationOptions.curveEaseIn, animations: {
             
-            self.weatherImage.alpha = 1
-            self.aboutView.alpha = 1
-            self.emailView.alpha = 1
-            self.creditsView.alpha = 1
+            self.weatherImage.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+            self.aboutView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+            self.emailView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+            self.creditsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
             
             }, completion: nil)
     }

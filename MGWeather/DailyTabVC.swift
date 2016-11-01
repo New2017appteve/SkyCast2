@@ -58,7 +58,7 @@ class DailyTabVC: UIViewController {
         nextDaysSummary.layer.cornerRadius = 5.0
         nextDaysSummary.clipsToBounds = true
 
-        dailyWeatherTableView.alpha = 0.85
+        dailyWeatherTableView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
         dailyWeatherTableView.layer.cornerRadius = 10.0
         dailyWeatherTableView.clipsToBounds = true
 

@@ -53,6 +53,8 @@ class GlobalConstants: NSObject {
         static var Lighter = LighterBlue
     }
     
+    static let DisplayViewAlpha = 0.85
+    
     // Tableview 
     static let NumberOfHoursToShowFromNow = 12
     

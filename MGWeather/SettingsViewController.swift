@@ -42,8 +42,8 @@ class SettingsViewController: UIViewController {
         self.weatherImage.alpha = 0.2
         self.settingsView.alpha = 0.2
         UIView.animate(withDuration: 0.8, delay: 0.15, options: UIViewAnimationOptions.curveEaseIn, animations: {
-            self.weatherImage.alpha = 1
-            self.settingsView.alpha = 1
+            self.weatherImage.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+            self.settingsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
             }, completion: nil)
     }
 

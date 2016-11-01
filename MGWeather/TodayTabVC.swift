@@ -159,9 +159,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
 //        weatherDetailView.backgroundColor = GlobalConstants.ViewShading.Darker
 //        sunriseStackView.backgroundColor = GlobalConstants.TableViewAlternateShadingDay.Darker
         
-        currentTempDetailView.alpha = 0.85
-        weatherDetailOuterView.alpha = 0.85
-        infoView.alpha = 0.85
+        currentTempDetailView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+        weatherDetailOuterView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+        infoView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
         
         // Make round corners for the outerviews
         currentTempDetailView.layer.cornerRadius = 10.0
