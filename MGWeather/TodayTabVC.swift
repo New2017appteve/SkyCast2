@@ -25,6 +25,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     var sunsetTimeStamp: NSDate?
     var tomorrowSunriseTimeStamp: NSDate?
     var tomorrowSunsetTimeStamp: NSDate?
+    var lastUpdatedTime = ""
+    
+    var infoLabelTimerCount = 0
     
     // MARK: Outlets
     
@@ -49,6 +52,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
 
     @IBOutlet weak var weatherDetailOuterView : UIView!
     @IBOutlet weak var weatherDetailView : UIView!
+    @IBOutlet weak var todaySummary : UILabel!
     @IBOutlet weak var todayHighLowTemp : UILabel!
     @IBOutlet weak var cloudCover : UILabel!
     @IBOutlet weak var rainProbability : UILabel!
@@ -60,6 +64,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     @IBOutlet weak var sunsetIcon : UIImageView!
     @IBOutlet weak var sunset : UILabel!
     @IBOutlet weak var humidity : UILabel!
+    @IBOutlet weak var weatherAlertTitle : UILabel!
     @IBOutlet weak var weatherAlertButton : UIButton!
     @IBOutlet weak var poweredByDarkSkyText : UITextView!
     
@@ -82,6 +87,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        setupDisplayTimer()
         setupSwipeGestures()
         setupScreen ()
         populateTodayWeatherDetails()
@@ -197,28 +203,37 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             return
         }
         print("Setting Location Text")
+        infoLabel.text = getFormattedLocation(locationObj: loc)
         
-        if loc.currentStreet != nil && loc.currentPostcode != nil {
-            infoLabel.text = loc.currentStreet! + ", " + loc.currentPostcode!
+    }
+    
+    func getFormattedLocation(locationObj: Location) -> String {
+        
+        var returnString = ""
+        
+        if locationObj.currentStreet != nil && locationObj.currentPostcode != nil {
+            returnString = locationObj.currentStreet! + ", " + locationObj.currentPostcode!
         }
-        else if loc.currentCity != nil && loc.currentPostcode != nil {
-            infoLabel.text = loc.currentCity! + ", " + loc.currentPostcode!
+        else if locationObj.currentCity != nil && locationObj.currentPostcode != nil {
+            returnString = locationObj.currentCity! + ", " + locationObj.currentPostcode!
         }
-        else if loc.currentCity != nil && loc.currentStreet != nil {
-            infoLabel.text = loc.currentStreet! + ", " + loc.currentCity!
+        else if locationObj.currentCity != nil && locationObj.currentStreet != nil {
+            returnString = locationObj.currentStreet! + ", " + locationObj.currentCity!
         }
-        else if loc.currentCity != nil {
-            infoLabel.text = loc.currentCity!
+        else if locationObj.currentCity != nil {
+            returnString = locationObj.currentCity!
         }
-        else if loc.currentStreet != nil {
-            infoLabel.text = loc.currentStreet!
+        else if locationObj.currentStreet != nil {
+            returnString = locationObj.currentStreet!
         }
-        else if loc.currentPostcode != nil {
-            infoLabel.text = loc.currentPostcode!
+        else if locationObj.currentPostcode != nil {
+            returnString = locationObj.currentPostcode!
         }
         else {
-            infoLabel.text = "Location name not found"
+            returnString = "Location name not found"
         }
+
+        return returnString
     }
     
     
@@ -233,7 +248,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             
             //weatherAlertDescription = "A storm is approaching the south west of the country.  Amber alert has been raised"
             
-            // TODO:  Couild be more than 1 alert description
+            // Cater for more than 1 alert description
             
             let alertCount = dailyWeather.weatherAlerts.count
             
@@ -254,7 +269,43 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         
     }
 
+    func setupDisplayTimer() {
+    
+        infoLabelTimerCount = 0
+        
+        _ = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(updateInfoLabel), userInfo: nil, repeats: true)
 
+    }
+    
+    func updateInfoLabel() {
+        
+        infoLabelTimerCount += 1
+        
+        // Do a mod of 4, so that we can display the 'Last Updated' time slightly longer than
+        var mod = infoLabelTimerCount % 4
+        switch (mod) {
+        case 0:
+            infoLabel.text = "Pull to refresh"
+        case 1:
+            infoLabel.text = "Last Updated: " + lastUpdatedTime
+        case 2:
+            infoLabel.text = "Last Updated: " + lastUpdatedTime
+        case 3:
+            guard let loc = weatherLocation else {
+                infoLabel.text = "Location name not found"
+                print("Location name not found")
+                //
+                return
+            }
+            print("Setting Location Text")
+
+            infoLabel.text = getFormattedLocation(locationObj: loc)
+        default:
+            infoLabel.text = ""
+        }
+        
+    }
+    
     // MARK:  Swipe Gesture functions
     
     func setupSwipeGestures () {
@@ -390,15 +441,21 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         return false
     }
     
+    func getLastUpdatedTime() -> String {
+        
+        let today = NSDate()
+        let timeNow = today.shortTimeString()
+        
+        return timeNow
+
+    }
+    
     func populateTodayWeatherDetails() {
 
         // Rather than force unwrapping, use conditional let
         if let todayArray = dailyWeather?.currentBreakdown {
             
-            let today = NSDate()
-            let timeNow = today.shortTimeString()
-            
-            lastUpdatedLabel.text = "Last Updated: " + timeNow
+            lastUpdatedTime  = getLastUpdatedTime()
 
             // NOTE:  Better to use the Minute summary at this level
 
@@ -408,7 +465,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             rainProbability.text = String(Int(round(todayArray.precipProbability!*100))) + "%"
             cloudCover.text = String(Int(round(todayArray.cloudCover!*100))) + "%"
             humidity.text = String(Int(round(todayArray.humidity!*100))) + "%"
-
             
             // Min Temp, Max Temp, Sunrise and Sunset we can get from the 'daily' figures
             
@@ -442,39 +498,14 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                 }
             }
             
+            let hourlyBreakdown = dailyWeather?.hourBreakdown
+            todaySummary.text = hourlyBreakdown?.summary
+            
             let minuteBreakdown = dailyWeather?.minuteBreakdown
-            if todayArray.icon == "rain" {
-                // Find out how much rain we have
-                
-                //let rainIntensity = getRainIntensity(rainIntensity: todayArray.precipIntensity!)
-                //currentSummary.text = (minuteBreakdown?.summary)! + " (" + rainIntensity + ")"
-                currentSummary.text = (minuteBreakdown?.summary)!
-            }
-            else {
-                currentSummary.text = minuteBreakdown?.summary
-            }
-            
-            // TODO:  Loop through 'minutely'.  See if we can find rain within the next hour
-            
-//            let minuteArray = dailyWeather?.minuteBreakdown.minuteStats
-//            var minuteCount = 0
-//            
-//            minuteLoop: for minute in minuteArray! {
-//                
-//                // Get the WeatherStats from withing the minute breakdown
-//                
-//                minuteCount += 1
-//                if minute.precipType == "rain" {
-//                    break minuteLoop
-//                }
-//                
-//            }
-
-           // if minuteCount < 60 {
-           //     currentSummary.text = currentSummary.text! + ". Rain due in the next " + String(minuteCount) + " minutes"
-           // }
+            currentSummary.text = minuteBreakdown?.summary
             
             // Populate the weather image
+            
             let icon = todayArray.icon
             let enumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
             let backgroundImageName = Utility.getWeatherImage(serviceIcon: (enumVal?.rawValue)!)
@@ -494,15 +525,18 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
 
             // If weather alert, enable the button so user can bring up alert text view
             if (dailyWeather?.weatherAlert == true) {
+                
+                weatherAlertButton.isHidden = false
+                weatherAlertTitle.isHidden = false
+                
                 weatherAlertButton.isEnabled = true
                 weatherAlertButton.setTitle(nil, for: .normal)
+                weatherAlertTitle.text = "Weather Alert"
                 weatherAlertButton.setImage(UIImage(named: "Alert"), for: UIControlState.normal)
             }
             else {
-                weatherAlertButton.isEnabled = false
-                weatherAlertButton.setImage(nil, for: UIControlState.normal)
-                weatherAlertButton.setTitle("NO", for: .normal)
-               // weatherAlertButton.setImage(UIImage(named: "Alert"), for: UIControlState.normal)
+                weatherAlertButton.isHidden = true
+                weatherAlertTitle.isHidden = true
             }
         }
 

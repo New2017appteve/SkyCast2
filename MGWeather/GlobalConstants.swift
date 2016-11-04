@@ -10,6 +10,8 @@ import UIKit
 
 class GlobalConstants: NSObject {
 
+    static let DemoMode = false
+
     static let AppName = "SkyCast"
     
    // http://www.developerdave.co.uk/2015/09/better-completion-handlers-in-swift/
@@ -81,8 +83,6 @@ class GlobalConstants: NSObject {
     static let celsiusURLParameter = "?units=si"
     
     static let DemoWeatherFile = "sample_data_cippenham2"
-    
-    static let DemoMode = false
     
     static let degreesSymbol = "\u{00B0}C"  // TODO:  Look at celsuis and farenheight
     
