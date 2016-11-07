@@ -95,6 +95,11 @@ class GlobalConstants: NSObject {
         static let LastLoadedBackground = "lastLoadedBackground"
     }
     
+    // NSNotification Keys
+    
+    static let weatherRefreshFinishedKey = Notification.Name("WeatherRefreshedFinished")
+    static let locationRefreshFinishedKey = Notification.Name("LocationRefreshedFinished")
+    
     // Temperature Units
     struct TemperatureUnits {
         static let Celsuis = "celsuis"

@@ -10,7 +10,7 @@ import UIKit
 
 protocol SettingsViewControllerDelegate
 {
-//    func refreshData()
+    func refreshData()
     func refreshDataAfterSettingChange()
 }
 
@@ -125,8 +125,10 @@ class SettingsViewController: UIViewController {
         userDefaults.set(celsuisOrFahrenheit, forKey: GlobalConstants.Defaults.SavedTemperatureUnits)
         userDefaults.set(dayOrNightColours, forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
         
+        userDefaults.synchronize() //  Explicitly save the settings
+        
        //self.delegate?.refreshData()
-        self.delegate?.refreshDataAfterSettingChange()
+        self.delegate?.refreshDataAfterSettingChange()  // Call to ParentWeatherVC
     }
     
     

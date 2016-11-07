@@ -3,7 +3,6 @@
 //  MGWeather
 //
 //  Created by Mark Gumbs on 30/08/2016.
-//  Copyright © 2016 britishairways. All rights reserved.
 //
 
 import UIKit
@@ -37,6 +36,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     var weather: Weather?
     var tmpWeather : Weather?
     var weatherLocation = Location()
+    let geoCoder = CLGeocoder()
     
     var currentViewController: UIViewController?
     
@@ -55,10 +55,26 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         super.viewDidLoad()
         
         setupScreen()
-        
         segmentedControl.isEnabled = false
         
-        if Reachability.isConnectedToNetwork() == true
+        NotificationCenter.default.addObserver(self, selector: #selector(ParentWeatherVC.networkStatusChanged(_:)), name: NSNotification.Name(rawValue: ReachabilityStatusChangedNotification), object: nil)
+        
+        Reach().monitorReachabilityChanges()
+        
+        var connected = false
+        let status = Reach().connectionStatus()
+        switch status {
+        case .unknown, .offline:
+            print("Not connected")
+        case .online(.wwan):
+            print("Connected via WWAN")
+            connected = true
+        case .online(.wiFi):
+            print("Connected via WiFi")
+            connected = true
+        }
+        
+        if connected
         {
             retrieveWeatherAndLocationData()
         }
@@ -72,6 +88,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
 
     }
     
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if let currentViewController = currentViewController {
@@ -262,6 +279,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                     self.tmpWeather = Weather(fromDictionary: getResponse )
                     self.weather = self.tmpWeather
                     
+                    NotificationCenter.default.post(name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
+
                     DispatchQueue.main.async {
                         self.segmentedControl.isEnabled = true
                         self.setupTabs()
@@ -319,7 +338,9 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                     
                     self.tmpWeather = Weather(fromDictionary: getResponse )
                     self.weather = self.tmpWeather
-                    
+                
+                    //NotificationCenter.default.post(name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
+
                     // Return the updated Weather object of successful
                     completionHandler(GlobalConstants.CompletionResult.Success(self.tmpWeather as AnyObject?))
                     
@@ -424,7 +445,18 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
 //        }
 //    }
 
+    func returnRefreshedWeatherDetails() -> Weather {
+        
+        return weather!
+    }
+    
+
     // MARK:- Location details
+    
+    func returnRefreshedLocationDetails() -> Location {
+        
+        return weatherLocation
+    }
 
     func getAndSetLocation() {
         
@@ -437,6 +469,17 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         
     }
     
+    func getAndSetLocationAfterRefresh() -> Location {
+        
+        // Get the current location and the weather data based on location
+        
+        locationFound = getLocation()
+        if locationFound == true {
+            setUsersClosestCity()
+        }
+        return weatherLocation
+    }
+
     func retrieveWeatherAndLocationData () {
         
         self.getAndSetLocation()
@@ -453,25 +496,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     func getLocation() -> Bool {
         
         var locationFound = false
-        
-        // TODO:  Review to see if needed
-        
-//       // let locationManager = CLLocationManager()
-//        locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-//        locationManager.delegate = self;
-//
-//        var status = CLLocationManager.authorizationStatus()
-//        if status == .NotDetermined || status == .Denied || status == .AuthorizedWhenInUse {
-//            // present an alert indicating location authorization required
-//            // and offer to take the user to Settings for the app via
-//            // UIApplication -openUrl: and UIApplicationOpenSettingsURLString
-//            locationManager.requestAlwaysAuthorization()
-//            locationManager.requestWhenInUseAuthorization()
-//        }
-//        locationManager.startUpdatingLocation()
-//        locationManager.startUpdatingHeading()
-        
-        
+    
         //setLocationInTitle()
 
         locationManager.delegate = self;
@@ -502,11 +527,78 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     
     func setUsersClosestCity()
     {
-        let geoCoder = CLGeocoder()
+
         let location = CLLocation(latitude: weatherLocation.currentLatitude!, longitude: weatherLocation.currentLongitude!)
-        geoCoder.reverseGeocodeLocation(location)
-        {
-            (placemarks, error) -> Void in
+        
+//        geoCoder.reverseGeocodeLocation(location)
+//
+//        {
+//            (placemarks, error) -> Void in
+//            
+//            if error != nil {
+//                print("Reverse geocoder failed with error" + (error?.localizedDescription)!)
+//                Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
+//                return
+//            }
+//            if (placemarks?.count)! > 0 {
+//
+//                // We have data
+//                
+//                let placeArray = placemarks as [CLPlacemark]!
+//                
+//                // Place details
+//                var placeMark: CLPlacemark!
+//                placeMark = placeArray?[0]  // Address dictionary
+//                
+//                // Location name
+//                if let locationName = placeMark.addressDictionary?["Name"] as? NSString
+//                {
+//                    print(locationName)
+//                }
+//                
+//                // Street address
+//                if let street = placeMark.addressDictionary?["Thoroughfare"] as? NSString
+//                {
+//                    self.weatherLocation.currentStreet = street as String
+//                    print(street)
+//                }
+//                
+//                // City
+//                if let city = placeMark.addressDictionary?["City"] as? NSString
+//                {
+//                    self.weatherLocation.currentCity = city as String
+//                    print(city)
+//                }
+//                
+//                // Zip code
+//                if let zip = placeMark.addressDictionary?["ZIP"] as? NSString
+//                {
+//                    print(zip)
+//                    self.weatherLocation.currentPostcode = zip as String
+//                }
+//                
+//                // Country
+//                if let country = placeMark.addressDictionary?["Country"] as? NSString
+//                {
+//                    self.weatherLocation.currentCountry = country as String
+//                    print(country)
+//                    
+//                }
+//                
+//                //self.setLocationInTitle()
+//                
+//            }
+//                
+//                
+//            else {
+//                print("Problem with the data received from geocoder")
+//                Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
+//
+//            }
+//            
+//        } // geoCoder.reverseGeocodeLocation
+        
+        geoCoder.reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
             
             if error != nil {
                 print("Reverse geocoder failed with error" + (error?.localizedDescription)!)
@@ -516,40 +608,40 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             if (placemarks?.count)! > 0 {
 
                 // We have data
-                
+
                 let placeArray = placemarks as [CLPlacemark]!
-                
+
                 // Place details
                 var placeMark: CLPlacemark!
                 placeMark = placeArray?[0]  // Address dictionary
-                
+
                 // Location name
                 if let locationName = placeMark.addressDictionary?["Name"] as? NSString
                 {
                     print(locationName)
                 }
-                
+
                 // Street address
                 if let street = placeMark.addressDictionary?["Thoroughfare"] as? NSString
                 {
                     self.weatherLocation.currentStreet = street as String
                     print(street)
                 }
-                
+
                 // City
                 if let city = placeMark.addressDictionary?["City"] as? NSString
                 {
                     self.weatherLocation.currentCity = city as String
                     print(city)
                 }
-                
+
                 // Zip code
                 if let zip = placeMark.addressDictionary?["ZIP"] as? NSString
                 {
                     print(zip)
                     self.weatherLocation.currentPostcode = zip as String
                 }
-                
+
                 // Country
                 if let country = placeMark.addressDictionary?["Country"] as? NSString
                 {
@@ -558,10 +650,11 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                     
                 }
                 
+                NotificationCenter.default.post(name: GlobalConstants.locationRefreshFinishedKey, object: nil)
+
                 //self.setLocationInTitle()
                 
             }
-                
                 
             else {
                 print("Problem with the data received from geocoder")
@@ -569,12 +662,29 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
 
             }
             
-        }
+        })
+        
     }
+    
     
     @IBAction func refreshButtonPressed(_ sender: AnyObject) {
         
-        if Reachability.isConnectedToNetwork() == true
+        Reach().monitorReachabilityChanges()
+        
+        var connected = false
+        let status = Reach().connectionStatus()
+        switch status {
+        case .unknown, .offline:
+            print("Not connected")
+        case .online(.wwan):
+            print("Connected via WWAN")
+            connected = true
+        case .online(.wiFi):
+            print("Connected via WiFi")
+            connected = true
+        }
+
+        if connected
         {
             retrieveWeatherAndLocationData()
         }
@@ -644,6 +754,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         if Reachability.isConnectedToNetwork() == true
         {
             retrieveWeatherAndLocationData()
+            // TODO:  Need to refresh the TodayScreen somehow
         }
         else
         {
@@ -651,6 +762,12 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             Utility.showMessage(titleString: "Error", messageString: "You are not connected to the internet.  Please check your cellular or wi-fi settings" )
         }
 
+    }
+    
+    // MARK:  Reach methods
+    func networkStatusChanged(_ notification: Notification) {
+        let userInfo = (notification as NSNotification).userInfo
+        print(userInfo)
     }
 
 }

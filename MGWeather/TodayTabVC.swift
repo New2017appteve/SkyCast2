@@ -10,10 +10,14 @@ import UIKit
 
 protocol TodayTabVCDelegate
 {
+    // Following methods are part of ParentWeatherVC
+    
     func refreshWeatherDataFromService()
     func refreshWeatherDataFromService2(completionHandler: @escaping GlobalConstants.CompletionHandlerType)
     func getAndSetLocation()
     func switchViewControllers()
+    func returnRefreshedLocationDetails() -> Location
+    func returnRefreshedWeatherDetails() -> Weather
 }
 
 class TodayTabVC: UIViewController, UITextViewDelegate {
@@ -87,37 +91,43 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        NotificationCenter.default.addObserver(self, selector: #selector(TodayTabVC.networkStatusChanged(_:)), name: NSNotification.Name(rawValue: ReachabilityStatusChangedNotification), object: nil)
+
         setupDisplayTimer()
         setupSwipeGestures()
         setupScreen ()
         populateTodayWeatherDetails()
-        
-
-        // Rotate 90 degrees
-
-        // hourlyWeatherTableView.transform =  CGAffineTransformMakeRotation(CGFloat(-M_PI/2))
-        // hourlyWeatherTableView.frame = CGRectMake(0, view.bounds.height/8, view.bounds.width, view.bounds.height)
-
-        //hourlyWeatherTableViewHeight.constant = self.view.frame.width
 
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // Register to receive notifications
+        NotificationCenter.default.addObserver(self, selector: #selector(TodayTabVC.weatherDataRefreshed), name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
+        
+        // Register to receive notification
+        NotificationCenter.default.addObserver(self, selector: #selector(TodayTabVC.locationDataRefreshed), name: GlobalConstants.locationRefreshFinishedKey, object: nil)
+        
+        
         // Ease in the outer screen view for effect
         self.outerScreenView.alpha = 0.2
         UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
             self.outerScreenView.alpha = 1
-            }, completion: nil)
+        }, completion: nil)
     }
-
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self, name: GlobalConstants.weatherRefreshFinishedKey, object: nil);
+        NotificationCenter.default.removeObserver(self, name: GlobalConstants.locationRefreshFinishedKey, object: nil);
+    }
+
     
     func createHorizontalTableView() {
         
@@ -160,10 +170,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     
         let userDefaults = UserDefaults.standard
         dayOrNightColourSetting = userDefaults.string(forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
-
-//        currentTempView.backgroundColor = UIColor.clear
-//        weatherDetailView.backgroundColor = GlobalConstants.ViewShading.Darker
-//        sunriseStackView.backgroundColor = GlobalConstants.TableViewAlternateShadingDay.Darker
         
         currentTempDetailView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
         weatherDetailOuterView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
@@ -193,8 +199,13 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             sunsetIcon.backgroundColor = UIColor.clear
         }
         
+ //       updateLocationDetailsOnScreen()
+    }
+    
+    func updateLocationDetailsOnScreen() {
+        
         // Ensure that weatherLocation has a value before setting
-        print("Getting Location Text")
+    //    print("Getting Location Text")
         
         guard let loc = weatherLocation else {
             infoLabel.text = "Location name not found"
@@ -202,10 +213,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             //
             return
         }
-        print("Setting Location Text")
         infoLabel.text = getFormattedLocation(locationObj: loc)
-        
+
     }
+    
     
     func getFormattedLocation(locationObj: Location) -> String {
         
@@ -282,7 +293,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         infoLabelTimerCount += 1
         
         // Do a mod of 4, so that we can display the 'Last Updated' time slightly longer than
-        var mod = infoLabelTimerCount % 4
+        let mod = infoLabelTimerCount % 4
         switch (mod) {
         case 0:
             infoLabel.text = "Pull to refresh"
@@ -291,15 +302,16 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         case 2:
             infoLabel.text = "Last Updated: " + lastUpdatedTime
         case 3:
-            guard let loc = weatherLocation else {
-                infoLabel.text = "Location name not found"
-                print("Location name not found")
-                //
-                return
-            }
-            print("Setting Location Text")
-
-            infoLabel.text = getFormattedLocation(locationObj: loc)
+            
+            updateLocationDetailsOnScreen()
+//            guard let loc = weatherLocation else {
+//                infoLabel.text = "Location name not found"
+//                print("Location name not found")
+//                //
+//                return
+//            }
+//
+//            infoLabel.text = getFormattedLocation(locationObj: loc)
         default:
             infoLabel.text = ""
         }
@@ -347,9 +359,24 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             case UISwipeGestureRecognizerDirection.down:
                 print("Swiped Down")
                 
-                if Reachability.isConnectedToNetwork() == true
+                Reach().monitorReachabilityChanges()
+                
+                var connected = false
+                let status = Reach().connectionStatus()
+                switch status {
+                case .unknown, .offline:
+                    print("Not connected")
+                case .online(.wwan):
+                    print("Connected via WWAN")
+                    connected = true
+                case .online(.wiFi):
+                    print("Connected via WiFi")
+                    connected = true
+                }
+
+                if connected
                 {
-                    refreshDataAfterSwipe()
+                    refreshDataAfterPullToRefresh()
                     // TODO:  May want to retrieve location data incase user has moved
                 }
                 else
@@ -390,16 +417,19 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     
     func refreshDataAfterSettingChange() {
         
-        refreshDataAfterSwipe()
+        refreshDataAfterPullToRefresh()
     }
     
-    func refreshDataAfterSwipe() {
+    func refreshDataAfterPullToRefresh() {
 
         disableScreen()
         
         // Make a toast to say data is refreshing
         self.view.makeToast("Refreshing weather data", duration: 1.0, position: .bottom)
         self.view.makeToastActivity(.center)
+        
+        let userDefaults = UserDefaults.standard
+        dayOrNightColourSetting = userDefaults.string(forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
         
         self.delegate?.getAndSetLocation()
         self.delegate?.refreshWeatherDataFromService2
@@ -420,7 +450,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                         
                         self.view.hideToastActivity()
                         
-                        // Scroll to the top of the icon list
+                        // Scroll to the top of the table view
                         self.hourlyWeatherTableView.contentOffset = CGPoint(x: 0, y: 0 - self.hourlyWeatherTableView.contentInset.top)
                     }
                     
@@ -540,12 +570,12 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             }
         }
 
-        UIView.animate(withDuration: 0.7, delay: 0.7, options: UIViewAnimationOptions.curveEaseOut, animations: {
-            self.outerScreenView.alpha = 1.0
-
-            }, completion:{_ in
-                //self.refreshingTest.hidden = true
-        })
+//        UIView.animate(withDuration: 0.7, delay: 0.7, options: UIViewAnimationOptions.curveEaseOut, animations: {
+//            self.outerScreenView.alpha = 1.0
+//
+//            }, completion:{_ in
+//                //self.refreshingTest.hidden = true
+//        })
         
     }
     
@@ -586,13 +616,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         return retVal
     }
     
-
-    func processDayAndNightHours() {
-      
-        // We know the dat we are working with, so populate whether teh hour withing it is a day or a night
-        
-    }
-    
     
     func isDayTime (dateTime : NSDate) -> Bool {
         
@@ -620,53 +643,55 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         self.performSegue(withIdentifier: "infoScreenSegue", sender: self)
     }
     
-//    func getRainIntensity (rainIntensity : Float) -> String {
-//        
-//        // Decode how much rain we will have
-//        
-//        var retVal = ""
-//        
-//        switch rainIntensity {
-//        case 0...0.0019: retVal = "No rain"
-//        case 0.002...0.0169: retVal = "Very light rain"
-//        case 0.017...0.099: retVal = "Light rain"
-//        case 0.1...0.399: retVal = "Moderate rain"
-//        case 0.4...100.00: retVal = "Heavy rain"
-//        default: print("No rain")
-//        }
-//        
-//        return retVal
-//    }
+    // MARK:  Reach methods
+    func networkStatusChanged(_ notification: Notification) {
+        let userInfo = (notification as NSNotification).userInfo
+        print("Network Status Changed")
+    }
     
     
-//    func locationManager(manager: CLLocationManager!, didUpdateToLocation newLocation: CLLocation!, fromLocation oldLocation: CLLocation!) {
-//        
-//        print("present location : \(newLocation.coordinate.latitude), \(newLocation.coordinate.longitude)")
-//
-//    }
-//
-//    // Obtain the distance between two points on Longitude/Latitude
-//
-//    func getDistanceBetween (location1: CLLocation, location2: CLLocation, units: String) -> Float {
-//        
-//        let distanceInMeters = location1.distanceFromLocation(location2)
-//        
-//        var retVal : Float
-//        
-//        switch units {
-//        case "M" :
-//            retVal = Float(distanceInMeters)
-//        case "K" :
-//            retVal = Float(distanceInMeters / 1000)
-//        case "MI" :
-//            retVal = Float(distanceInMeters / 1609)
-//        default:
-//            retVal = 0.0
-//        }
-//        
-//        return retVal
-//    }
+    // MARK:  Notification complete methods
     
+    func weatherDataRefreshed() {
+        print("Weather Data Refreshed")
+
+        // Currently this will only be called after changing a setting on the Settings screen
+        
+        // NOTE:  This will be called on a background thread
+        
+        dailyWeather = delegate?.returnRefreshedWeatherDetails()
+        DispatchQueue.main.async {
+            self.populateTodayWeatherDetails()
+            
+            // Double check to see if the user has changed day/night setings before reloading 
+            // the hour tableView.  It may have not got written to in time the first time around
+            
+            let userDefaults = UserDefaults.standard
+            self.dayOrNightColourSetting = userDefaults.string(forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
+            
+            self.hourlyWeatherTableView.reloadData()
+        
+            // Scroll to the top of the table view
+            self.hourlyWeatherTableView.contentOffset = CGPoint(x: 0, y: 0 - self.hourlyWeatherTableView.contentInset.top)
+        }
+    }
+    
+    func locationDataRefreshed() {
+        print("Location Data Refreshed")
+        
+        // NOTE:  This will be called on a background thread
+        
+        // The phone could have moved location since the last refresh.
+        // Get the updated location details after it has been refreshed.
+        
+        weatherLocation = delegate?.returnRefreshedLocationDetails()
+        DispatchQueue.main.async {
+            self.updateLocationDetailsOnScreen()
+        }
+        
+    }
+
+
 }
 
 // MARK:- Extension:  UIPopoverPresentationControllerDelegate methods
@@ -781,9 +806,24 @@ extension TodayTabVC : SettingsViewControllerDelegate {
     func refreshData() {
         print("Refreshing data")
         
-        if Reachability.isConnectedToNetwork() == true
+        Reach().monitorReachabilityChanges()
+        
+        var connected = false
+        let status = Reach().connectionStatus()
+        switch status {
+        case .unknown, .offline:
+            print("Not connected")
+        case .online(.wwan):
+            print("Connected via WWAN")
+            connected = true
+        case .online(.wiFi):
+            print("Connected via WiFi")
+            connected = true
+        }
+
+        if connected
         {
-            self.refreshDataAfterSwipe()
+            self.refreshDataAfterPullToRefresh()
         }
         else
         {

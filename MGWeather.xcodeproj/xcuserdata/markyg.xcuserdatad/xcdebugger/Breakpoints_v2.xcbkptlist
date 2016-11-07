@@ -10,27 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MGWeather/ParentWeatherVC.swift"
-            timestampString = "499698113.65086"
+            timestampString = "500218747.390409"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "68"
-            endingLineNumber = "68"
-            landmarkName = "viewDidLoad()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "MGWeather/ParentWeatherVC.swift"
-            timestampString = "499701079.377922"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "584"
-            endingLineNumber = "584"
+            startingLineNumber = "695"
+            endingLineNumber = "695"
             landmarkName = "refreshButtonPressed(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -42,27 +26,43 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MGWeather/TodayTabVC.swift"
-            timestampString = "499949055.586498"
+            timestampString = "500220476.416216"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "356"
-            endingLineNumber = "356"
-            landmarkName = "swiped(gesture:)"
+            startingLineNumber = "829"
+            endingLineNumber = "829"
+            landmarkName = "refreshData()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MGWeather/TodayTabVC.swift"
-            timestampString = "499951545.927002"
+            timestampString = "500218747.390409"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "789"
-            endingLineNumber = "789"
+            startingLineNumber = "420"
+            endingLineNumber = "420"
+            landmarkName = "refreshDataAfterSettingChange()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MGWeather/TodayTabVC.swift"
+            timestampString = "500220476.416216"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "807"
+            endingLineNumber = "807"
             landmarkName = "refreshData()"
             landmarkType = "7">
          </BreakpointContent>
