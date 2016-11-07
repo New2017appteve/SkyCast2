@@ -14,6 +14,9 @@ class Utility: NSObject {
         
         var iconName : String!
         
+        // TODO:  If its a 'special' day (Halloween, Bonfire Night) etc, and we are in the
+        // UK or US where they celebrate it, we can show a themed background
+        
         switch serviceIcon {
         case "clear-day":
             iconName = GlobalConstants.WeatherIcon.clearDay

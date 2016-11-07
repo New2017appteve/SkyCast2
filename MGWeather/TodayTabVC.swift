@@ -110,10 +110,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(TodayTabVC.locationDataRefreshed), name: GlobalConstants.locationRefreshFinishedKey, object: nil)
         
         
-        // Ease in the outer screen view for effect
-        self.outerScreenView.alpha = 0.2
+        // Ease in the weather background for effect
+        self.weatherImage.alpha = 0.2
         UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-            self.outerScreenView.alpha = 1
+            self.weatherImage.alpha = 1
         }, completion: nil)
     }
     

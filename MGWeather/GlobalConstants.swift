@@ -142,7 +142,7 @@ class GlobalConstants: NSObject {
         enum FileName : String {
             
             case clearDay = "clear_day_sunshine-186980-pexels.jpeg" //"ID-100206388_Sun Sky Blue_samarttiw.jpg"
-            case clearNight = "clear_night_moon-photo-70182-pexels.jpeg" //""ID-10028938_Starry Nignt Dark Blue_nuttakit.jpg"
+            case clearNight = "clear_night_moon-pexels-26341.jpg" //""ID-10028938_Starry Nignt Dark Blue_nuttakit.jpg"
             case rain = "rain_day-125510-pexels.jpeg" //"ID-100292943_Close Up Texture Of Water Drop_khunaspix.jpg"
             case snow = "snow_day-forest-trees_pexels.jpeg" //"ID-100197671_Winter Landscape_Vichaya Kiatying-Angsulee.jpg"
             case sleet = "sleet_pexels-12875.jpeg" //"sleet"
@@ -151,7 +151,7 @@ class GlobalConstants: NSObject {
             case fogNight = "fog_night_foggy-mist-forest-trees-42263-pexels"
             case cloudy = "cloud_overcast-27194-pexels.jpg" //"ID-100202953_White And Gray Clouds_Stoonn.jpg"
             case partlyCloudyDay = "partial_cloud_day-28501-pexels.jpg" //"partial_clouds_day-53594_PEXELS.jpeg"
-            case partlyCloudyNight = "partial_cloudy_night-98855-pexels.jpeg" //"night-clouds-trees_PEXELS.jpg"
+            case partlyCloudyNight = "partial_cloudy_night-70439-pexels.jpeg" //"night-clouds-trees_PEXELS.jpg"
             
             // Future
             case hail = "hail"

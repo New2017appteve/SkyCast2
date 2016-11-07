@@ -104,7 +104,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         self.weatherImage.alpha = 0.2
         weatherImage.image = UIImage(named: lastLoadedBackground)!
         
-        UIView.animate(withDuration: 0.5, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
             self.weatherImage.alpha = 1
             }, completion: nil)
         

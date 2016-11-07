@@ -40,10 +40,10 @@ class DailyTabVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // Ease in the outer screen view for effect
-        self.outerScreenView.alpha = 0.2
+        // Ease in the weather image view for effect
+        self.weatherImage.alpha = 0.2
         UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-            self.outerScreenView.alpha = 1
+            self.weatherImage.alpha = 1
             }, completion: nil)
 
         populateDailyWeatherDetails()

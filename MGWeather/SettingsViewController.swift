@@ -40,10 +40,10 @@ class SettingsViewController: UIViewController {
         
         // Ease in the outer screen view for effect
         self.weatherImage.alpha = 0.2
-        self.settingsView.alpha = 0.2
+        self.settingsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
         UIView.animate(withDuration: 0.8, delay: 0.15, options: UIViewAnimationOptions.curveEaseIn, animations: {
             self.weatherImage.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-            self.settingsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+         //   self.settingsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
             }, completion: nil)
     }
 
@@ -58,7 +58,7 @@ class SettingsViewController: UIViewController {
     
         settingsView.backgroundColor = GlobalConstants.ViewShading.Lighter
         
-        settingsView.alpha = 0.7
+        settingsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
 
         // Make round corners for the outerviews
         settingsView.layer.cornerRadius = 10.0

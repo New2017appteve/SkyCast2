@@ -3,7 +3,6 @@
 //  MGWeather
 //
 //  Created by Mark Gumbs on 20/07/2016.
-//  Copyright © 2016 britishairways. All rights reserved.
 //
 
 import UIKit
@@ -39,18 +38,18 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        self.aboutView.alpha = 0.6 // CGFloat(GlobalConstants.DisplayViewAlpha)
+        self.emailView.alpha = 0.6 //CGFloat(GlobalConstants.DisplayViewAlpha)
+        self.creditsView.alpha = 0.6 //CGFloat(GlobalConstants.DisplayViewAlpha)
+    
         // Ease in the outer screen view for effect
         self.weatherImage.alpha = 0.2
-        self.aboutView.alpha = 0.2
-        self.emailView.alpha = 0.2
-        self.creditsView.alpha = 0.2
-        
         UIView.animate(withDuration: 0.8, delay: 0.15, options: UIViewAnimationOptions.curveEaseIn, animations: {
             
             self.weatherImage.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-            self.aboutView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-            self.emailView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-            self.creditsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+            //self.aboutView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+            //self.emailView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+            //self.creditsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
             
             }, completion: nil)
     }
@@ -67,9 +66,9 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
         emailView.backgroundColor = GlobalConstants.ViewShading.Lighter
         creditsView.backgroundColor = GlobalConstants.ViewShading.Lighter
         
-        aboutView.alpha = 0.6
-        emailView.alpha = 0.6
-        creditsView.alpha = 0.6
+     //   aboutView.alpha = 0.6
+     //   emailView.alpha = 0.6
+      //  creditsView.alpha = 0.6
 
         // Make round corners for the outerviews
         
@@ -149,8 +148,9 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
             // show failure alert
             
             let messageText = "Sorry, your device has not been set up to send emails."
-            let alertView = UIAlertView(title: "Email Error", message: messageText, delegate: nil, cancelButtonTitle: "OK")
-            alertView.show()
+            Utility.showMessage(titleString: "Email Error", messageString: messageText )
+            
+
 
         }
     }
