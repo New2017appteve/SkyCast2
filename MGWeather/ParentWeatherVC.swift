@@ -29,7 +29,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         case ShowAbout = "About"
     }
     
-    var locationManager = CLLocationManager()
+    var locationManager: CLLocationManager!
+    //var locationManager = CLLocationManager()
     var locationFound: Bool!
     var locationName: String!
     
@@ -464,7 +465,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         
         locationFound = getLocation()
         if locationFound == true {
-            setUsersClosestCity()
+          //  setUsersClosestCity()
         }
         
     }
@@ -475,7 +476,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         
         locationFound = getLocation()
         if locationFound == true {
-            setUsersClosestCity()
+      //      setUsersClosestCity()
         }
         return weatherLocation
     }
@@ -495,6 +496,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
 
     func getLocation() -> Bool {
         
+        locationManager = CLLocationManager()
+
         var locationFound = false
     
         //setLocationInTitle()
@@ -510,12 +513,12 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         if (CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedWhenInUse ||
             CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedAlways)
         {
-            print(locationManager.location)
+            print(locationManager.location ?? "Location Error")
             if locationManager.location != nil {
                 
                 locationFound = true
-                weatherLocation.currentLatitude = locationManager.location!.coordinate.latitude
-                weatherLocation.currentLongitude = locationManager.location!.coordinate.longitude
+//                weatherLocation.currentLatitude = locationManager.location!.coordinate.latitude
+//                weatherLocation.currentLongitude = locationManager.location!.coordinate.longitude
             }
             
         } else {
@@ -525,78 +528,23 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         return locationFound
     }
     
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        // The following will be called when the location has been updated.
+        // The last location will be stored in the last element of the locations array
+        
+        self.locationManager.stopUpdatingLocation()
+        
+        let latestLocation = locations.last
+        weatherLocation.currentLatitude = latestLocation!.coordinate.latitude
+        weatherLocation.currentLongitude = latestLocation!.coordinate.longitude
+setUsersClosestCity()
+    }
+    
     func setUsersClosestCity()
     {
 
         let location = CLLocation(latitude: weatherLocation.currentLatitude!, longitude: weatherLocation.currentLongitude!)
-        
-//        geoCoder.reverseGeocodeLocation(location)
-//
-//        {
-//            (placemarks, error) -> Void in
-//            
-//            if error != nil {
-//                print("Reverse geocoder failed with error" + (error?.localizedDescription)!)
-//                Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
-//                return
-//            }
-//            if (placemarks?.count)! > 0 {
-//
-//                // We have data
-//                
-//                let placeArray = placemarks as [CLPlacemark]!
-//                
-//                // Place details
-//                var placeMark: CLPlacemark!
-//                placeMark = placeArray?[0]  // Address dictionary
-//                
-//                // Location name
-//                if let locationName = placeMark.addressDictionary?["Name"] as? NSString
-//                {
-//                    print(locationName)
-//                }
-//                
-//                // Street address
-//                if let street = placeMark.addressDictionary?["Thoroughfare"] as? NSString
-//                {
-//                    self.weatherLocation.currentStreet = street as String
-//                    print(street)
-//                }
-//                
-//                // City
-//                if let city = placeMark.addressDictionary?["City"] as? NSString
-//                {
-//                    self.weatherLocation.currentCity = city as String
-//                    print(city)
-//                }
-//                
-//                // Zip code
-//                if let zip = placeMark.addressDictionary?["ZIP"] as? NSString
-//                {
-//                    print(zip)
-//                    self.weatherLocation.currentPostcode = zip as String
-//                }
-//                
-//                // Country
-//                if let country = placeMark.addressDictionary?["Country"] as? NSString
-//                {
-//                    self.weatherLocation.currentCountry = country as String
-//                    print(country)
-//                    
-//                }
-//                
-//                //self.setLocationInTitle()
-//                
-//            }
-//                
-//                
-//            else {
-//                print("Problem with the data received from geocoder")
-//                Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
-//
-//            }
-//            
-//        } // geoCoder.reverseGeocodeLocation
         
         geoCoder.reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
             

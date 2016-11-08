@@ -97,7 +97,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         setupSwipeGestures()
         setupScreen ()
         populateTodayWeatherDetails()
-
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -205,8 +205,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     func updateLocationDetailsOnScreen() {
         
         // Ensure that weatherLocation has a value before setting
-    //    print("Getting Location Text")
-        
         guard let loc = weatherLocation else {
             infoLabel.text = "Location name not found"
             print("Location name not found")
@@ -684,14 +682,12 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         // The phone could have moved location since the last refresh.
         // Get the updated location details after it has been refreshed.
         
+        weatherLocation = nil
         weatherLocation = delegate?.returnRefreshedLocationDetails()
         DispatchQueue.main.async {
             self.updateLocationDetailsOnScreen()
         }
-        
     }
-
-
 }
 
 // MARK:- Extension:  UIPopoverPresentationControllerDelegate methods
@@ -832,6 +828,4 @@ extension TodayTabVC : SettingsViewControllerDelegate {
         }
     }
 }
-
-
 
