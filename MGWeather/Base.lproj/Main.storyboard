@@ -931,6 +931,7 @@
                         <outlet property="weatherAlertButton" destination="PyO-qQ-dXS" id="AYQ-fN-g7x"/>
                         <outlet property="weatherAlertTitle" destination="t2B-q1-IBs" id="nGa-fu-tQB"/>
                         <outlet property="weatherDetailOuterView" destination="Mga-7M-e5M" id="3Uk-Im-TAY"/>
+                        <outlet property="weatherDetailStackView" destination="LZI-mj-Gtk" id="u4m-YP-Dny"/>
                         <outlet property="weatherDetailView" destination="x0T-OF-9ud" id="19Z-mI-sUi"/>
                         <outlet property="weatherImage" destination="XL5-W3-RM3" id="g6t-mx-Uff"/>
                         <outlet property="weatherImageOuterView" destination="ICw-tv-Nwt" id="UJd-1B-Lq8"/>

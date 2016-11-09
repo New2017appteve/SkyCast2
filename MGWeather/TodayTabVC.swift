@@ -56,6 +56,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
 
     @IBOutlet weak var weatherDetailOuterView : UIView!
     @IBOutlet weak var weatherDetailView : UIView!
+    @IBOutlet weak var weatherDetailStackView : UIStackView!
     @IBOutlet weak var todaySummary : UILabel!
     @IBOutlet weak var todayHighLowTemp : UILabel!
     @IBOutlet weak var cloudCover : UILabel!
@@ -96,7 +97,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         // Register to receive notification for location (note: Done here but added again after a refresh)
         NotificationCenter.default.addObserver(self, selector: #selector(TodayTabVC.locationDataRefreshed), name: GlobalConstants.locationRefreshFinishedKey, object: nil)
 
-        
         setupDisplayTimer()
         setupSwipeGestures()
         setupScreen ()
@@ -200,7 +200,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             sunsetIcon.backgroundColor = UIColor.clear
         }
         
- //       updateLocationDetailsOnScreen()
     }
     
     func updateLocationDetailsOnScreen() {
