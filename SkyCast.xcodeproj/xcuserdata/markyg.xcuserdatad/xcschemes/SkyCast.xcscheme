@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C7175A971D31683700788F09"
-               BuildableName = "MGWeather.app"
-               BlueprintName = "MGWeather"
-               ReferencedContainer = "container:MGWeather.xcodeproj">
+               BuildableName = "SkyCast.app"
+               BlueprintName = "SkyCast"
+               ReferencedContainer = "container:SkyCast.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C7175A971D31683700788F09"
-            BuildableName = "MGWeather.app"
-            BlueprintName = "MGWeather"
-            ReferencedContainer = "container:MGWeather.xcodeproj">
+            BuildableName = "SkyCast.app"
+            BlueprintName = "SkyCast"
+            ReferencedContainer = "container:SkyCast.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -56,9 +56,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C7175A971D31683700788F09"
-            BuildableName = "MGWeather.app"
-            BlueprintName = "MGWeather"
-            ReferencedContainer = "container:MGWeather.xcodeproj">
+            BuildableName = "SkyCast.app"
+            BlueprintName = "SkyCast"
+            ReferencedContainer = "container:SkyCast.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -75,9 +75,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C7175A971D31683700788F09"
-            BuildableName = "MGWeather.app"
-            BlueprintName = "MGWeather"
-            ReferencedContainer = "container:MGWeather.xcodeproj">
+            BuildableName = "SkyCast.app"
+            BlueprintName = "SkyCast"
+            ReferencedContainer = "container:SkyCast.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

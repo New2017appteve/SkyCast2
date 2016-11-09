@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:MGWeather.xcodeproj">
+      location = "self:/Users/markyg/Dev/iPhone/MGWeather/SkyCast.xcodeproj">
    </FileRef>
 </Workspace>

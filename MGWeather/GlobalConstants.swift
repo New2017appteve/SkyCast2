@@ -178,7 +178,6 @@ class GlobalConstants: NSObject {
         static var thunderstorm = "Storm-50"
         static var tornado = "tornado"
 
-
     }
     
     enum DistanceUnits: String {
@@ -189,4 +188,17 @@ class GlobalConstants: NSObject {
     
     // TODO:  Convert wind direction
     // http://climate.umn.edu/snow_fence/components/winddirectionanddegreeswithouttable3.htm
+    
+    // Banner Ad related 
+    
+    // https://firebase.google.com/docs/admob/ios/quick-start
+    
+    var showBannerAds = false
+    
+    var AdMobAppID = "ca-app-pub-7564315004238579~8353051847"
+    var AdMobBannerID = "ca-app-pub-7564315004238579/6736717849"
+    
+    var TestAdMobAppID = "ca-app-pub-3940256099942544~1458002511"
+    var TestAdMobBannerID = "ca-app-pub-3940256099942544/2934735716"
+
 }
