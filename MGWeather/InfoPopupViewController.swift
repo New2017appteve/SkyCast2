@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import GoogleMobileAds
 
 protocol InfoPopupViewControllerDelegate
 {
@@ -20,9 +21,12 @@ class InfoPopupViewController: UIViewController {
     // MARK: Outlets
     
     @IBOutlet weak var outerView: UIView!
-    //@IBOutlet weak var informationTitle: UILabel!
+    @IBOutlet weak var weatherImage : UIImageView!
     @IBOutlet weak var informationText: UITextView!
-    
+
+    /// The banner view.
+    @IBOutlet weak var bannerView: GADBannerView!
+
     var informationString : String!
     var informationTitleString : String!
     
@@ -33,6 +37,17 @@ class InfoPopupViewController: UIViewController {
         initialScreenSetup ()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Ease in the weather image view for effect
+        self.weatherImage.alpha = 0.2
+        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.weatherImage.alpha = 1
+        }, completion: nil)
+
+    }
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -40,12 +55,34 @@ class InfoPopupViewController: UIViewController {
     
     func initialScreenSetup () {
         
+        informationText.backgroundColor = GlobalConstants.ViewShading.Lighter
+        informationText.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+
         informationText.layer.cornerRadius = 10.0
         informationText.clipsToBounds = true
         
-       // informationTitle.text = informationTitleString
         informationText.text = informationString
+        if AppSettings.ShowBannerAds {
+            loadBannerAd()
+        }
     }
+    
+    func loadBannerAd() {
+        
+        print("Google Mobile Ads SDK version: \(GADRequest.sdkVersion())")
+        bannerView.adUnitID = AppSettings.AdMobBannerID
+        bannerView.rootViewController = self
+        
+        let request = GADRequest()
+        if AppSettings.BannerAdsTestMode {
+            // Display test banner ads in the simulator
+            request.testDevices = [kGADSimulatorID]
+        }
+        
+        bannerView.load(request)
+        
+    }
+
     
     
     // MARK: Button related methods

@@ -10,6 +10,7 @@
 		C003C60D1DC8CEA70064CE86 /* NSDate+Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C003C60C1DC8CEA70064CE86 /* NSDate+Conversions.swift */; };
 		C0042E831DB81F09007506AC /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0042E821DB81F09007506AC /* Reachability.swift */; };
 		C018BA061DA2FE64009706F9 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = C018BA051DA2FE64009706F9 /* Toast.swift */; };
+		C0617F881DD33BB60003B844 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0617F871DD33BB60003B844 /* AppSettings.swift */; };
 		C0EFA2CD1DCF9DA100D873E9 /* Reach.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EFA2CC1DCF9DA100D873E9 /* Reach.swift */; };
 		C7175A9C1D31683700788F09 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7175A9B1D31683700788F09 /* AppDelegate.swift */; };
 		C7175AA11D31683700788F09 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7175A9F1D31683700788F09 /* Main.storyboard */; };
@@ -41,12 +42,16 @@
 		C7F712051D78746000B4404D /* HourWeatherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F712041D78746000B4404D /* HourWeatherCell.swift */; };
 		C7FC062A1D75C76200B6280B /* ParentWeatherVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FC06291D75C76200B6280B /* ParentWeatherVC.swift */; };
 		C7FC062C1D75C82F00B6280B /* WeatherSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FC062B1D75C82F00B6280B /* WeatherSegmentedControl.swift */; };
+		F6DB3C68BDB15A4CCE941088 /* Pods_SkyCast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD5CA8BFB97787AD2769194A /* Pods_SkyCast.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5A17843ABB302C006E747401 /* Pods-SkyCast.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SkyCast.release.xcconfig"; path = "Pods/Target Support Files/Pods-SkyCast/Pods-SkyCast.release.xcconfig"; sourceTree = "<group>"; };
+		92A11C50947FF41B8F5AE1BA /* Pods-SkyCast.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SkyCast.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SkyCast/Pods-SkyCast.debug.xcconfig"; sourceTree = "<group>"; };
 		C003C60C1DC8CEA70064CE86 /* NSDate+Conversions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDate+Conversions.swift"; sourceTree = "<group>"; };
 		C0042E821DB81F09007506AC /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		C018BA051DA2FE64009706F9 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		C0617F871DD33BB60003B844 /* AppSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		C0EFA2CC1DCF9DA100D873E9 /* Reach.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reach.swift; sourceTree = "<group>"; };
 		C7175A981D31683700788F09 /* SkyCast.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkyCast.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7175A9B1D31683700788F09 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -82,6 +87,7 @@
 		C7F712041D78746000B4404D /* HourWeatherCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HourWeatherCell.swift; sourceTree = "<group>"; };
 		C7FC06291D75C76200B6280B /* ParentWeatherVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParentWeatherVC.swift; sourceTree = "<group>"; };
 		C7FC062B1D75C82F00B6280B /* WeatherSegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherSegmentedControl.swift; sourceTree = "<group>"; };
+		FD5CA8BFB97787AD2769194A /* Pods_SkyCast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SkyCast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,12 +95,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6DB3C68BDB15A4CCE941088 /* Pods_SkyCast.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		359E2F85336AC5A29DA94A61 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				92A11C50947FF41B8F5AE1BA /* Pods-SkyCast.debug.xcconfig */,
+				5A17843ABB302C006E747401 /* Pods-SkyCast.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		6438E5B6FF10B73C20D88F44 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FD5CA8BFB97787AD2769194A /* Pods_SkyCast.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		C003C60B1DC8CE790064CE86 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -116,6 +140,8 @@
 			children = (
 				C7175A9A1D31683700788F09 /* MGWeather */,
 				C7175A991D31683700788F09 /* Products */,
+				359E2F85336AC5A29DA94A61 /* Pods */,
+				6438E5B6FF10B73C20D88F44 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -181,6 +207,7 @@
 			isa = PBXGroup;
 			children = (
 				C7175ABD1D3169CB00788F09 /* GlobalConstants.swift */,
+				C0617F871DD33BB60003B844 /* AppSettings.swift */,
 				C7C437631D798EDC00A6386D /* Utility.swift */,
 			);
 			name = Constants;
@@ -250,9 +277,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C7175AAA1D31683700788F09 /* Build configuration list for PBXNativeTarget "SkyCast" */;
 			buildPhases = (
+				8B4B543FE0E8258E08116355 /* [CP] Check Pods Manifest.lock */,
 				C7175A941D31683700788F09 /* Sources */,
 				C7175A951D31683700788F09 /* Frameworks */,
 				C7175A961D31683700788F09 /* Resources */,
+				88A7B64684E0C80164C81C33 /* [CP] Embed Pods Frameworks */,
+				AE862AD564F10DDE11570781 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -313,6 +343,54 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		88A7B64684E0C80164C81C33 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SkyCast/Pods-SkyCast-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8B4B543FE0E8258E08116355 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		AE862AD564F10DDE11570781 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SkyCast/Pods-SkyCast-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		C7175A941D31683700788F09 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -326,6 +404,7 @@
 				C7175AB71D31698700788F09 /* HourBreakdown.swift in Sources */,
 				C0EFA2CD1DCF9DA100D873E9 /* Reach.swift in Sources */,
 				C770BD9F1D351E11007AD275 /* WeatherAlerts.swift in Sources */,
+				C0617F881DD33BB60003B844 /* AppSettings.swift in Sources */,
 				C7175AC41D316A3D00788F09 /* DailyWeatherCell.swift in Sources */,
 				C7FC062C1D75C82F00B6280B /* WeatherSegmentedControl.swift in Sources */,
 				C7C437641D798EDC00A6386D /* Utility.swift in Sources */,
@@ -457,6 +536,7 @@
 		};
 		C7175AAB1D31683700788F09 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 92A11C50947FF41B8F5AE1BA /* Pods-SkyCast.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -473,6 +553,7 @@
 		};
 		C7175AAC1D31683700788F09 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5A17843ABB302C006E747401 /* Pods-SkyCast.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

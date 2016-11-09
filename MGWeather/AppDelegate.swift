@@ -6,6 +6,7 @@
 //  Copyright © 2016 britishairways. All rights reserved.
 //
 
+import Firebase
 import UIKit
 
 @UIApplicationMain
@@ -16,6 +17,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        
+        if AppSettings.ShowBannerAds {
+            setupBannerAdID()
+        }
+        
         return true
     }
 
@@ -41,6 +47,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    ////////////////
+    
+    func setupBannerAdID() {
+        
+        // Use Firebase library to configure APIs
+        FIRApp.configure()
+        // Initialize Google Mobile Ads SDK
+        GADMobileAds.configure(withApplicationID: AppSettings.AdMobAppID)
 
+    }
 }
 

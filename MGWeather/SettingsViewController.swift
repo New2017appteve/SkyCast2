@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import GoogleMobileAds
 
 protocol SettingsViewControllerDelegate
 {
@@ -26,6 +27,9 @@ class SettingsViewController: UIViewController {
     
     @IBOutlet weak var tempUnitsControl : UISegmentedControl!
     @IBOutlet weak var dayNightColourControl : UISegmentedControl!
+    
+    /// The banner view.
+    @IBOutlet weak var bannerView: GADBannerView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,8 +67,26 @@ class SettingsViewController: UIViewController {
         // Make round corners for the outerviews
         settingsView.layer.cornerRadius = 10.0
         settingsView.clipsToBounds = true
+        
+        if AppSettings.ShowBannerAds {
+            loadBannerAd()
+        }
     }
     
+    func loadBannerAd() {
+        
+        print("Google Mobile Ads SDK version: \(GADRequest.sdkVersion())")
+        bannerView.adUnitID = AppSettings.AdMobBannerID
+        bannerView.rootViewController = self
+        
+        let request = GADRequest()
+        if AppSettings.BannerAdsTestMode {
+            // Display test banner ads in the simulator
+            request.testDevices = [kGADSimulatorID]
+        }
+
+        bannerView.load(request)
+    }
     
     // MARK:  Load/Save details
     func loadSettings() {

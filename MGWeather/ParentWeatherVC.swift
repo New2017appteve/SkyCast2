@@ -217,6 +217,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             var vc2: DailyTabVC
             vc2 = secondChildTabVC as! DailyTabVC
             vc2.dailyWeather = weather!
+            vc2.weatherLocation = weatherLocation
             vc2.delegate = self
             vc = vc2
         default:
@@ -232,7 +233,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     func getURL () -> String {
         
         var returnURL = ""
-        let latitude = weatherLocation.currentLatitude
+//        let latitude = weatherLocation.currentLatitude
         
         // Obtain the correct latitude and logitude.  This should be in our weatherLocation object
 //        var url = GlobalConstants.BaseWeatherURL + String(latitude!) + "," + String(weatherLocation.currentLongitude!)
@@ -352,7 +353,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 
             } else if statusCode == 404 {
                 // Create default message, may be overridden later if we have found something in response
-                var message = "Weather details cannot be retrieved at this time.  Please try again"
+                let message = "Weather details cannot be retrieved at this time.  Please try again"
                 Utility.showMessage(titleString: "Error", messageString: message )
 
                 // Check to see why we got a 404.
@@ -368,7 +369,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
 
                 //             self.serviceCallFailure(alertTitle: "Error", withMessage: message)
             } else {
-                var message = "Weather details cannot be retrieved at this time.  Please try again"
+                let message = "Weather details cannot be retrieved at this time.  Please try again"
                 Utility.showMessage(titleString: "Error", messageString: message )
             }
         }
@@ -417,7 +418,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 
             } else if statusCode == 404 {
                 // Create default message, may be overridden later if we have found something in response
-                var message = "Weather details cannot be retrieved at this time.  Please try again"
+                let message = "Weather details cannot be retrieved at this time.  Please try again"
                 Utility.showMessage(titleString: "Error", messageString: message )
                 
 //                // Check to see why we got a 404.
@@ -431,7 +432,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
 //                }
                 
             } else {
-                var message = "Weather details cannot be retrieved at this time.  Please try again"
+                let message = "Weather details cannot be retrieved at this time.  Please try again"
                 Utility.showMessage(titleString: "Error", messageString: message )
             }
         }

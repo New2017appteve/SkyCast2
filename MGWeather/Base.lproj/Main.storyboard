@@ -13,7 +13,7 @@
         <!--Item 2-->
         <scene sceneID="sq5-hL-iOc">
             <objects>
-                <viewController storyboardIdentifier="DailyTabVC" id="rqk-vB-be0" customClass="DailyTabVC" customModule="MGWeather" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DailyTabVC" id="rqk-vB-be0" customClass="DailyTabVC" customModule="SkyCast" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="MPj-xA-Mhe"/>
                         <viewControllerLayoutGuide type="bottom" id="CaD-ph-WuA"/>
@@ -60,7 +60,7 @@
                                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="sectionIndexBackgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <prototypes>
-                                                    <tableViewCell clipsSubviews="YES" alpha="0.65000000000000002" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DailyWeatherCellID" id="loz-Uw-vwq" customClass="DailyWeatherCell" customModule="MGWeather" customModuleProvider="target">
+                                                    <tableViewCell clipsSubviews="YES" alpha="0.65000000000000002" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DailyWeatherCellID" id="loz-Uw-vwq" customClass="DailyWeatherCell" customModule="SkyCast" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="28" width="290" height="110"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="loz-Uw-vwq" id="D0g-eO-EDm">
@@ -272,11 +272,19 @@
                                                     <outlet property="delegate" destination="rqk-vB-be0" id="EHc-K0-QjS"/>
                                                 </connections>
                                             </tableView>
+                                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SFv-mO-RXj" customClass="GADBannerView">
+                                                <rect key="frame" x="0.0" y="352" width="320" height="50"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </view>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="SFv-mO-RXj" secondAttribute="trailing" id="1Ph-Jb-Eoy"/>
+                                            <constraint firstItem="SFv-mO-RXj" firstAttribute="leading" secondItem="hKN-Iz-29H" secondAttribute="leading" id="2lZ-ZP-hge"/>
+                                            <constraint firstAttribute="bottom" secondItem="SFv-mO-RXj" secondAttribute="bottom" id="MCc-PV-eYj"/>
                                             <constraint firstItem="f6d-mJ-ERr" firstAttribute="leading" secondItem="hKN-Iz-29H" secondAttribute="leading" constant="15" id="POt-iq-OHN"/>
                                             <constraint firstItem="f6d-mJ-ERr" firstAttribute="centerX" secondItem="hKN-Iz-29H" secondAttribute="centerX" id="Rcn-tf-SlN"/>
+                                            <constraint firstItem="SFv-mO-RXj" firstAttribute="top" relation="lessThanOrEqual" secondItem="hKN-Iz-29H" secondAttribute="top" constant="352" id="We5-nT-IQt"/>
                                             <constraint firstItem="f6d-mJ-ERr" firstAttribute="centerY" secondItem="hKN-Iz-29H" secondAttribute="centerY" constant="-6" id="hRW-h1-SSf"/>
                                             <constraint firstItem="f6d-mJ-ERr" firstAttribute="top" secondItem="hKN-Iz-29H" secondAttribute="top" constant="5" id="lhX-sN-uoP"/>
                                         </constraints>
@@ -305,6 +313,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Item 2" id="X6D-lo-cm1"/>
                     <connections>
+                        <outlet property="bannerView" destination="SFv-mO-RXj" id="K6B-8I-gc0"/>
                         <outlet property="dailyWeatherTableView" destination="f6d-mJ-ERr" id="t2i-tw-yKy"/>
                         <outlet property="nextDaysSummary" destination="i2J-tw-OLN" id="S9e-re-vnr"/>
                         <outlet property="outerScreenView" destination="wfb-BW-KFT" id="Rjx-st-Ana"/>
@@ -318,7 +327,7 @@
         <!--Settings View Controller-->
         <scene sceneID="sRf-DF-h1v">
             <objects>
-                <viewController storyboardIdentifier="SettingsViewControllerID" id="wJx-TK-CNE" customClass="SettingsViewController" customModule="MGWeather" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SettingsViewControllerID" id="wJx-TK-CNE" customClass="SettingsViewController" customModule="SkyCast" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="UQk-kH-0Ix"/>
                         <viewControllerLayoutGuide type="bottom" id="Gbj-5H-Hjc"/>
@@ -348,7 +357,7 @@
                                 <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ijf-Nu-fNN">
-                                <rect key="frame" x="8" y="113" width="304" height="126.5"/>
+                                <rect key="frame" x="8" y="113" width="304" height="127"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Temperature Units" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bcg-j4-BjQ">
                                         <rect key="frame" x="5" y="19" width="119" height="29"/>
@@ -364,14 +373,14 @@
                                         </segments>
                                     </segmentedControl>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="zup-9r-Obp">
-                                        <rect key="frame" x="142" y="77.5" width="158" height="29"/>
+                                        <rect key="frame" x="142" y="78" width="158" height="29"/>
                                         <segments>
                                             <segment title="On"/>
                                             <segment title="Off"/>
                                         </segments>
                                     </segmentedControl>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Day/Night colours  for Hour Summary" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Psg-pK-JnX">
-                                        <rect key="frame" x="5" y="76" width="119" height="31.5"/>
+                                        <rect key="frame" x="5" y="76" width="119" height="32"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="119" id="t2t-5G-z1r"/>
                                         </constraints>
@@ -397,24 +406,36 @@
                                     <constraint firstItem="Psg-pK-JnX" firstAttribute="leading" secondItem="ijf-Nu-fNN" secondAttribute="leading" constant="5" id="zdr-lU-pMD"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xbr-AJ-VeM" customClass="GADBannerView">
+                                <rect key="frame" x="0.0" y="518" width="320" height="50"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="RX7-SJ-Glb"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="GWQ-6S-AB0" firstAttribute="top" secondItem="LDg-EN-c2s" secondAttribute="bottom" id="5xO-PB-QhB"/>
                             <constraint firstItem="GWQ-6S-AB0" firstAttribute="leading" secondItem="tnz-Qq-7Rf" secondAttribute="leading" id="DTW-kT-oDG"/>
                             <constraint firstItem="LDg-EN-c2s" firstAttribute="leading" secondItem="tnz-Qq-7Rf" secondAttribute="leading" id="F8D-Rr-7jV"/>
+                            <constraint firstItem="Gbj-5H-Hjc" firstAttribute="top" secondItem="xbr-AJ-VeM" secondAttribute="bottom" id="NuI-0b-Q31"/>
                             <constraint firstItem="ijf-Nu-fNN" firstAttribute="leading" secondItem="tnz-Qq-7Rf" secondAttribute="leading" constant="8" id="Sjb-ix-0bB"/>
+                            <constraint firstItem="xbr-AJ-VeM" firstAttribute="leading" secondItem="tnz-Qq-7Rf" secondAttribute="leading" id="cAM-zT-RaP"/>
                             <constraint firstItem="ijf-Nu-fNN" firstAttribute="top" secondItem="tnz-Qq-7Rf" secondAttribute="top" constant="113" id="ccQ-VV-SY7"/>
                             <constraint firstItem="Gbj-5H-Hjc" firstAttribute="top" relation="greaterThanOrEqual" secondItem="ijf-Nu-fNN" secondAttribute="bottom" constant="327" id="ckE-TR-2cq"/>
                             <constraint firstItem="ijf-Nu-fNN" firstAttribute="top" secondItem="LDg-EN-c2s" secondAttribute="bottom" constant="49" id="dTJ-Yr-Ls3"/>
                             <constraint firstAttribute="trailing" secondItem="GWQ-6S-AB0" secondAttribute="trailing" id="dph-GT-3VN"/>
                             <constraint firstAttribute="trailing" secondItem="ijf-Nu-fNN" secondAttribute="trailing" constant="8" id="eHb-OH-Icw"/>
                             <constraint firstItem="LDg-EN-c2s" firstAttribute="centerX" secondItem="tnz-Qq-7Rf" secondAttribute="centerX" id="iHv-hx-kGy"/>
+                            <constraint firstAttribute="trailing" secondItem="xbr-AJ-VeM" secondAttribute="trailing" id="jHB-cn-sbh"/>
+                            <constraint firstItem="xbr-AJ-VeM" firstAttribute="top" relation="lessThanOrEqual" secondItem="tnz-Qq-7Rf" secondAttribute="top" constant="518" id="qB3-zi-nEm"/>
                             <constraint firstItem="LDg-EN-c2s" firstAttribute="top" secondItem="UQk-kH-0Ix" secondAttribute="bottom" id="uYe-cT-9lb"/>
                             <constraint firstItem="Gbj-5H-Hjc" firstAttribute="top" secondItem="GWQ-6S-AB0" secondAttribute="bottom" id="yQ4-ou-LLC"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="bannerView" destination="xbr-AJ-VeM" id="uyx-wu-XCH"/>
                         <outlet property="dayNightColourControl" destination="zup-9r-Obp" id="92a-Ot-nHg"/>
                         <outlet property="settingsView" destination="ijf-Nu-fNN" id="Eyb-1I-MQM"/>
                         <outlet property="tempUnitsControl" destination="dan-gC-PrT" id="6xu-DX-7Sy"/>
@@ -428,7 +449,7 @@
         <!--Item 1-->
         <scene sceneID="u9n-WY-ipb">
             <objects>
-                <viewController storyboardIdentifier="TodayTabVC" id="BLC-57-uJS" customClass="TodayTabVC" customModule="MGWeather" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TodayTabVC" id="BLC-57-uJS" customClass="TodayTabVC" customModule="SkyCast" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="0Rd-G4-8db"/>
                         <viewControllerLayoutGuide type="bottom" id="JvG-oy-YQh"/>
@@ -445,16 +466,14 @@
                                         <subviews>
                                             <imageView autoresizesSubviews="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="clear_day_sunshine-186980-pexels" translatesAutoresizingMaskIntoConstraints="NO" id="XL5-W3-RM3">
                                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="568" id="Vpv-2m-tAd"/>
-                                                </constraints>
                                             </imageView>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
-                                            <constraint firstItem="XL5-W3-RM3" firstAttribute="leading" secondItem="ICw-tv-Nwt" secondAttribute="leading" id="4Zs-dt-Jwz"/>
-                                            <constraint firstItem="XL5-W3-RM3" firstAttribute="top" secondItem="ICw-tv-Nwt" secondAttribute="top" id="g0C-Sc-nhq"/>
-                                            <constraint firstAttribute="trailing" secondItem="XL5-W3-RM3" secondAttribute="trailing" id="pfp-o6-GwR"/>
+                                            <constraint firstAttribute="bottom" secondItem="XL5-W3-RM3" secondAttribute="bottom" id="3nv-8P-ngK"/>
+                                            <constraint firstItem="XL5-W3-RM3" firstAttribute="top" secondItem="ICw-tv-Nwt" secondAttribute="top" id="dSc-N0-dcF"/>
+                                            <constraint firstItem="XL5-W3-RM3" firstAttribute="leading" secondItem="ICw-tv-Nwt" secondAttribute="leading" id="goW-5a-t0A"/>
+                                            <constraint firstAttribute="trailing" secondItem="XL5-W3-RM3" secondAttribute="trailing" id="oWJ-DM-M9l"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qBE-cP-DaH">
@@ -570,7 +589,7 @@
                                                 </constraints>
                                                 <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <prototypes>
-                                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="0.0" reuseIdentifier="HourWeatherCellID" rowHeight="62" id="hdU-2Z-8id" customClass="HourlyWeatherCell" customModule="MGWeather" customModuleProvider="target">
+                                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="0.0" reuseIdentifier="HourWeatherCellID" rowHeight="62" id="hdU-2Z-8id" customClass="HourlyWeatherCell" customModule="SkyCast" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="28" width="67" height="62"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hdU-2Z-8id" id="bz7-Vp-Tjj">
@@ -578,19 +597,19 @@
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="20 d" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2vX-7S-bNT">
-                                                                    <rect key="frame" x="37" y="4" width="963" height="9"/>
+                                                                    <rect key="frame" x="37" y="4" width="30" height="9"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="9"/>
                                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Cloud-50" translatesAutoresizingMaskIntoConstraints="NO" id="9wV-ux-hm0">
-                                                                    <rect key="frame" x="14" y="13" width="967" height="33"/>
+                                                                    <rect key="frame" x="14" y="13" width="34" height="33"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="33" id="NZc-YW-NGI"/>
                                                                     </constraints>
                                                                 </imageView>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10am" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m9O-T1-p2s">
-                                                                    <rect key="frame" x="17" y="48" width="964" height="10"/>
+                                                                    <rect key="frame" x="17" y="48" width="31" height="10"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                     <nil key="highlightedColor"/>
@@ -926,7 +945,7 @@
         <!--About View Controller-->
         <scene sceneID="nb4-O3-G19">
             <objects>
-                <viewController storyboardIdentifier="AboutViewControllerID" id="Gmv-KE-X3J" customClass="AboutViewController" customModule="MGWeather" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AboutViewControllerID" id="Gmv-KE-X3J" customClass="AboutViewController" customModule="SkyCast" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="xiI-eU-94g"/>
                         <viewControllerLayoutGuide type="bottom" id="Q9k-sW-QYV"/>
@@ -1113,6 +1132,13 @@
                                     <constraint firstItem="l4y-eX-lOP" firstAttribute="leading" secondItem="mVP-3T-kFA" secondAttribute="leading" constant="9" id="sno-I3-g7G"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OEu-6j-QaN" customClass="GADBannerView">
+                                <rect key="frame" x="0.0" y="518" width="320" height="50"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="9PZ-Uj-x65"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -1122,15 +1148,18 @@
                             <constraint firstItem="ABd-AG-nom" firstAttribute="leading" secondItem="RBN-MO-rpP" secondAttribute="leading" id="Err-at-vei"/>
                             <constraint firstItem="nig-Ut-iKd" firstAttribute="top" secondItem="dAW-ZV-DqV" secondAttribute="bottom" constant="15" id="FOB-DC-gX9"/>
                             <constraint firstAttribute="trailing" secondItem="Ib0-Ck-Khe" secondAttribute="trailing" id="Iiu-ro-eQW"/>
+                            <constraint firstAttribute="trailing" secondItem="OEu-6j-QaN" secondAttribute="trailing" id="JWL-qM-tyO"/>
                             <constraint firstAttribute="trailing" secondItem="nig-Ut-iKd" secondAttribute="trailing" constant="8" id="JxQ-us-Ut9"/>
                             <constraint firstItem="dAW-ZV-DqV" firstAttribute="top" secondItem="ABd-AG-nom" secondAttribute="bottom" constant="14" id="Rxy-Ql-EHj"/>
                             <constraint firstItem="dAW-ZV-DqV" firstAttribute="leading" secondItem="RBN-MO-rpP" secondAttribute="leading" constant="8" id="TxV-3i-JbY"/>
                             <constraint firstAttribute="trailing" secondItem="dAW-ZV-DqV" secondAttribute="trailing" constant="8" id="bDa-ln-xDt"/>
                             <constraint firstAttribute="trailing" secondItem="mVP-3T-kFA" secondAttribute="trailing" constant="8" id="bbx-vf-tgH"/>
+                            <constraint firstItem="Q9k-sW-QYV" firstAttribute="top" secondItem="OEu-6j-QaN" secondAttribute="bottom" id="cbZ-i6-I8Z"/>
                             <constraint firstItem="Q9k-sW-QYV" firstAttribute="top" secondItem="mVP-3T-kFA" secondAttribute="bottom" constant="50" id="jHc-Jp-Z8j"/>
                             <constraint firstAttribute="trailing" secondItem="ABd-AG-nom" secondAttribute="trailing" id="kIy-JZ-mdR"/>
                             <constraint firstItem="Ib0-Ck-Khe" firstAttribute="top" secondItem="RBN-MO-rpP" secondAttribute="top" constant="64" id="kbl-wK-H6K"/>
                             <constraint firstItem="mVP-3T-kFA" firstAttribute="leading" secondItem="RBN-MO-rpP" secondAttribute="leading" constant="8" id="l5F-eK-1hA"/>
+                            <constraint firstItem="OEu-6j-QaN" firstAttribute="leading" secondItem="RBN-MO-rpP" secondAttribute="leading" id="lJe-Z1-WrP"/>
                             <constraint firstItem="Ib0-Ck-Khe" firstAttribute="leading" secondItem="RBN-MO-rpP" secondAttribute="leading" id="pSP-oh-pCY"/>
                             <constraint firstItem="nig-Ut-iKd" firstAttribute="leading" secondItem="RBN-MO-rpP" secondAttribute="leading" constant="8" id="r4U-v0-xO3"/>
                             <constraint firstItem="mVP-3T-kFA" firstAttribute="top" secondItem="nig-Ut-iKd" secondAttribute="bottom" constant="13" id="wq6-cg-blF"/>
@@ -1141,6 +1170,7 @@
                         <outlet property="aboutTitle" destination="8fK-29-j6z" id="Jo8-vn-Nez"/>
                         <outlet property="aboutVersion" destination="59Z-N8-bCZ" id="65V-24-tjo"/>
                         <outlet property="aboutView" destination="dAW-ZV-DqV" id="v61-WF-pBv"/>
+                        <outlet property="bannerView" destination="OEu-6j-QaN" id="sz8-tM-qee"/>
                         <outlet property="creditsView" destination="mVP-3T-kFA" id="SJf-yy-eTN"/>
                         <outlet property="emailButton" destination="WoF-WI-4If" id="JRw-Eb-rvN"/>
                         <outlet property="emailView" destination="nig-Ut-iKd" id="fhE-dw-Y3R"/>
@@ -1157,7 +1187,7 @@
         <!--Info Popup View Controller-->
         <scene sceneID="G1N-eu-fw3">
             <objects>
-                <viewController storyboardIdentifier="InfoPopupViewControllerID" modalPresentationStyle="formSheet" id="joB-cW-LJV" customClass="InfoPopupViewController" customModule="MGWeather" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="InfoPopupViewControllerID" modalPresentationStyle="formSheet" id="joB-cW-LJV" customClass="InfoPopupViewController" customModule="SkyCast" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="GSh-aW-tct"/>
                         <viewControllerLayoutGuide type="bottom" id="IWY-wl-2nx"/>
@@ -1181,30 +1211,41 @@
                                     </navigationItem>
                                 </items>
                             </navigationBar>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4TG-NX-mrp">
-                                <rect key="frame" x="7" y="183" width="306" height="350"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="weather-warning-sign-pexels" translatesAutoresizingMaskIntoConstraints="NO" id="l6A-Jt-3V6">
+                                <rect key="frame" x="0.0" y="45" width="320" height="523"/>
+                            </imageView>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.69999999999999996" contentMode="scaleToFill" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4TG-NX-mrp">
+                                <rect key="frame" x="21" y="96" width="278" height="375"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="350" id="lt2-oW-ZGf"/>
+                                    <constraint firstAttribute="height" constant="375" id="lt2-oW-ZGf"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Alert" translatesAutoresizingMaskIntoConstraints="NO" id="3nn-Eh-K7f">
-                                <rect key="frame" x="112" y="63" width="95" height="90"/>
-                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mOA-DU-JLv" customClass="GADBannerView">
+                                <rect key="frame" x="0.0" y="518" width="320" height="50"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="e47-KJ-DzK"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="4TG-NX-mrp" firstAttribute="top" secondItem="vnQ-PF-o65" secondAttribute="bottom" constant="51" id="05Y-J7-xMz"/>
                             <constraint firstItem="vnQ-PF-o65" firstAttribute="top" secondItem="GSh-aW-tct" secondAttribute="bottom" constant="1" id="2uo-Zi-Eui"/>
-                            <constraint firstItem="4TG-NX-mrp" firstAttribute="leading" secondItem="PLW-X1-LAx" secondAttribute="leading" constant="7" id="6iT-Nf-yGj"/>
-                            <constraint firstAttribute="trailing" secondItem="4TG-NX-mrp" secondAttribute="trailing" constant="7" id="DNC-Y3-rkA"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="3nn-Eh-K7f" secondAttribute="trailing" constant="97" id="KxA-qy-LNB"/>
-                            <constraint firstItem="3nn-Eh-K7f" firstAttribute="top" secondItem="vnQ-PF-o65" secondAttribute="bottom" constant="18" id="OM0-m5-0ut"/>
+                            <constraint firstItem="4TG-NX-mrp" firstAttribute="leading" secondItem="PLW-X1-LAx" secondAttribute="leading" constant="21" id="6iT-Nf-yGj"/>
+                            <constraint firstAttribute="trailing" secondItem="4TG-NX-mrp" secondAttribute="trailing" constant="21" id="DNC-Y3-rkA"/>
+                            <constraint firstAttribute="trailing" secondItem="mOA-DU-JLv" secondAttribute="trailing" id="P1F-59-3BF"/>
                             <constraint firstItem="vnQ-PF-o65" firstAttribute="leading" secondItem="PLW-X1-LAx" secondAttribute="leading" id="Pgm-Xf-WFf"/>
                             <constraint firstAttribute="trailing" secondItem="vnQ-PF-o65" secondAttribute="trailing" id="RVQ-rp-7Wf"/>
-                            <constraint firstItem="IWY-wl-2nx" firstAttribute="top" secondItem="4TG-NX-mrp" secondAttribute="bottom" constant="35" id="S5H-i0-cct"/>
-                            <constraint firstItem="3nn-Eh-K7f" firstAttribute="leading" secondItem="PLW-X1-LAx" secondAttribute="leadingMargin" constant="96" id="TBz-OS-h5V"/>
-                            <constraint firstItem="4TG-NX-mrp" firstAttribute="top" secondItem="3nn-Eh-K7f" secondAttribute="bottom" constant="30" id="oPV-hV-MaZ"/>
+                            <constraint firstItem="l6A-Jt-3V6" firstAttribute="leading" secondItem="PLW-X1-LAx" secondAttribute="leading" id="VH0-4x-yVu"/>
+                            <constraint firstItem="IWY-wl-2nx" firstAttribute="top" secondItem="l6A-Jt-3V6" secondAttribute="bottom" id="aHA-ro-Nwu"/>
+                            <constraint firstItem="mOA-DU-JLv" firstAttribute="leading" secondItem="PLW-X1-LAx" secondAttribute="leading" id="byN-tB-jLH"/>
+                            <constraint firstItem="l6A-Jt-3V6" firstAttribute="top" secondItem="vnQ-PF-o65" secondAttribute="bottom" id="eZj-Lx-3X2"/>
+                            <constraint firstItem="IWY-wl-2nx" firstAttribute="top" secondItem="mOA-DU-JLv" secondAttribute="bottom" id="hvl-Kg-y8H"/>
+                            <constraint firstAttribute="trailing" secondItem="l6A-Jt-3V6" secondAttribute="trailing" id="jbq-tk-awi"/>
                         </constraints>
                     </view>
                     <value key="contentSizeForViewInPopover" type="size" width="250" height="130"/>
@@ -1212,8 +1253,10 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="bannerView" destination="mOA-DU-JLv" id="QA5-2b-nQn"/>
                         <outlet property="informationText" destination="4TG-NX-mrp" id="pQ8-5E-8d7"/>
                         <outlet property="outerView" destination="PLW-X1-LAx" id="xkk-h8-TMl"/>
+                        <outlet property="weatherImage" destination="l6A-Jt-3V6" id="85q-9H-brt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2Zp-WW-edp" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1223,7 +1266,7 @@
         <!--Parent View Controller-->
         <scene sceneID="CCs-u4-3jc">
             <objects>
-                <viewController id="Cf7-eg-bSk" userLabel="Parent View Controller" customClass="ParentWeatherVC" customModule="MGWeather" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Cf7-eg-bSk" userLabel="Parent View Controller" customClass="ParentWeatherVC" customModule="SkyCast" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="QyE-WH-i82"/>
                         <viewControllerLayoutGuide type="bottom" id="mgp-Go-kID"/>
@@ -1244,7 +1287,7 @@
                                     </navigationItem>
                                 </items>
                             </navigationBar>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Sp5-WY-IFe" customClass="WeatherSegmentedControl" customModule="MGWeather" customModuleProvider="target">
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Sp5-WY-IFe" customClass="WeatherSegmentedControl" customModule="SkyCast" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="65" width="320" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="34" id="N4D-Sn-LH4"/>
@@ -1327,5 +1370,6 @@
         <image name="Sunset-50" width="50" height="50"/>
         <image name="clear_day_sunshine-186980-pexels" width="750" height="1334"/>
         <image name="sky_background_PEXELS" width="640" height="811"/>
+        <image name="weather-warning-sign-pexels" width="750" height="1334"/>
     </resources>
 </document>

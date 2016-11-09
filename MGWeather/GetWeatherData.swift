@@ -22,7 +22,7 @@ class GetWeatherData: NSObject {
     
     func getData( urlAndParameters: String!, completionBlock:@escaping ((String?, NSError?,[NSObject : AnyObject]?, Int) -> Void) ){
         
-        if GlobalConstants.DemoMode {
+        if AppSettings.DemoMode {
             
             let demoDataFileName = GlobalConstants.DemoWeatherFile
             

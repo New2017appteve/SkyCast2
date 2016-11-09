@@ -7,6 +7,7 @@
 
 import UIKit
 import MessageUI
+import GoogleMobileAds
 
 class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate {
 
@@ -27,6 +28,9 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
     @IBOutlet weak var photoSource: UITextView!
     
     @IBOutlet weak var aboutCredits: UITextView!
+    
+    /// The banner view.
+    @IBOutlet weak var bannerView: GADBannerView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -112,11 +116,29 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
         iconAttributedString.addAttribute(NSLinkAttributeName, value: GlobalConstants.WeatherIconURL, range: NSRange(location: 0, length: iconUrlString.characters.count))
         iconSource.attributedText = iconAttributedString
 
-        let photosUrlString = "Weather photos from FreeDigitalPhotos"
+        let photosUrlString = "Weather photos from Pexels"
         let photosAttributedString = NSMutableAttributedString(string: photosUrlString)
         photosAttributedString.addAttribute(NSLinkAttributeName, value: GlobalConstants.WeatherPhotosURL, range: NSRange(location: 0, length: photosUrlString.characters.count))
         photoSource.attributedText = photosAttributedString
         
+        if AppSettings.ShowBannerAds {
+            loadBannerAd()
+        }
+    }
+    
+    func loadBannerAd() {
+        
+        print("Google Mobile Ads SDK version: \(GADRequest.sdkVersion())")
+        bannerView.adUnitID = AppSettings.AdMobBannerID
+        bannerView.rootViewController = self
+        
+        let request = GADRequest()
+        if AppSettings.BannerAdsTestMode {
+            // Display test banner ads in the simulator
+            request.testDevices = [kGADSimulatorID]
+        }
+        
+        bannerView.load(request)
     }
     
     @IBAction func emailButtonPressed(_ sender: AnyObject) {

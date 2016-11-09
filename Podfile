@@ -1,8 +1,8 @@
 source 'https://github.com/CocoaPods/Specs.git'
 
-platform :ios, '7.0'
+platform :ios, '9.0'
 
-target 'BannerExample' do
+target 'SkyCast' do
   use_frameworks!
   pod 'Firebase/Core'
   pod 'Firebase/AdMob'

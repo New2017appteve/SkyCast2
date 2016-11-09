@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import GoogleMobileAds
 
 protocol DailyTabVCDelegate
 {
@@ -26,8 +27,11 @@ class DailyTabVC: UIViewController {
     @IBOutlet weak var nextDaysSummary : UITextView!
     
     @IBOutlet weak var dailyWeather : Weather!  // This is passed in from ParentWeatherVC
-
-
+    @IBOutlet weak var weatherLocation : Location!  // This is passed in from ParentWeatherVC
+    
+    /// The banner view.
+    @IBOutlet weak var bannerView: GADBannerView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -62,7 +66,31 @@ class DailyTabVC: UIViewController {
         dailyWeatherTableView.layer.cornerRadius = 10.0
         dailyWeatherTableView.clipsToBounds = true
 
-    //    nextDaysSummary.textAlignment = NSTextAlignment.center
+        if AppSettings.ShowBannerAds {
+            loadBannerAd()
+        }
+    }
+    
+    func loadBannerAd() {
+    
+        print("Google Mobile Ads SDK version: \(GADRequest.sdkVersion())")
+        bannerView.adUnitID = AppSettings.AdMobBannerID
+        bannerView.rootViewController = self
+        
+        let request = GADRequest()
+        if AppSettings.BannerAdsTestMode {
+            // Display test banner ads in the simulator
+            request.testDevices = [kGADSimulatorID]
+        }
+
+        // Make ads more location specific
+        if let currentLocation = weatherLocation.currentLocation {
+            request.setLocationWithLatitude(CGFloat(currentLocation.coordinate.latitude),
+                                            longitude: CGFloat(currentLocation.coordinate.longitude),
+                                            accuracy: CGFloat(currentLocation.horizontalAccuracy))
+        }
+        bannerView.load(request)
+
     }
     
     func populateDailyWeatherDetails() {

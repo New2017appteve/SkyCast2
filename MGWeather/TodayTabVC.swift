@@ -93,6 +93,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         
         NotificationCenter.default.addObserver(self, selector: #selector(TodayTabVC.networkStatusChanged(_:)), name: NSNotification.Name(rawValue: ReachabilityStatusChangedNotification), object: nil)
 
+        // Register to receive notification for location (note: Done here but added again after a refresh)
+        NotificationCenter.default.addObserver(self, selector: #selector(TodayTabVC.locationDataRefreshed), name: GlobalConstants.locationRefreshFinishedKey, object: nil)
+
+        
         setupDisplayTimer()
         setupSwipeGestures()
         setupScreen ()
@@ -105,10 +109,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         
         // Register to receive notifications
         NotificationCenter.default.addObserver(self, selector: #selector(TodayTabVC.weatherDataRefreshed), name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
-        
-        // Register to receive notification
-        NotificationCenter.default.addObserver(self, selector: #selector(TodayTabVC.locationDataRefreshed), name: GlobalConstants.locationRefreshFinishedKey, object: nil)
-        
+    
         
         // Ease in the weather background for effect
         self.weatherImage.alpha = 0.2
@@ -261,14 +262,22 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             
             let alertCount = dailyWeather.weatherAlerts.count
             
-            for i in 0...alertCount - 1 {
+            if alertCount > 0 {
+                for i in 0...alertCount - 1 {
+                    
+                    let alertTime = dailyWeather.weatherAlerts[i].alertDateAndTimeStamp
+                    let alertExpiry = dailyWeather.weatherAlerts[i].alertExpiryDateAndTimeStamp
+                    
+                    let alertTimeDescription = (alertTime?.dayOfTheWeek())! + " " + (alertTime?.getDateSuffix())! + " to " + (alertExpiry?.dayOfTheWeek())! + " " + (alertExpiry?.getDateSuffix())!
+                    
+                    weatherAlertDescription = alertTimeDescription + "\r\n\n" + dailyWeather.weatherAlerts[i].alertDescription! + "\r\n\n"
+                }
+            }
+            else {
                 
-                let alertTime = dailyWeather.weatherAlerts[i].alertDateAndTimeStamp
-                let alertExpiry = dailyWeather.weatherAlerts[i].alertExpiryDateAndTimeStamp
+                // NOTE: This should never happen really, but here incase I'm testing 
                 
-                let alertTimeDescription = (alertTime?.dayOfTheWeek())! + " " + (alertTime?.getDateSuffix())! + " to " + (alertExpiry?.dayOfTheWeek())! + " " + (alertExpiry?.getDateSuffix())!
-                
-                weatherAlertDescription = alertTimeDescription + "\r\n\n" + dailyWeather.weatherAlerts[i].alertDescription! + "\r\n\n"
+                weatherAlertDescription = "TEST:  A storm is approaching the south west of the country.  Amber alert has been raised"
             }
             
             let vc:InfoPopupViewController = segue.destination as! InfoPopupViewController
@@ -421,7 +430,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     func refreshDataAfterPullToRefresh() {
 
         disableScreen()
-        
+
+        // Register to receive notification for Location
+        NotificationCenter.default.addObserver(self, selector: #selector(TodayTabVC.locationDataRefreshed), name: GlobalConstants.locationRefreshFinishedKey, object: nil)
+
         // Make a toast to say data is refreshing
         self.view.makeToast("Refreshing weather data", duration: 1.0, position: .bottom)
         self.view.makeToastActivity(.center)
@@ -552,7 +564,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             }
 
             // If weather alert, enable the button so user can bring up alert text view
-            if (dailyWeather?.weatherAlert == true) {
+            if (dailyWeather?.weatherAlert == false) {
                 
                 weatherAlertButton.isHidden = false
                 weatherAlertTitle.isHidden = false
@@ -687,6 +699,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         DispatchQueue.main.async {
             self.updateLocationDetailsOnScreen()
         }
+        
+        // Remove after refresh  Can add again on the next refresh
+        NotificationCenter.default.removeObserver(self, name: GlobalConstants.locationRefreshFinishedKey, object: nil);
+
     }
 }
 

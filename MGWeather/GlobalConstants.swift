@@ -3,15 +3,15 @@
 //  Weather
 //
 //  Created by Mark Gumbs on 26/06/2016.
-//  Copyright © 2016 britishairways. All rights reserved.
 //
 
 import UIKit
 
 class GlobalConstants: NSObject {
 
-    static let DemoMode = false
-
+    // Create a singleton so that the variables can be called outside of the class
+    static let sharedInstance = GlobalConstants()
+    
     static let AppName = "SkyCast"
     
    // http://www.developerdave.co.uk/2015/09/better-completion-handlers-in-swift/
@@ -66,16 +66,12 @@ class GlobalConstants: NSObject {
         static var Lighter = UIColor(red: 245/255, green: 247/255, blue: 245/255, alpha: 0.95) // Lighter Shade
     }
     
-    
-    // Create a singleton so that the variables can be called outside of the class
-    static let sharedInstance = GlobalConstants()
-    
     // Ensure no spaces in URL
     
     static let SupportEmailAddress = "mgdeveloper7@gmail.com"
     static let DarkSkyURL = "https://darksky.net/poweredby/"
     static let WeatherIconURL = "https://icons8.com"
-    static let WeatherPhotosURL = "http://www.freedigitalphotos.net"
+    static let WeatherPhotosURL = "https://www.pexels.com"
     
     static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/51.508146,-0.624004"
     static let BaseWeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/"
@@ -193,12 +189,10 @@ class GlobalConstants: NSObject {
     
     // https://firebase.google.com/docs/admob/ios/quick-start
     
-    var showBannerAds = false
+    static let AdMobAppID = "ca-app-pub-7564315004238579~8353051847"
+    static let AdMobBannerID = "ca-app-pub-7564315004238579/6736717849"
     
-    var AdMobAppID = "ca-app-pub-7564315004238579~8353051847"
-    var AdMobBannerID = "ca-app-pub-7564315004238579/6736717849"
-    
-    var TestAdMobAppID = "ca-app-pub-3940256099942544~1458002511"
-    var TestAdMobBannerID = "ca-app-pub-3940256099942544/2934735716"
+    static let TestAdMobAppID = "ca-app-pub-3940256099942544~1458002511"
+    static let TestAdMobBannerID = "ca-app-pub-3940256099942544/2934735716"
 
 }
