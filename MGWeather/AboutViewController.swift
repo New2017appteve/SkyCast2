@@ -106,7 +106,7 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
         aboutTitle.text = GlobalConstants.AppName
         
         // Make the label to the credits clickable
-        let urlString = "Weather API powered By Dark Sky API"
+        let urlString = "Weather API Powered By Dark Sky"
         let attributedString = NSMutableAttributedString(string: urlString)
         attributedString.addAttribute(NSLinkAttributeName, value: GlobalConstants.DarkSkyURL, range: NSRange(location: 0, length: urlString.characters.count))
         weatherSource.attributedText = attributedString

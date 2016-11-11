@@ -32,6 +32,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     var lastUpdatedTime = ""
     
     var infoLabelTimerCount = 0
+    var weatherDetailsTimerCount = 0
     
     // MARK: Outlets
     
@@ -45,6 +46,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     @IBOutlet weak var infoView : UIView!
     @IBOutlet weak var infoLabel : UILabel!
     
+    @IBOutlet weak var nowLabel : UILabel!
     @IBOutlet weak var currentTempView : UIView!
     @IBOutlet weak var currentTempDetailView : UIView!
     @IBOutlet weak var currentTemp : UILabel!
@@ -57,6 +59,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     @IBOutlet weak var weatherDetailOuterView : UIView!
     @IBOutlet weak var weatherDetailView : UIView!
     @IBOutlet weak var weatherDetailStackView : UIStackView!
+    @IBOutlet weak var todayLabel : UILabel!
     @IBOutlet weak var todaySummary : UILabel!
     @IBOutlet weak var todayHighLowTemp : UILabel!
     @IBOutlet weak var cloudCover : UILabel!
@@ -71,7 +74,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     @IBOutlet weak var humidity : UILabel!
     @IBOutlet weak var weatherAlertTitle : UILabel!
     @IBOutlet weak var weatherAlertButton : UIButton!
-    @IBOutlet weak var poweredByDarkSkyText : UITextView!
+    @IBOutlet weak var poweredByDarkSkyButton : UIButton!
     
     private let cellId = "cellId"
     
@@ -154,21 +157,11 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     
     func setupScreen () {
                       
-        // Make the credit label clickable
-        let urlString = "Powered By Dark Sky API"
-        let attributedString = NSMutableAttributedString(string: urlString)
-        attributedString.addAttribute(NSLinkAttributeName, value: GlobalConstants.DarkSkyURL, range: NSRange(location: 0, length: 23))
+        poweredByDarkSkyButton.backgroundColor = GlobalConstants.DarkestGray
         
-//        attributedString.addAttribute(NSFontAttributeName,
-//                                     value: UIFont(
-//                                        name: "HelveticaNeue-UltraLight",
-//                                        size: 10.0),
-//                                     range: NSRange(
-//                                        location: 0,
-//                                        length:23))
-        
-        poweredByDarkSkyText.attributedText = attributedString
-    
+        nowLabel.backgroundColor = GlobalConstants.DarkestGray
+        todayLabel.backgroundColor = GlobalConstants.DarkestGray
+
         let userDefaults = UserDefaults.standard
         dayOrNightColourSetting = userDefaults.string(forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
         
@@ -200,6 +193,8 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             sunsetIcon.backgroundColor = UIColor.clear
         }
         
+        // Hide weather details initially until timer starts
+        self.weatherDetailStackView.alpha = 0
     }
     
     func updateLocationDetailsOnScreen() {
@@ -289,14 +284,16 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     func setupDisplayTimer() {
     
         infoLabelTimerCount = 0
+        weatherDetailsTimerCount = 0
         
-        _ = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(updateInfoLabel), userInfo: nil, repeats: true)
+        _ = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(updateWeatherDetailsOnScreen), userInfo: nil, repeats: true)
 
     }
     
-    func updateInfoLabel() {
+    func updateWeatherDetailsOnScreen() {
         
         infoLabelTimerCount += 1
+        weatherDetailsTimerCount += 1
         
         // Do a mod of 4, so that we can display the 'Last Updated' time slightly longer than
         let mod = infoLabelTimerCount % 4
@@ -310,18 +307,50 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         case 3:
             
             updateLocationDetailsOnScreen()
-//            guard let loc = weatherLocation else {
-//                infoLabel.text = "Location name not found"
-//                print("Location name not found")
-//                //
-//                return
-//            }
-//
-//            infoLabel.text = getFormattedLocation(locationObj: loc)
         default:
             infoLabel.text = ""
         }
         
+        let detailsMod = infoLabelTimerCount % 3
+        switch (detailsMod) {
+        case 0:
+            hideWeatherDetailsView()
+        case 1:
+            showWeatherDetailsView()
+        case 2:
+            return // Do nothing, this wlll have the effect of showing the weather details longer
+        default:
+            infoLabel.text = ""
+        }
+
+    }
+    
+    func hideWeatherDetailsView () {
+        
+        // Hide the weather details view whilst showing the today summary text
+        self.todaySummary.alpha = 0
+        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.todaySummary.alpha = 1
+        }, completion: nil)
+        
+        self.weatherDetailStackView.alpha = 1
+        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.weatherDetailStackView.alpha = 0
+        }, completion: nil)
+    }
+    
+    func showWeatherDetailsView () {
+        
+        // Hide the weather details view whilst showing the today summary text
+        self.todaySummary.alpha = 1
+        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.todaySummary.alpha = 0
+        }, completion: nil)
+        
+        self.weatherDetailStackView.alpha = 0
+        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.weatherDetailStackView.alpha = 1
+        }, completion: nil)
     }
     
     // MARK:  Swipe Gesture functions
@@ -563,7 +592,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             }
 
             // If weather alert, enable the button so user can bring up alert text view
-            if (dailyWeather?.weatherAlert == false) {
+            if (dailyWeather?.weatherAlert == true) {
                 
                 weatherAlertButton.isHidden = false
                 weatherAlertTitle.isHidden = false
@@ -578,13 +607,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                 weatherAlertTitle.isHidden = true
             }
         }
-
-//        UIView.animate(withDuration: 0.7, delay: 0.7, options: UIViewAnimationOptions.curveEaseOut, animations: {
-//            self.outerScreenView.alpha = 1.0
-//
-//            }, completion:{_ in
-//                //self.refreshingTest.hidden = true
-//        })
         
     }
     
@@ -651,6 +673,13 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         
         self.performSegue(withIdentifier: "infoScreenSegue", sender: self)
     }
+    
+    @IBAction func poweredByDarkSkyButtonPressed(_ sender: AnyObject) {
+        
+        // Display the Dark Sky webpage
+        UIApplication.shared.openURL(URL(string: GlobalConstants.DarkSkyURL)!)
+    }
+    
     
     // MARK:  Reach methods
     func networkStatusChanged(_ notification: Notification) {
