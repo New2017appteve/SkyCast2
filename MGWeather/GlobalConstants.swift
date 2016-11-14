@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import GoogleMobileAds
 
 class GlobalConstants: NSObject {
 
@@ -13,6 +14,8 @@ class GlobalConstants: NSObject {
     static let sharedInstance = GlobalConstants()
     
     static let AppName = "SkyCast"
+    
+    // Tableview shading
     
    // http://www.developerdave.co.uk/2015/09/better-completion-handlers-in-swift/
     typealias CompletionHandlerType = (CompletionResult) -> Void
@@ -80,7 +83,7 @@ class GlobalConstants: NSObject {
     
     static let DemoWeatherFile = "sample_data_cippenham2"
     
-    static let degreesSymbol = "\u{00B0}C"  // TODO:  Look at celsuis and farenheight
+    static let degreesSymbol = "\u{00B0}"
     
     static let MetersPerSecondToMph = Float(2.23694)
     
@@ -137,22 +140,26 @@ class GlobalConstants: NSObject {
     struct ImageFile {
         enum FileName : String {
             
-            case clearDay = "clear_day_sunshine-186980-pexels.jpeg" //"ID-100206388_Sun Sky Blue_samarttiw.jpg"
-            case clearNight = "clear_night_moon-pexels-26341.jpg" //""ID-10028938_Starry Nignt Dark Blue_nuttakit.jpg"
-            case rain = "rain_day-125510-pexels.jpeg" //"ID-100292943_Close Up Texture Of Water Drop_khunaspix.jpg"
-            case snow = "snow_day-forest-trees_pexels.jpeg" //"ID-100197671_Winter Landscape_Vichaya Kiatying-Angsulee.jpg"
-            case sleet = "sleet_pexels-12875.jpeg" //"sleet"
-            case wind = "wind_person-woman-girl-blonde-pexels.jpg" //"windy.jpg"
-            case fog = "fog_day_road_foggy-mist-pexels.jpg" //"ID-10010583_Atmosphere Of Haze_dan.jpg"
+            case clearDay = "clear_day_sunshine-186980-pexels.jpeg"
+            case clearNight = "clear_night_moon-pexels-26341.jpg"
+            case rain = "rain_day-125510-pexels.jpeg"
+            case snow = "snow_day-forest-trees_pexels.jpeg"
+            case sleet = "sleet_pexels-12875.jpeg"
+            case wind = "wind_person-woman-girl-blonde-pexels.jpg"
+            case fog = "fog_day_road_foggy-mist-pexels.jpg"
             case fogNight = "fog_night_foggy-mist-forest-trees-42263-pexels"
-            case cloudy = "cloud_overcast-27194-pexels.jpg" //"ID-100202953_White And Gray Clouds_Stoonn.jpg"
-            case partlyCloudyDay = "partial_cloud_day-28501-pexels.jpg" //"partial_clouds_day-53594_PEXELS.jpeg"
-            case partlyCloudyNight = "partial_cloudy_night-70439-pexels.jpeg" //"night-clouds-trees_PEXELS.jpg"
+            case cloudy = "cloud_overcast-27194-pexels.jpg"
+            case partlyCloudyDay = "partial_cloud_day-28501-pexels.jpg"
+            case partlyCloudyNight = "partial_cloudy_night-70439-pexels.jpeg"
             
             // Future
             case hail = "hail"
-            case thunderstorm = "lightning-day-sky-53459-pexels.jpeg" //"ID-100105405_Night Lightning_antpkr.jpg"
+            case thunderstorm = "lightning-day-sky-53459-pexels.jpeg"
             case tornado = "tornado"
+            
+            // Custom
+            case rainNight = "rain_night-pexels"
+            
         }
     }
     
@@ -185,9 +192,15 @@ class GlobalConstants: NSObject {
     // TODO:  Convert wind direction
     // http://climate.umn.edu/snow_fence/components/winddirectionanddegreeswithouttable3.htm
     
-    // Banner Ad related 
+    // MARK:  Banner Ad related
     
     // https://firebase.google.com/docs/admob/ios/quick-start
+    
+    struct BannerAdTestIDs {
+        // List of devices used whilst testing, in order to see test banner ads
+        static let IPhone6 = "d908ab2aa2246c48dd031abe26ac03f5"
+        static let Simulator = kGADSimulatorID
+    }
     
     static let AdMobAppID = "ca-app-pub-7564315004238579~8353051847"
     static let AdMobBannerID = "ca-app-pub-7564315004238579/6736717849"

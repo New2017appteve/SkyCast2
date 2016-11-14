@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import GoogleMobileAds
 
 protocol TodayTabVCDelegate
 {
@@ -30,7 +31,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     var tomorrowSunriseTimeStamp: NSDate?
     var tomorrowSunsetTimeStamp: NSDate?
     var lastUpdatedTime = ""
-    
+
     var infoLabelTimerCount = 0
     var weatherDetailsTimerCount = 0
     
@@ -84,6 +85,11 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     @IBOutlet weak var dailyWeather : Weather!
     @IBOutlet weak var weatherLocation : Location!
     
+    // The banner views.
+    @IBOutlet weak var bannerOuterView: UIView!
+    @IBOutlet weak var closeBannerButton : UIButton!
+    @IBOutlet weak var bannerView: GADBannerView!
+    
     enum Menu: String {
         case ShowSettings = "App Settings"
         case ShowAbout = "About"
@@ -104,21 +110,34 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         setupSwipeGestures()
         setupScreen ()
         populateTodayWeatherDetails()
+        bannerOuterView.isHidden = true
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         // Register to receive notifications
         NotificationCenter.default.addObserver(self, selector: #selector(TodayTabVC.weatherDataRefreshed), name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
     
-        
         // Ease in the weather background for effect
         self.weatherImage.alpha = 0.2
         UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
             self.weatherImage.alpha = 1
         }, completion: nil)
+        
+        if AppSettings.ShowBannerAds {
+            
+            // For this screen we only want to randomly show the banner ad, so thats its an
+            // occasional annoyance
+            bannerOuterView.isHidden = true
+            let rand = Int(arc4random_uniform(4))
+            if (rand % 3 == 0) {
+                loadBannerAd()
+                bannerOuterView.isHidden = false
+            }
+        }
+
     }
     
     
@@ -156,7 +175,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     
     
     func setupScreen () {
-                      
+        
+        bannerOuterView.isHidden = true
+        
         poweredByDarkSkyButton.backgroundColor = GlobalConstants.DarkestGray
         
         nowLabel.backgroundColor = GlobalConstants.DarkestGray
@@ -195,7 +216,30 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         
         // Hide weather details initially until timer starts
         self.weatherDetailStackView.alpha = 0
+        
     }
+    
+    func loadBannerAd() {
+        
+        print("Google Mobile Ads SDK version: \(GADRequest.sdkVersion())")
+        bannerView.adUnitID = AppSettings.AdMobBannerID
+        bannerView.rootViewController = self
+        
+        let request = GADRequest()
+        if AppSettings.BannerAdsTestMode {
+            // Display test banner ads in the simulator
+            request.testDevices = [AppSettings.AdTestDeviceID]
+        }
+        
+        // Make ads more location specific
+        if let currentLocation = weatherLocation.currentLocation {
+            request.setLocationWithLatitude(CGFloat(currentLocation.coordinate.latitude),
+                                            longitude: CGFloat(currentLocation.coordinate.longitude),
+                                            accuracy: CGFloat(currentLocation.horizontalAccuracy))
+        }
+        bannerView.load(request)
+    }
+
     
     func updateLocationDetailsOnScreen() {
         
@@ -520,15 +564,26 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     
     func populateTodayWeatherDetails() {
 
-        // Rather than force unwrapping, use conditional let
+        // Rather than force unwrapping, use conditional let to check weather array
+        var degreesSymbol = ""
+
+        if let lWeather = dailyWeather {
+            if lWeather.flags.units == "si" {
+                degreesSymbol = GlobalConstants.degreesSymbol + "C"
+            }
+            else {
+                degreesSymbol = GlobalConstants.degreesSymbol + "F"
+            }
+        }
+        
         if let todayArray = dailyWeather?.currentBreakdown {
             
             lastUpdatedTime  = getLastUpdatedTime()
 
             // NOTE:  Better to use the Minute summary at this level
 
-            currentTemp.text = String(Int(round(todayArray.temperature! as Float))) + GlobalConstants.degreesSymbol
-            feelsLikeTemp.text = "Feels Like: " + String(Int(round(todayArray.apparentTemperature! as Float))) + GlobalConstants.degreesSymbol
+            currentTemp.text = String(Int(round(todayArray.temperature! as Float))) + degreesSymbol
+            feelsLikeTemp.text = "Feels Like: " + String(Int(round(todayArray.apparentTemperature! as Float))) + degreesSymbol
             windspeed.text = String(Int(round(todayArray.windSpeed! * GlobalConstants.MetersPerSecondToMph))) + " mph"
             rainProbability.text = String(Int(round(todayArray.precipProbability!*100))) + "%"
             cloudCover.text = String(Int(round(todayArray.cloudCover!*100))) + "%"
@@ -541,11 +596,11 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             for days in dayArray! {
                 
                 // If today, populate the relevant fields
-                let sameDay = areDatesSameDay(date1: todayArray.dateAndTimeStamp!, date2: days.dateAndTimeStamp!)
+                let sameDay = Utility.areDatesSameDay(date1: todayArray.dateAndTimeStamp!, date2: days.dateAndTimeStamp!)
                 
                 if sameDay {
-                    let minTempString = String(Int(round(days.temperatureMin!))) + GlobalConstants.degreesSymbol
-                    let maxTempString = String(Int(round(days.temperatureMax!))) + GlobalConstants.degreesSymbol
+                    let minTempString = String(Int(round(days.temperatureMin!))) + degreesSymbol
+                    let maxTempString = String(Int(round(days.temperatureMax!))) + degreesSymbol
                     
                     sunrise.text = String(days.sunriseTimeStamp!.shortTimeString())
                     sunset.text = String(days.sunsetTimeStamp!.shortTimeString())
@@ -558,7 +613,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                 
                 // We want tomorrows sunrise and sunset times as well
                 
-                let tomorrow = isTomorrow(date1: days.dateAndTimeStamp!)
+                let tomorrow = Utility.isTomorrow(date1: days.dateAndTimeStamp!)
                 
                 if tomorrow {
                     tomorrowSunriseTimeStamp = days.sunriseTimeStamp as NSDate?
@@ -572,11 +627,16 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             let minuteBreakdown = dailyWeather?.minuteBreakdown
             currentSummary.text = minuteBreakdown?.summary
             
+            var isItDayOrNight = "NIGHT"
+            let timeNow = NSDate()
+            if isDayTime(dateTime: timeNow) {
+                isItDayOrNight = "DAY"
+            }
+
             // Populate the weather image
-            
             let icon = todayArray.icon
             let enumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
-            let backgroundImageName = Utility.getWeatherImage(serviceIcon: (enumVal?.rawValue)!)
+            let backgroundImageName = Utility.getWeatherImage(serviceIcon: (enumVal?.rawValue)!, dayOrNight: isItDayOrNight)
             
             if String(backgroundImageName).isEmpty != nil {
                 weatherImage.image = UIImage(named: backgroundImageName)!
@@ -610,43 +670,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         
     }
     
-    func areDatesSameDay (date1: NSDate, date2: NSDate) -> Bool {
-        
-        var retVal = false
-        
-        let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd"  // Remove timestamp for comparison
-        
-        let compareDateString1 = df.string(from: date1 as Date)
-        let compareDateString2 = df.string(from: date2 as Date)
-        
-        if compareDateString1 == compareDateString2 {
-            retVal = true
-        }
-        
-        return retVal
-    }
-    
-    func isTomorrow (date1: NSDate) -> Bool {
-
-        var retVal = false
-        
-        let today = Date()
-        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)
-
-        let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd"  // Remove timestamp for comparison
-        
-        let compareDateString1 = df.string(from: date1 as Date)
-        let compareDateString2 = df.string(from: tomorrow!)
-        
-        if compareDateString1 == compareDateString2 {
-            retVal = true
-        }
-        
-        return retVal
-    }
-    
     
     func isDayTime (dateTime : NSDate) -> Bool {
         
@@ -668,9 +691,14 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     
     // MARK:  Button Press Methods
 
+    @IBAction func closeBannerAdButtonPressed(_ sender: AnyObject) {
+
+        // Dismiss banner ad view
+        bannerOuterView.isHidden = true
+    }
+
     @IBAction func infoButtonPressed(_ sender: AnyObject) {
         // infoScreenSegue
-        
         self.performSegue(withIdentifier: "infoScreenSegue", sender: self)
     }
     
@@ -773,6 +801,17 @@ extension TodayTabVC : UITableViewDataSource {
             }
         }
         
+        var degreesSymbol = ""
+        
+        if let lWeather = dailyWeather {
+            if lWeather.flags.units == "si" {
+                degreesSymbol = GlobalConstants.degreesSymbol + "C"
+            }
+            else {
+                degreesSymbol = GlobalConstants.degreesSymbol + "F"
+            }
+        }
+        
         // We dont want the current hour in this list so +1
         let hourWeather = dailyWeather?.hourBreakdown.hourStats[indexPath.row + 1]
         
@@ -781,7 +820,7 @@ extension TodayTabVC : UITableViewDataSource {
         var hourTimeStamp = hourWeather?.dateAndTimeStamp
         
         cell.hourLabel.text = hourWeather?.dateAndTimeStamp!.shortHourTimeString()
-        cell.temperatureLabel.text = String(Int(round(hourWeather!.temperature!))) + GlobalConstants.degreesSymbol
+        cell.temperatureLabel.text = String(Int(round(hourWeather!.temperature!))) + degreesSymbol
         
         let icon = hourWeather?.icon
         let iconName = Utility.getWeatherIcon(serviceIcon: icon!)
@@ -795,7 +834,7 @@ extension TodayTabVC : UITableViewDataSource {
             if (indexPath.row % 2 == 0) {
                 // Lighter Shade
                 
-                if isDayTime(dateTime: hourTimeStamp!) { // if hourWeather?.dayOrNight == "DAY" {
+                if isDayTime(dateTime: hourTimeStamp!) {
                     cell.backgroundColor = GlobalConstants.TableViewAlternateShadingDay.Darker
                 }
                 else {
@@ -803,7 +842,7 @@ extension TodayTabVC : UITableViewDataSource {
                 }
             }
             else {
-                if isDayTime(dateTime: hourTimeStamp!) { //if hourWeather?.dayOrNight == "DAY" {
+                if isDayTime(dateTime: hourTimeStamp!) {
                     cell.backgroundColor = GlobalConstants.TableViewAlternateShadingDay.Lighter
                 }
                 else {

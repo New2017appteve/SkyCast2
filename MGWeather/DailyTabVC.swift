@@ -19,6 +19,12 @@ protocol DailyTabVCDelegate
 class DailyTabVC: UIViewController {
 
     var delegate:DailyTabVCDelegate?
+    var sunriseTimeStamp: NSDate?
+    var sunsetTimeStamp: NSDate?
+    var tomorrowSunriseTimeStamp: NSDate?
+    var tomorrowSunsetTimeStamp: NSDate?
+    var degreesSymbol = ""
+
     
     // Outlets
     @IBOutlet weak var dailyWeatherTableView : UITableView!
@@ -29,7 +35,9 @@ class DailyTabVC: UIViewController {
     @IBOutlet weak var dailyWeather : Weather!  // This is passed in from ParentWeatherVC
     @IBOutlet weak var weatherLocation : Location!  // This is passed in from ParentWeatherVC
     
-    /// The banner view.
+    // The banner views.
+    @IBOutlet weak var bannerOuterView: UIView!
+    @IBOutlet weak var closeBannerButton : UIButton!
     @IBOutlet weak var bannerView: GADBannerView!
     
     override func viewDidLoad() {
@@ -38,11 +46,15 @@ class DailyTabVC: UIViewController {
         setupScreen()
         setupSwipeGestures()
         populateDailyWeatherDetails()
+        bannerOuterView.isHidden = true
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        // Register to receive notifications
+        NotificationCenter.default.addObserver(self, selector: #selector(DailyTabVC.weatherDataRefreshed), name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
 
         // Ease in the weather image view for effect
         self.weatherImage.alpha = 0.2
@@ -51,6 +63,23 @@ class DailyTabVC: UIViewController {
             }, completion: nil)
 
         populateDailyWeatherDetails()
+        
+        if AppSettings.ShowBannerAds {
+            // For this screen we only want to randomly show the banner ad, so thats its an
+            // occasional annoyance
+            
+            bannerOuterView.isHidden = true
+            let rand = Int(arc4random_uniform(4))
+            if (rand % 3 == 0) {
+                loadBannerAd()
+                bannerOuterView.isHidden = false
+            }
+        }
+
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self, name: GlobalConstants.weatherRefreshFinishedKey, object: nil);
     }
 
     
@@ -66,9 +95,6 @@ class DailyTabVC: UIViewController {
         dailyWeatherTableView.layer.cornerRadius = 10.0
         dailyWeatherTableView.clipsToBounds = true
 
-        if AppSettings.ShowBannerAds {
-            loadBannerAd()
-        }
     }
     
     func loadBannerAd() {
@@ -80,7 +106,7 @@ class DailyTabVC: UIViewController {
         let request = GADRequest()
         if AppSettings.BannerAdsTestMode {
             // Display test banner ads in the simulator
-            request.testDevices = [kGADSimulatorID]
+            request.testDevices = [AppSettings.AdTestDeviceID]
         }
 
         // Make ads more location specific
@@ -93,16 +119,47 @@ class DailyTabVC: UIViewController {
 
     }
     
+    
     func populateDailyWeatherDetails() {
         
         if let dailyWeather2 = dailyWeather {
             
+            // Min Temp, Max Temp, Sunrise and Sunset we can get from the 'daily' figures
+            let todayArray = dailyWeather?.currentBreakdown
+            let dayArray = dailyWeather?.dailyBreakdown.dailyStats
+            
+            for days in dayArray! {
+                
+                // If today, populate the relevant fields
+                let sameDay = Utility.areDatesSameDay(date1: (todayArray?.dateAndTimeStamp!)!, date2: days.dateAndTimeStamp!)
+                
+                if sameDay {
+                    sunriseTimeStamp = days.sunriseTimeStamp as NSDate?
+                    sunsetTimeStamp = days.sunsetTimeStamp as NSDate?                    
+                }
+                
+                // We want tomorrows sunrise and sunset times as well
+                
+                let tomorrow = Utility.isTomorrow(date1: days.dateAndTimeStamp!)
+                
+                if tomorrow {
+                    tomorrowSunriseTimeStamp = days.sunriseTimeStamp as NSDate?
+                    tomorrowSunsetTimeStamp = days.sunsetTimeStamp as NSDate?
+                }
+            }
+
+            var isItDayOrNight = "NIGHT"
+            let timeNow = NSDate()
+            if isDayTime(dateTime: timeNow) {
+                isItDayOrNight = "DAY"
+            }
+
             // Populate the weather image
             let icon = dailyWeather2.currentBreakdown.icon
             let enumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
             let nextDaysSummaryString = dailyWeather2.dailyBreakdown.summary
             
-            let iconName = Utility.getWeatherImage(serviceIcon: (enumVal?.rawValue)!)
+            let iconName = Utility.getWeatherImage(serviceIcon: (enumVal?.rawValue)!, dayOrNight: isItDayOrNight)
             
             if String(iconName).isEmpty != nil {
                 weatherImage.image = UIImage(named: iconName)!
@@ -116,6 +173,24 @@ class DailyTabVC: UIViewController {
         }
     }
     
+    func isDayTime (dateTime : NSDate) -> Bool {
+        
+        var retVal : Bool!
+        
+        // Calculate whether current time is in the day or the night
+        // Look at tomorrows sunrise and sunset times too incase the results span days
+        
+        if (dateTime.isBetweeen(date: sunsetTimeStamp!, andDate: sunriseTimeStamp!) ||
+            dateTime.isBetweeen(date: tomorrowSunsetTimeStamp!, andDate: tomorrowSunriseTimeStamp!) ) {
+            retVal = true
+        }
+        else {
+            retVal = false
+        }
+        
+        return retVal
+    }
+
     /// Force the text in a UITextView to always center itself.
     func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutableRawPointer) {
         let textView = object as! UITextView
@@ -170,7 +245,22 @@ class DailyTabVC: UIViewController {
             }
         }
     }
+    
+    // MARK:  Button methods
+    @IBAction func closeBannerAdButtonPressed(_ sender: AnyObject) {
+        
+        // Dismiss banner ad view
+        bannerOuterView.isHidden = true
+    }
 
+    // MARK:  Notification complete methods
+    
+    func weatherDataRefreshed() {
+        print("Weather Data Refreshed")
+
+        populateDailyWeatherDetails()
+
+    }
 }
 
 // MARK: UITableViewDataSource
@@ -193,6 +283,15 @@ extension DailyTabVC : UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        let lWeather = dailyWeather
+        
+        if lWeather?.flags.units == "si" {
+            degreesSymbol = GlobalConstants.degreesSymbol + "C"
+        }
+        else {
+            degreesSymbol = GlobalConstants.degreesSymbol + "F"
+        }
+        
         // We dont want 'today' in this list so +1
         let dayWeather = dailyWeather.dailyBreakdown.dailyStats[indexPath.row + 1]
         
@@ -203,8 +302,8 @@ extension DailyTabVC : UITableViewDataSource {
         cell.sunriseLabel.text = dayWeather.sunriseTimeStamp?.shortTimeString()
         cell.sunsetLabel.text = dayWeather.sunsetTimeStamp?.shortTimeString()
         cell.summaryLabel.text = dayWeather.summary
-        cell.minTempLabel.text = String(Int(round(dayWeather.temperatureMin!))) + GlobalConstants.degreesSymbol
-        cell.maxTempLabel.text = String(Int(round(dayWeather.temperatureMax!))) + GlobalConstants.degreesSymbol
+        cell.minTempLabel.text = String(Int(round(dayWeather.temperatureMin!))) + degreesSymbol
+        cell.maxTempLabel.text = String(Int(round(dayWeather.temperatureMax!))) + degreesSymbol
         cell.rainProbabilityLabel.text = String(Int(round(dayWeather.precipProbability!*100))) + "%"
         
         let icon = dayWeather.icon

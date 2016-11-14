@@ -19,6 +19,7 @@ class Weather: NSObject {
     var minuteBreakdown = MinuteBreakdown()
     var hourBreakdown = HourBreakdown()
     var dailyBreakdown = DailyBreakdown()
+    var flags = Flags()
     var weatherAlerts = [WeatherAlerts]()
     
     override init(){
@@ -76,6 +77,13 @@ class Weather: NSObject {
             
             weatherAlert = true
             weatherAlerts = lWeatherAlerts.flatMap({ WeatherAlerts(fromDictionary: $0) })
+            
+        }
+
+        if let lFlags = weatherDict["flags"] as? NSDictionary {
+            print("..flags dict")
+            
+            flags = Flags(fromDictionary: lFlags )
 
         }
 

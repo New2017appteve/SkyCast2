@@ -135,7 +135,7 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
         let request = GADRequest()
         if AppSettings.BannerAdsTestMode {
             // Display test banner ads in the simulator
-            request.testDevices = [kGADSimulatorID]
+            request.testDevices = [AppSettings.AdTestDeviceID]
         }
         
         bannerView.load(request)

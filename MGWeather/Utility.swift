@@ -45,7 +45,7 @@ class Utility: NSObject {
         return iconName
     }
     
-    class func getWeatherImage(serviceIcon : String) -> String {
+    class func getWeatherImage(serviceIcon : String, dayOrNight : String) -> String {
         
         var imageName : String!
 //        let now = NSDate()
@@ -56,7 +56,12 @@ class Utility: NSObject {
         case "clear-night" :
             imageName  = GlobalConstants.ImageFile.FileName.clearNight.rawValue
         case "rain" :
-            imageName  = GlobalConstants.ImageFile.FileName.rain.rawValue
+            if dayOrNight == "DAY" {
+                imageName  = GlobalConstants.ImageFile.FileName.rain.rawValue
+            }
+            else {
+                imageName  = GlobalConstants.ImageFile.FileName.rainNight.rawValue
+            }
         case "snow":
             imageName  = GlobalConstants.ImageFile.FileName.snow.rawValue
         case "sleet":
@@ -64,10 +69,6 @@ class Utility: NSObject {
         case "wind":
             imageName  = GlobalConstants.ImageFile.FileName.wind.rawValue
         case "fog":
-            
-//            if isDayTime(dateTime: now! {
-//                
-//                }
             imageName  = GlobalConstants.ImageFile.FileName.fog.rawValue
         case "cloudy":
             imageName  = GlobalConstants.ImageFile.FileName.cloudy.rawValue
@@ -108,5 +109,44 @@ class Utility: NSObject {
         userDefaults.set(backgroundName, forKey: GlobalConstants.Defaults.LastLoadedBackground)
         
     }
+    
+    
+    class func areDatesSameDay (date1: NSDate, date2: NSDate) -> Bool {
+        
+        var retVal = false
+        
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd"  // Remove timestamp for comparison
+        
+        let compareDateString1 = df.string(from: date1 as Date)
+        let compareDateString2 = df.string(from: date2 as Date)
+        
+        if compareDateString1 == compareDateString2 {
+            retVal = true
+        }
+        
+        return retVal
+    }
+    
+    class func isTomorrow (date1: NSDate) -> Bool {
+        
+        var retVal = false
+        
+        let today = Date()
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)
+        
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd"  // Remove timestamp for comparison
+        
+        let compareDateString1 = df.string(from: date1 as Date)
+        let compareDateString2 = df.string(from: tomorrow!)
+        
+        if compareDateString1 == compareDateString2 {
+            retVal = true
+        }
+        
+        return retVal
+    }
+    
 
 }

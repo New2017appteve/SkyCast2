@@ -76,7 +76,7 @@ class InfoPopupViewController: UIViewController {
         let request = GADRequest()
         if AppSettings.BannerAdsTestMode {
             // Display test banner ads in the simulator
-            request.testDevices = [kGADSimulatorID]
+            request.testDevices = [AppSettings.AdTestDeviceID]
         }
         
         bannerView.load(request)

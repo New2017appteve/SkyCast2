@@ -15,4 +15,6 @@ class AppSettings: NSObject {
     static let BannerAdsTestMode = true     // Set this to TRUE to show test ads
     static let AdMobAppID = GlobalConstants.AdMobAppID
     static let AdMobBannerID = GlobalConstants.AdMobBannerID
+    
+    static let AdTestDeviceID = GlobalConstants.BannerAdTestIDs.Simulator
 }

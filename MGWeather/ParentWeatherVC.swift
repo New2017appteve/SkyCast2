@@ -340,8 +340,6 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                     
                     self.tmpWeather = Weather(fromDictionary: getResponse )
                     self.weather = self.tmpWeather
-                
-                    //NotificationCenter.default.post(name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
 
                     // Return the updated Weather object of successful
                     completionHandler(GlobalConstants.CompletionResult.Success(self.tmpWeather as AnyObject?))
@@ -518,12 +516,16 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             if locationManager.location != nil {
                 
                 locationFound = true
+                locationManager.stopUpdatingLocation()
+
 //                weatherLocation.currentLatitude = locationManager.location!.coordinate.latitude
 //                weatherLocation.currentLongitude = locationManager.location!.coordinate.longitude
             }
             
         } else {
             Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
+            locationManager.stopUpdatingLocation()
+
         }
         
         return locationFound
