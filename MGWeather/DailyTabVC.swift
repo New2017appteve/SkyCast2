@@ -14,6 +14,7 @@ protocol DailyTabVCDelegate
     func refreshWeatherDataFromService()
     func refreshWeatherDataFromService2(completionHandler: @escaping GlobalConstants.CompletionHandlerType)
     func switchViewControllers()
+    func returnRefreshedWeatherDetails() -> Weather
 }
 
 class DailyTabVC: UIViewController {
@@ -79,7 +80,7 @@ class DailyTabVC: UIViewController {
     }
 
     override func viewDidDisappear(_ animated: Bool) {
-        NotificationCenter.default.removeObserver(self, name: GlobalConstants.weatherRefreshFinishedKey, object: nil);
+ //       NotificationCenter.default.removeObserver(self, name: GlobalConstants.weatherRefreshFinishedKey, object: nil);
     }
 
     
@@ -159,10 +160,19 @@ class DailyTabVC: UIViewController {
             let enumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
             let nextDaysSummaryString = dailyWeather2.dailyBreakdown.summary
             
-            let iconName = Utility.getWeatherImage(serviceIcon: (enumVal?.rawValue)!, dayOrNight: isItDayOrNight)
+            var backgroundImageName = ""
             
-            if String(iconName).isEmpty != nil {
-                weatherImage.image = UIImage(named: iconName)!
+            if AppSettings.SpecialThemedBackgroundsForEvents {
+                // Get a special background if its a 'themed day (e.g Chrisrmas etc)
+                backgroundImageName = Utility.getSpecialDayWeatherImage(dayOrNight: isItDayOrNight)
+            }
+            
+            if backgroundImageName == "" {
+                backgroundImageName = Utility.getWeatherImage(serviceIcon: (enumVal?.rawValue)!, dayOrNight: isItDayOrNight)
+            }
+            
+            if String(backgroundImageName).isEmpty != nil {
+                weatherImage.image = UIImage(named: backgroundImageName)!
             }
             
             if nextDaysSummaryString?.isEmpty != nil {
@@ -258,8 +268,18 @@ class DailyTabVC: UIViewController {
     func weatherDataRefreshed() {
         print("Weather Data Refreshed")
 
-        populateDailyWeatherDetails()
+        dailyWeather = delegate?.returnRefreshedWeatherDetails()
 
+        NotificationCenter.default.removeObserver(self, name: GlobalConstants.weatherRefreshFinishedKey, object: nil);
+
+        // NOTE:  This will be run on a background thread
+        DispatchQueue.main.async {
+            self.populateDailyWeatherDetails()
+            
+            // Scroll to the top of the table view
+            self.dailyWeatherTableView.contentOffset = CGPoint(x: 0, y: 0 - self.dailyWeatherTableView.contentInset.top)
+
+        }
     }
 }
 
@@ -304,6 +324,7 @@ extension DailyTabVC : UITableViewDataSource {
         cell.summaryLabel.text = dayWeather.summary
         cell.minTempLabel.text = String(Int(round(dayWeather.temperatureMin!))) + degreesSymbol
         cell.maxTempLabel.text = String(Int(round(dayWeather.temperatureMax!))) + degreesSymbol
+
         cell.rainProbabilityLabel.text = String(Int(round(dayWeather.precipProbability!*100))) + "%"
         
         let icon = dayWeather.icon

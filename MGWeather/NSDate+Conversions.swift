@@ -3,7 +3,6 @@
 //  MGWeather
 //
 //  Created by Mark Gumbs on 01/11/2016.
-//  Copyright © 2016 britishairways. All rights reserved.
 //
 
 import Foundation

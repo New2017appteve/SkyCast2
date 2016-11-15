@@ -160,6 +160,13 @@ class GlobalConstants: NSObject {
             // Custom
             case rainNight = "rain_night-pexels"
             
+            // Themed Occasions
+            case halloween = "halloween-pumpkin-carving-face"
+            case bonfireNight = "fireworks-rocket-night-sky-46159"
+            case xmasDay = "santa-claus-christmas-41963-pexels"
+            case xmasNight = "christmas-candles-54512-pexels"
+            case newYearsEve = "new-year-night-38196-pexels"
+            
         }
     }
     

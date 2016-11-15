@@ -147,7 +147,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-        NotificationCenter.default.removeObserver(self, name: GlobalConstants.weatherRefreshFinishedKey, object: nil);
+//        NotificationCenter.default.removeObserver(self, name: GlobalConstants.weatherRefreshFinishedKey, object: nil);
         NotificationCenter.default.removeObserver(self, name: GlobalConstants.locationRefreshFinishedKey, object: nil);
     }
 
@@ -583,6 +583,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             // NOTE:  Better to use the Minute summary at this level
 
             currentTemp.text = String(Int(round(todayArray.temperature! as Float))) + degreesSymbol
+
             feelsLikeTemp.text = "Feels Like: " + String(Int(round(todayArray.apparentTemperature! as Float))) + degreesSymbol
             windspeed.text = String(Int(round(todayArray.windSpeed! * GlobalConstants.MetersPerSecondToMph))) + " mph"
             rainProbability.text = String(Int(round(todayArray.precipProbability!*100))) + "%"
@@ -608,6 +609,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                     sunriseTimeStamp = days.sunriseTimeStamp as NSDate?
                     sunsetTimeStamp = days.sunsetTimeStamp as NSDate?
                     
+                    var attributedText = 
                     todayHighLowTemp.text = maxTempString + " / " + minTempString
                 }
                 
@@ -636,7 +638,17 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             // Populate the weather image
             let icon = todayArray.icon
             let enumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
-            let backgroundImageName = Utility.getWeatherImage(serviceIcon: (enumVal?.rawValue)!, dayOrNight: isItDayOrNight)
+            
+            var backgroundImageName = ""
+            
+            if AppSettings.SpecialThemedBackgroundsForEvents {
+                // Get a special background if its a 'themed day (e.g Chrisrmas etc)
+                backgroundImageName = Utility.getSpecialDayWeatherImage(dayOrNight: isItDayOrNight)
+            }
+            
+            if backgroundImageName == "" {
+                backgroundImageName = Utility.getWeatherImage(serviceIcon: (enumVal?.rawValue)!, dayOrNight: isItDayOrNight)
+            }
             
             if String(backgroundImageName).isEmpty != nil {
                 weatherImage.image = UIImage(named: backgroundImageName)!
@@ -721,6 +733,8 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     func weatherDataRefreshed() {
         print("Weather Data Refreshed")
 
+        NotificationCenter.default.removeObserver(self, name: GlobalConstants.weatherRefreshFinishedKey, object: nil);
+
         // Currently this will only be called after changing a setting on the Settings screen
         
         // NOTE:  This will be called on a background thread
@@ -761,6 +775,8 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
 
     }
 }
+
+
 
 // MARK:- Extension:  UIPopoverPresentationControllerDelegate methods
 

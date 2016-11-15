@@ -83,6 +83,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         {
             // Internet Connection not Available!
             Utility.showMessage(titleString: "Error", messageString: "You are not connected to the internet.  Please check your cellular or wi-fi settings" )
+            self.view.hideToastActivity()
+            refreshButton.isEnabled = true
         }
         
         setViewControllerTitle()
@@ -233,10 +235,9 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     func getURL () -> String {
         
         var returnURL = ""
-//        let latitude = weatherLocation.currentLatitude
         
         // Obtain the correct latitude and logitude.  This should be in our weatherLocation object
-//        var url = GlobalConstants.BaseWeatherURL + String(latitude!) + "," + String(weatherLocation.currentLongitude!)
+//        var url = GlobalConstants.BaseWeatherURL + String(weatherLocation.currentLatitude!) + "," + String(weatherLocation.currentLongitude!)
         
         // Find out if user preference is celsuis or fahenheight.  Pass relevant parameter on url
         let userDefaults = UserDefaults.standard
@@ -257,9 +258,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     }
 
     func getWeatherDataFromService(){
-        
-        // NOTE:  This function is called from a background thread
 
+        // NOTE:  This function is called from a background thread
         let url = getURL()
         
         print("URL= " + url)
@@ -289,6 +289,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                         
                         // Hide animation on the main thread, once finished background task
                         self.view.hideToastActivity()
+                        self.refreshButton.isEnabled = true
                     }
                     
                 } catch let error as NSError {
@@ -377,7 +378,6 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     func refreshWeatherDataFromService() {
         
         // NOTE:  This function is called from a background thread
-        //let url = GlobalConstants.WeatherURL
         let url = getURL()
         
         print("URL= " + url)
@@ -458,27 +458,6 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         return weatherLocation
     }
 
-    func getAndSetLocation() {
-        
-        // Get the current location and the weather data based on location
-        
-        locationFound = getLocation()
-        if locationFound == true {
-          //  setUsersClosestCity()
-        }
-        
-    }
-    
-    func getAndSetLocationAfterRefresh() -> Location {
-        
-        // Get the current location and the weather data based on location
-        
-        locationFound = getLocation()
-        if locationFound == true {
-      //      setUsersClosestCity()
-        }
-        return weatherLocation
-    }
 
     func retrieveWeatherAndLocationData () {
         
@@ -487,19 +466,29 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         // Make a toast to say data is refreshing
         self.view.makeToast("Refreshing weather data", duration: 1.0, position: .bottom)
         self.view.makeToastActivity(.center)
+        refreshButton.isEnabled = false
         
         getWeatherDataFromService()
         
         // NOTE:  The setup of the screen in the tabs will be done after getWeatherDataFromService() has finished
     }
-
+    
+    func getAndSetLocation() {
+        
+        // Get the current location and the weather data based on location
+        
+        locationFound = getLocation()
+        if locationFound == true {
+            //  setUsersClosestCity()
+        }
+        
+    }
+    
     func getLocation() -> Bool {
         
         locationManager = CLLocationManager()
 
         var locationFound = false
-    
-        //setLocationInTitle()
 
         locationManager.delegate = self;
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -517,14 +506,17 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 
                 locationFound = true
                 locationManager.stopUpdatingLocation()
+                locationManager.stopMonitoringSignificantLocationChanges()
 
-//                weatherLocation.currentLatitude = locationManager.location!.coordinate.latitude
-//                weatherLocation.currentLongitude = locationManager.location!.coordinate.longitude
+                //  didUpdateLocations will populate longitude and latitude here
             }
             
         } else {
             Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
             locationManager.stopUpdatingLocation()
+            locationManager.stopMonitoringSignificantLocationChanges()
+            self.view.hideToastActivity()
+            refreshButton.isEnabled = true
 
         }
         
@@ -536,12 +528,12 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         // The following will be called when the location has been updated.
         // The last location will be stored in the last element of the locations array
         
-        self.locationManager.stopUpdatingLocation()
-        
         let latestLocation = locations.last
         weatherLocation.currentLatitude = latestLocation!.coordinate.latitude
         weatherLocation.currentLongitude = latestLocation!.coordinate.longitude
-setUsersClosestCity()
+        weatherLocation.currentLocation = locations.last
+        
+        setUsersClosestCity()
     }
     
     func setUsersClosestCity()
@@ -554,6 +546,8 @@ setUsersClosestCity()
             if error != nil {
                 print("Reverse geocoder failed with error" + (error?.localizedDescription)!)
                 Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
+                self.view.hideToastActivity()
+                self.refreshButton.isEnabled = true
                 return
             }
             if (placemarks?.count)! > 0 {
@@ -602,14 +596,14 @@ setUsersClosestCity()
                 }
                 
                 NotificationCenter.default.post(name: GlobalConstants.locationRefreshFinishedKey, object: nil)
-
-                //self.setLocationInTitle()
                 
             }
                 
             else {
                 print("Problem with the data received from geocoder")
                 Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
+                self.view.hideToastActivity()
+                self.refreshButton.isEnabled = true
 
             }
             
@@ -701,18 +695,31 @@ setUsersClosestCity()
     
     // SettingsViewControllerDelegate delegate Methods
     func refreshDataAfterSettingChange() {
+
+        Reach().monitorReachabilityChanges()
         
-        if Reachability.isConnectedToNetwork() == true
+        var connected = false
+        let status = Reach().connectionStatus()
+        switch status {
+        case .unknown, .offline:
+            print("Not connected")
+        case .online(.wwan):
+            print("Connected via WWAN")
+            connected = true
+        case .online(.wiFi):
+            print("Connected via WiFi")
+            connected = true
+        }
+        
+        if connected
         {
             retrieveWeatherAndLocationData()
-            // TODO:  Need to refresh the TodayScreen somehow
         }
         else
         {
             // Internet Connection not Available!
             Utility.showMessage(titleString: "Error", messageString: "You are not connected to the internet.  Please check your cellular or wi-fi settings" )
         }
-
     }
     
     // MARK:  Reach methods

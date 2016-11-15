@@ -48,7 +48,6 @@ class Utility: NSObject {
     class func getWeatherImage(serviceIcon : String, dayOrNight : String) -> String {
         
         var imageName : String!
-//        let now = NSDate()
         
         switch serviceIcon {
         case "clear-day":
@@ -83,6 +82,48 @@ class Utility: NSObject {
         return imageName
     }
     
+    class func getSpecialDayWeatherImage(dayOrNight : String) -> String {
+        
+        // Based on the day, return a special background image regardless of the weather conditions
+        // 
+        // Will only focus on Halloween, Bonfire night, Christmas Day and New Years eve for now
+        
+        var imageName : String!
+        
+        let today = Date()
+        let df = DateFormatter()
+        df.dateFormat = "MM-dd"  // Remove timestamp for comparison
+        
+        let dateString = df.string(from: today as Date)
+        
+        imageName  = ""
+        switch dateString {
+        case "10-31":
+            if dayOrNight == "NIGHT" {
+                imageName  = GlobalConstants.ImageFile.FileName.halloween.rawValue
+            }
+        case "11-05":
+            if dayOrNight == "NIGHT" {
+                imageName  = GlobalConstants.ImageFile.FileName.bonfireNight.rawValue
+            }
+        case "12-25":
+            if dayOrNight == "DAY" {
+                imageName  = GlobalConstants.ImageFile.FileName.xmasDay.rawValue
+            }
+            else {
+                imageName  = GlobalConstants.ImageFile.FileName.xmasNight.rawValue
+            }
+        case "12-31":
+            if dayOrNight == "NIGHT" {
+                imageName  = GlobalConstants.ImageFile.FileName.newYearsEve.rawValue
+            }
+        default:
+            imageName  = ""
+        }
+        
+        return imageName
+
+    }
     
     class func showMessage(titleString : String, messageString : String)
     {
