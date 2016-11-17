@@ -53,7 +53,14 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     @IBOutlet weak var windspeed : UILabel!
     @IBOutlet weak var feelsLikeTemp : UILabel!
     @IBOutlet weak var currentWeatherIcon : UIImageView!
+    
+    @IBOutlet weak var rainNowInfoStackView : UIStackView!
+    @IBOutlet weak var rainNowIcon : UIImageView!
+    @IBOutlet weak var rainNowProbability : UILabel!
 
+    @IBOutlet weak var nearestRainDistance : UILabel!
+    @IBOutlet weak var currentWindspeed : UILabel!
+    
     @IBOutlet weak var currentSummary : UILabel!
 
     @IBOutlet weak var weatherDetailOuterView : UIView!
@@ -74,6 +81,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     @IBOutlet weak var humidity : UILabel!
     @IBOutlet weak var weatherAlertTitle : UILabel!
     @IBOutlet weak var weatherAlertButton : UIButton!
+    @IBOutlet weak var bigWeatherAlertButton : UIButton!
     @IBOutlet weak var poweredByDarkSkyButton : UIButton!
     
     private let cellId = "cellId"
@@ -290,6 +298,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         if (segue.identifier == "infoScreenSegue") {
             
             var weatherAlertDescription = ""
+            var weatherAlertURL = ""
             
             // If weather alert, enable the button so user can bring up alert text view
             
@@ -305,8 +314,16 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                     let alertTime = dailyWeather.weatherAlerts[i].alertDateAndTimeStamp
                     let alertExpiry = dailyWeather.weatherAlerts[i].alertExpiryDateAndTimeStamp
                     
-                    let alertTimeDescription = (alertTime?.dayOfTheWeek())! + " " + (alertTime?.getDateSuffix())! + " to " + (alertExpiry?.dayOfTheWeek())! + " " + (alertExpiry?.getDateSuffix())!
+                    let alertTimeDescription =
+                        (alertTime?.shortDayOfTheWeek())! + " " +
+                        (alertTime?.getDateSuffix())! + " @" +
+                        (alertTime?.shortTimeString())! +
+                        " to " +
+                        (alertExpiry?.shortDayOfTheWeek())! + " " +
+                        (alertExpiry?.getDateSuffix())! + " @" +
+                        (alertExpiry?.shortTimeString())!
                     
+                    weatherAlertURL = dailyWeather.weatherAlerts[i].uri!
                     weatherAlertDescription = alertTimeDescription + "\r\n\n" + dailyWeather.weatherAlerts[i].alertDescription! + "\r\n\n"
                 }
             }
@@ -319,6 +336,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             
             let vc:InfoPopupViewController = segue.destination as! InfoPopupViewController
             vc.informationString = weatherAlertDescription
+            vc.weatherAlertSourceURL = weatherAlertURL
             
         }
         
@@ -564,9 +582,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     
     func populateTodayWeatherDetails() {
 
-        // Rather than force unwrapping, use conditional let to check weather array
         var degreesSymbol = ""
-
+        
+        // Rather than force unwrapping, use conditional let to check weather array
         if let lWeather = dailyWeather {
             if lWeather.flags.units == "si" {
                 degreesSymbol = GlobalConstants.degreesSymbol + "C"
@@ -580,15 +598,27 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             
             lastUpdatedTime  = getLastUpdatedTime()
 
-            // NOTE:  Better to use the Minute summary at this level
-
+            //
+            // Now Pod
+            //
+            
             currentTemp.text = String(Int(round(todayArray.temperature! as Float))) + degreesSymbol
-
             feelsLikeTemp.text = "Feels Like: " + String(Int(round(todayArray.apparentTemperature! as Float))) + degreesSymbol
-            windspeed.text = String(Int(round(todayArray.windSpeed! * GlobalConstants.MetersPerSecondToMph))) + " mph"
-            rainProbability.text = String(Int(round(todayArray.precipProbability!*100))) + "%"
-            cloudCover.text = String(Int(round(todayArray.cloudCover!*100))) + "%"
-            humidity.text = String(Int(round(todayArray.humidity!*100))) + "%"
+            
+            let minuteBreakdown = dailyWeather?.minuteBreakdown
+            currentSummary.text = minuteBreakdown?.summary
+
+            let minuteStats = minuteBreakdown?.minuteStats
+            let rainProbabilityNow = Int(round((minuteStats?[0].precipProbability!)!*100))
+            
+            if (rainProbabilityNow > GlobalConstants.RainIconReportThresholdPercent) {
+                rainNowIcon.isHidden = false
+                rainNowProbability.text = String(rainProbabilityNow*100) + "%"
+            }
+            else {
+                rainNowIcon.isHidden = true
+                rainNowProbability.text = ""
+            }
             
             // Min Temp, Max Temp, Sunrise and Sunset we can get from the 'daily' figures
             
@@ -600,20 +630,29 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                 let sameDay = Utility.areDatesSameDay(date1: todayArray.dateAndTimeStamp!, date2: days.dateAndTimeStamp!)
                 
                 if sameDay {
+                    
+                    //
+                    // Today Pod
+                    //
+                    
                     let minTempString = String(Int(round(days.temperatureMin!))) + degreesSymbol
                     let maxTempString = String(Int(round(days.temperatureMax!))) + degreesSymbol
+                    todayHighLowTemp.text = maxTempString + " / " + minTempString
+                    
+                    windspeed.text = String(Int(round(days.windSpeed! * GlobalConstants.MetersPerSecondToMph))) + " mph"
+                    cloudCover.text = String(Int(round(days.cloudCover!*100))) + "%"
+                    humidity.text = String(Int(round(days.humidity!*100))) + "%"
+                    rainProbability.text = String(Int(round(days.precipProbability!*100))) + "%"
                     
                     sunrise.text = String(days.sunriseTimeStamp!.shortTimeString())
                     sunset.text = String(days.sunsetTimeStamp!.shortTimeString())
-                    
                     sunriseTimeStamp = days.sunriseTimeStamp as NSDate?
                     sunsetTimeStamp = days.sunsetTimeStamp as NSDate?
                     
-                    var attributedText = 
-                    todayHighLowTemp.text = maxTempString + " / " + minTempString
+                    //var attributedText =
                 }
                 
-                // We want tomorrows sunrise and sunset times as well
+                // We want tomorrows sunrise and sunset times as well for use in calculations later
                 
                 let tomorrow = Utility.isTomorrow(date1: days.dateAndTimeStamp!)
                 
@@ -626,8 +665,8 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             let hourlyBreakdown = dailyWeather?.hourBreakdown
             todaySummary.text = hourlyBreakdown?.summary
             
-            let minuteBreakdown = dailyWeather?.minuteBreakdown
-            currentSummary.text = minuteBreakdown?.summary
+            // We have the sunset and sunrise times for today and tomorrow, so work out if
+            // the current time is day or night
             
             var isItDayOrNight = "NIGHT"
             let timeNow = NSDate()
@@ -640,7 +679,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             let enumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
             
             var backgroundImageName = ""
-            
             if AppSettings.SpecialThemedBackgroundsForEvents {
                 // Get a special background if its a 'themed day (e.g Chrisrmas etc)
                 backgroundImageName = Utility.getSpecialDayWeatherImage(dayOrNight: isItDayOrNight)
@@ -654,28 +692,31 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                 weatherImage.image = UIImage(named: backgroundImageName)!
                 Utility.setLastLoadedBackground(backgroundName: backgroundImageName)
             }
-
-            // Populate the weather icon
+            
+            // Populate the weather icons
             
             let weatherIconEnumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
             let weatherIconName = Utility.getWeatherIcon(serviceIcon: (weatherIconEnumVal?.rawValue)!)
             if String(weatherIconName).isEmpty != nil {
                 currentWeatherIcon.image = UIImage(named: weatherIconName)!
             }
-
+            
             // If weather alert, enable the button so user can bring up alert text view
             if (dailyWeather?.weatherAlert == true) {
                 
                 weatherAlertButton.isHidden = false
+                bigWeatherAlertButton.isHidden = false
                 weatherAlertTitle.isHidden = false
                 
                 weatherAlertButton.isEnabled = true
+                bigWeatherAlertButton.isEnabled = true
                 weatherAlertButton.setTitle(nil, for: .normal)
                 weatherAlertTitle.text = "Weather Alert"
                 weatherAlertButton.setImage(UIImage(named: "Alert"), for: UIControlState.normal)
             }
             else {
                 weatherAlertButton.isHidden = true
+                bigWeatherAlertButton.isHidden = true
                 weatherAlertTitle.isHidden = true
             }
         }
@@ -840,7 +881,7 @@ extension TodayTabVC : UITableViewDataSource {
         cell.hourLabel.text = hourWeather?.dateAndTimeStamp!.shortHourTimeString()
         cell.temperatureLabel.text = String(Int(round(hourWeather!.temperature!))) + degreesSymbol
         
-        if (Int(round(hourWeather!.precipProbability!*100)) > 0) {
+        if (Int(round(hourWeather!.precipProbability!*100)) > GlobalConstants.RainIconReportThresholdPercent) {
             cell.rainIcon.isHidden = false
             cell.rainProbabilityLabel.text = String(Int(round(hourWeather!.precipProbability!*100))) + "%"
         }

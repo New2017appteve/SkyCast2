@@ -22,13 +22,17 @@ class InfoPopupViewController: UIViewController {
     
     @IBOutlet weak var outerView: UIView!
     @IBOutlet weak var weatherImage : UIImageView!
+    @IBOutlet weak var alertInfoOuterView: UIView!
     @IBOutlet weak var informationText: UITextView!
+    @IBOutlet weak var weatherAlertSourceButtonOuterView: UIView!
+    @IBOutlet weak var weatherAlertSourceButton: UIButton!
 
     /// The banner view.
     @IBOutlet weak var bannerView: GADBannerView!
 
     var informationString : String!
     var informationTitleString : String!
+    var weatherAlertSourceURL : String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,13 +59,16 @@ class InfoPopupViewController: UIViewController {
     
     func initialScreenSetup () {
         
-        informationText.backgroundColor = GlobalConstants.ViewShading.Lighter
-        informationText.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+        alertInfoOuterView.backgroundColor = GlobalConstants.ViewShading.Lighter
+        alertInfoOuterView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
 
-        informationText.layer.cornerRadius = 10.0
-        informationText.clipsToBounds = true
+        alertInfoOuterView.layer.cornerRadius = 10.0
+        alertInfoOuterView.clipsToBounds = true
+        
+        weatherAlertSourceButtonOuterView.backgroundColor = GlobalConstants.DarkestGray
         
         informationText.text = informationString
+        
         if AppSettings.ShowBannerAds {
             loadBannerAd()
         }
@@ -92,6 +99,12 @@ class InfoPopupViewController: UIViewController {
         // Dismiss view
         self.dismiss(animated: true, completion: nil)
 
+    }
+    
+    @IBAction func weatherAlertSourceButton(_ sender: AnyObject) {
+        
+        // Display the weather alert from its source on the net
+        UIApplication.shared.openURL(URL(string: weatherAlertSourceURL)!)
     }
 }
 

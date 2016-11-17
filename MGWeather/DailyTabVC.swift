@@ -322,7 +322,16 @@ extension DailyTabVC : UITableViewDataSource {
         cell.minTempLabel.text = String(Int(round(dayWeather.temperatureMin!))) + degreesSymbol
         cell.maxTempLabel.text = String(Int(round(dayWeather.temperatureMax!))) + degreesSymbol
 
-        cell.rainProbabilityLabel.text = String(Int(round(dayWeather.precipProbability!*100))) + "%"
+        let rainProbabilityForDay = Int(round(dayWeather.precipProbability!*100))
+        
+        if (rainProbabilityForDay > GlobalConstants.RainIconReportThresholdPercent) {
+            cell.rainIcon.isHidden = false
+            cell.rainProbabilityLabel.text = String(rainProbabilityForDay) + "%"
+        }
+        else {
+            cell.rainIcon.isHidden = true
+            cell.rainProbabilityLabel.text = ""
+        }
         
         let icon = dayWeather.icon
         let iconName = Utility.getWeatherIcon(serviceIcon: icon!)
