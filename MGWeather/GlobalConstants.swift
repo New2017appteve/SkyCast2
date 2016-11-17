@@ -188,7 +188,9 @@ class GlobalConstants: NSObject {
         static var hail = "Hail-50"
         static var thunderstorm = "Storm-50"
         static var tornado = "tornado"
-
+        
+        // Custom
+        static var umbrella = "Umbrella"
     }
     
     enum DistanceUnits: String {

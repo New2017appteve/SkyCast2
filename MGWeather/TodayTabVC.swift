@@ -794,6 +794,7 @@ extension TodayTabVC : UIPopoverPresentationControllerDelegate {
     func popoverPresentationControllerShouldDismissPopover(popoverPresentationController: UIPopoverPresentationController) -> Bool {
         return true
     }
+    
 }
 
 
@@ -834,10 +835,19 @@ extension TodayTabVC : UITableViewDataSource {
         
         let cell:HourlyWeatherCell = self.hourlyWeatherTableView.dequeueReusableCell(withIdentifier: "HourWeatherCellID") as! HourlyWeatherCell
         
-        var hourTimeStamp = hourWeather?.dateAndTimeStamp
+        let hourTimeStamp = hourWeather?.dateAndTimeStamp
         
         cell.hourLabel.text = hourWeather?.dateAndTimeStamp!.shortHourTimeString()
         cell.temperatureLabel.text = String(Int(round(hourWeather!.temperature!))) + degreesSymbol
+        
+        if (Int(round(hourWeather!.precipProbability!*100)) > 0) {
+            cell.rainIcon.isHidden = false
+            cell.rainProbabilityLabel.text = String(Int(round(hourWeather!.precipProbability!*100))) + "%"
+        }
+        else {
+            cell.rainIcon.isHidden = true
+            cell.rainProbabilityLabel.text = ""
+        }
         
         let icon = hourWeather?.icon
         let iconName = Utility.getWeatherIcon(serviceIcon: icon!)

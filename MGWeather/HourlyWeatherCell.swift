@@ -12,6 +12,9 @@ class HourlyWeatherCell: UITableViewCell {
 
     @IBOutlet weak var hourLabel : UILabel!
     @IBOutlet weak var temperatureLabel : UILabel!
+    @IBOutlet weak var rainInfoStackView : UIStackView!
+    @IBOutlet weak var rainIcon : UIImageView!
+    @IBOutlet weak var rainProbabilityLabel : UILabel!
     @IBOutlet weak var summaryIcon : UIImageView!
 
 }
