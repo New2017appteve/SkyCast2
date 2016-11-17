@@ -15,6 +15,12 @@ extension NSDate {
         return dateFormatter.string(from: self as Date)
     }
     
+    func shortDayOfTheWeek() -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEE"
+        return dateFormatter.string(from: self as Date)
+    }
+    
     func shortTimeString() -> String
     {
         //Get Short Time String

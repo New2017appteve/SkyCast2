@@ -15,8 +15,8 @@ class GlobalConstants: NSObject {
     
     static let AppName = "SkyCast"
     
-    // Tableview shading
-    
+
+    // Completion Handler code (NOT CURRENTLY USED)
    // http://www.developerdave.co.uk/2015/09/better-completion-handlers-in-swift/
     typealias CompletionHandlerType = (CompletionResult) -> Void
     
@@ -28,6 +28,7 @@ class GlobalConstants: NSObject {
     enum CompletionError: Error {
         case AuthenticationFailure
     }
+
 
     // Colour Shades
     static var DarkestGray = UIColor(red: 203/255, green: 210/255, blue: 214/255, alpha: 0.95)
@@ -150,7 +151,7 @@ class GlobalConstants: NSObject {
             case fogNight = "fog_night_foggy-mist-forest-trees-42263-pexels"
             case cloudy = "cloud_overcast-27194-pexels.jpg"
             case partlyCloudyDay = "partial_cloud_day-28501-pexels.jpg"
-            case partlyCloudyNight = "partial_cloudy_night-70439-pexels.jpeg"
+            case partlyCloudyNight = "partial-cloud-night-30376-pexels" //"partial_cloudy_night-70439-pexels.jpeg"
             
             // Future
             case hail = "hail"

@@ -45,9 +45,15 @@ class SettingsViewController: UIViewController {
         self.weatherImage.alpha = 0.2
         self.settingsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
         UIView.animate(withDuration: 0.8, delay: 0.15, options: UIViewAnimationOptions.curveEaseIn, animations: {
-            self.weatherImage.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-         //   self.settingsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+                self.weatherImage.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
             }, completion: nil)
+        
+//        // Register to receive notification for Location and weather
+//        NotificationCenter.default.addObserver(self, selector:
+//            #selector(SettingsViewController.locationDataRefreshed), name: GlobalConstants.locationRefreshFinishedKey, object: nil)
+//        
+//        NotificationCenter.default.addObserver(self, selector:
+//            #selector(SettingsViewController.weatherDataRefreshed), name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
     }
 
 
@@ -167,5 +173,22 @@ class SettingsViewController: UIViewController {
         // Dismiss view
         self.dismiss(animated: true, completion: nil)
     }
+
+//    // MARK:  Notification complete methods
+//    
+//    func weatherDataRefreshed() {
+//        print("Weather Data Refreshed - SettingsViewController")
+//        
+//            NotificationCenter.default.removeObserver(self, name: GlobalConstants.weatherRefreshFinishedKey, object: nil);
+//        
+//    }
+//    
+//    func locationDataRefreshed() {
+//        print("Location Data Refreshed - SettingsViewController")
+//        
+//        // Remove after refresh  Can add again on the next refresh
+//        NotificationCenter.default.removeObserver(self, name: GlobalConstants.locationRefreshFinishedKey, object: nil);
+//        
+//    }
 
 }

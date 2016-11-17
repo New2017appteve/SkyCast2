@@ -3,7 +3,6 @@
 //  Weather
 //
 //  Created by Mark Gumbs on 29/06/2016.
-//  Copyright © 2016 britishairways. All rights reserved.
 //
 
 import UIKit
@@ -11,8 +10,6 @@ import GoogleMobileAds
 
 protocol DailyTabVCDelegate
 {
-    func refreshWeatherDataFromService()
-    func refreshWeatherDataFromService2(completionHandler: @escaping GlobalConstants.CompletionHandlerType)
     func switchViewControllers()
     func returnRefreshedWeatherDetails() -> Weather
 }
@@ -123,7 +120,7 @@ class DailyTabVC: UIViewController {
     
     func populateDailyWeatherDetails() {
         
-        if let dailyWeather2 = dailyWeather {
+        if let tmpDailyWeather = dailyWeather {
             
             // Min Temp, Max Temp, Sunrise and Sunset we can get from the 'daily' figures
             let todayArray = dailyWeather?.currentBreakdown
@@ -156,9 +153,9 @@ class DailyTabVC: UIViewController {
             }
 
             // Populate the weather image
-            let icon = dailyWeather2.currentBreakdown.icon
+            let icon = tmpDailyWeather.currentBreakdown.icon
             let enumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
-            let nextDaysSummaryString = dailyWeather2.dailyBreakdown.summary
+            let nextDaysSummaryString = tmpDailyWeather.dailyBreakdown.summary
             
             var backgroundImageName = ""
             
@@ -266,7 +263,7 @@ class DailyTabVC: UIViewController {
     // MARK:  Notification complete methods
     
     func weatherDataRefreshed() {
-        print("Weather Data Refreshed")
+        print("Weather Data Refreshed - DailyTab")
 
         dailyWeather = delegate?.returnRefreshedWeatherDetails()
 
@@ -317,7 +314,7 @@ extension DailyTabVC : UITableViewDataSource {
         
         let cell:DailyWeatherCell = self.dailyWeatherTableView.dequeueReusableCell(withIdentifier: "DailyWeatherCellID") as! DailyWeatherCell
         
-        cell.dateLabel.text = (dayWeather.dateAndTimeStamp?.dayOfTheWeek())! + " " + (dayWeather.dateAndTimeStamp?.getDateSuffix())!
+        cell.dateLabel.text = (dayWeather.dateAndTimeStamp?.shortDayOfTheWeek())! + " " + (dayWeather.dateAndTimeStamp?.getDateSuffix())!
 
         cell.sunriseLabel.text = dayWeather.sunriseTimeStamp?.shortTimeString()
         cell.sunsetLabel.text = dayWeather.sunsetTimeStamp?.shortTimeString()

@@ -13,10 +13,9 @@ protocol TodayTabVCDelegate
 {
     // Following methods are part of ParentWeatherVC
     
-    func refreshWeatherDataFromService()
-    func refreshWeatherDataFromService2(completionHandler: @escaping GlobalConstants.CompletionHandlerType)
-    func getAndSetLocation()
     func switchViewControllers()
+    
+    func refreshLocationAndWeatherData()
     func returnRefreshedLocationDetails() -> Location
     func returnRefreshedWeatherDetails() -> Weather
 }
@@ -102,9 +101,12 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         // Do any additional setup after loading the view, typically from a nib.
         
         NotificationCenter.default.addObserver(self, selector: #selector(TodayTabVC.networkStatusChanged(_:)), name: NSNotification.Name(rawValue: ReachabilityStatusChangedNotification), object: nil)
-
-        // Register to receive notification for location (note: Done here but added again after a refresh)
+        
+        // NOTE:  May not need the following 2 for startup
         NotificationCenter.default.addObserver(self, selector: #selector(TodayTabVC.locationDataRefreshed), name: GlobalConstants.locationRefreshFinishedKey, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector:
+            #selector(TodayTabVC.weatherDataRefreshed), name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
 
         setupDisplayTimer()
         setupSwipeGestures()
@@ -116,9 +118,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        // Register to receive notifications
-        NotificationCenter.default.addObserver(self, selector: #selector(TodayTabVC.weatherDataRefreshed), name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
     
         // Ease in the weather background for effect
         self.weatherImage.alpha = 0.2
@@ -148,7 +147,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     
     override func viewDidDisappear(_ animated: Bool) {
 //        NotificationCenter.default.removeObserver(self, name: GlobalConstants.weatherRefreshFinishedKey, object: nil);
-        NotificationCenter.default.removeObserver(self, name: GlobalConstants.locationRefreshFinishedKey, object: nil);
+//        NotificationCenter.default.removeObserver(self, name: GlobalConstants.locationRefreshFinishedKey, object: nil);
     }
 
     
@@ -503,16 +502,17 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
 
         disableScreen()
 
-        // Register to receive notification for Location
-        NotificationCenter.default.addObserver(self, selector: #selector(TodayTabVC.locationDataRefreshed), name: GlobalConstants.locationRefreshFinishedKey, object: nil)
-
-        // Make a toast to say data is refreshing
-        self.view.makeToast("Refreshing weather data", duration: 1.0, position: .bottom)
-        self.view.makeToastActivity(.center)
+        // NOTE: Notifications for Weather and Location should be active already
         
         let userDefaults = UserDefaults.standard
         dayOrNightColourSetting = userDefaults.string(forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
         
+        // The toast to say data is refreshing will be done in parent
+        self.delegate?.refreshLocationAndWeatherData()
+        
+        // Data for Location and Weather will be updated once each notification has fired
+        
+        /*
         self.delegate?.getAndSetLocation()
         self.delegate?.refreshWeatherDataFromService2
             { (result) -> Void in
@@ -545,7 +545,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                     break;
                 }
         }
-
+        */
     }
     
     func textView(textView: UITextView, shouldInteractWithURL URL: NSURL, inRange characterRange: NSRange) -> Bool {
@@ -731,17 +731,12 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     // MARK:  Notification complete methods
     
     func weatherDataRefreshed() {
-        print("Weather Data Refreshed")
-
-        NotificationCenter.default.removeObserver(self, name: GlobalConstants.weatherRefreshFinishedKey, object: nil);
-
-        // Currently this will only be called after changing a setting on the Settings screen
+        print("Weather Data Refreshed - TodayTab")
         
         // NOTE:  This will be called on a background thread
         
-        dailyWeather = delegate?.returnRefreshedWeatherDetails()
         DispatchQueue.main.async {
-            self.populateTodayWeatherDetails()
+            self.dailyWeather = self.delegate?.returnRefreshedWeatherDetails()
             
             // Double check to see if the user has changed day/night setings before reloading 
             // the hour tableView.  It may have not got written to in time the first time around
@@ -749,29 +744,35 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             let userDefaults = UserDefaults.standard
             self.dayOrNightColourSetting = userDefaults.string(forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
             
+            self.populateTodayWeatherDetails()
             self.hourlyWeatherTableView.reloadData()
-        
+            self.enableScreen()
+            
             // Scroll to the top of the table view
             self.hourlyWeatherTableView.contentOffset = CGPoint(x: 0, y: 0 - self.hourlyWeatherTableView.contentInset.top)
+            
+            // NOTE:  We want to keep listening for notifications incase a change is made in
+            // the Settings screen so they have not been removed
+
         }
     }
     
     func locationDataRefreshed() {
-        print("Location Data Refreshed")
+        print("Location Data Refreshed - TodayTab")
         
         // NOTE:  This will be called on a background thread
         
         // The phone could have moved location since the last refresh.
         // Get the updated location details after it has been refreshed.
         
-        weatherLocation = nil
-        weatherLocation = delegate?.returnRefreshedLocationDetails()
         DispatchQueue.main.async {
+            self.weatherLocation = nil
+            self.weatherLocation = self.delegate?.returnRefreshedLocationDetails()
             self.updateLocationDetailsOnScreen()
         }
         
-        // Remove after refresh  Can add again on the next refresh
-        NotificationCenter.default.removeObserver(self, name: GlobalConstants.locationRefreshFinishedKey, object: nil);
+        // NOTE:  We want to keep listening for notifications incase a change is made in
+        // the Settings screen so they have not been removed
 
     }
 }

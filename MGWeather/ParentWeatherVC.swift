@@ -29,8 +29,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         case ShowAbout = "About"
     }
     
-    var locationManager: CLLocationManager!
-    //var locationManager = CLLocationManager()
+    var locationManager = CLLocationManager() //: CLLocationManager!
     var locationFound: Bool!
     var locationName: String!
     
@@ -40,6 +39,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     let geoCoder = CLGeocoder()
     
     var currentViewController: UIViewController?
+    
+    var loadingMode = ""  // Can either be 'STARTUP' or 'REFRESHING"
     
     lazy var firstChildTabVC: UIViewController? = {
         let firstChildTabVC = self.storyboard?.instantiateViewController(withIdentifier: "TodayTabVC") as! TodayTabVC
@@ -55,29 +56,42 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        loadingMode = "STARTUP"
         setupScreen()
         segmentedControl.isEnabled = false
+        setViewControllerTitle()
+        
+        // Register to receive notification for location and Reachability
+        NotificationCenter.default.addObserver(self, selector: #selector(ParentWeatherVC.locationDataRefreshed), name: GlobalConstants.locationRefreshFinishedKey, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(ParentWeatherVC.weatherDataRefreshed), name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(ParentWeatherVC.networkStatusChanged(_:)), name: NSNotification.Name(rawValue: ReachabilityStatusChangedNotification), object: nil)
         
         Reach().monitorReachabilityChanges()
         
-        var connected = false
+        var connectedToInternet = false
         let status = Reach().connectionStatus()
         switch status {
         case .unknown, .offline:
             print("Not connected")
         case .online(.wwan):
             print("Connected via WWAN")
-            connected = true
+            connectedToInternet = true
         case .online(.wiFi):
             print("Connected via WiFi")
-            connected = true
+            connectedToInternet = true
         }
         
-        if connected
+        if connectedToInternet
         {
-            retrieveWeatherAndLocationData()
+            // Make a toast to say data is refreshing
+            self.view.makeToast("Refreshing data", duration: 1.0, position: .bottom)
+            self.view.makeToastActivity(.center)
+
+            self.getAndSetLocation()
+            
+            // NOTE:  Weather data will be retrieved once the Location data has loaded and notified
         }
         else
         {
@@ -86,8 +100,6 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             self.view.hideToastActivity()
             refreshButton.isEnabled = true
         }
-        
-        setViewControllerTitle()
 
     }
     
@@ -98,6 +110,22 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             currentViewController.viewWillDisappear(animated)
         }
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+        if (segue.identifier == "settingsScreenSegue") {
+            
+            let vc:SettingsViewController = segue.destination as! SettingsViewController
+            vc.delegate = self
+        }
+        
+        if (segue.identifier == "aboutScreenSegue") {
+            // Nothing yet
+        }
+        
+    }
+    
+    // MARK:  Setup Screen 
     
     func setupScreen() {
         
@@ -134,33 +162,6 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         titleLabel.text = GlobalConstants.AppName
         titleBar.topItem?.titleView = titleLabel
 
-    }
-/*
-    func setLocationInTitle () {
-        
-        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.frame.size.width - 120, height: 44))
-        titleLabel.backgroundColor = UIColor.clear
-        titleLabel.numberOfLines = 1
-        //titleLabel.font = UIFont(name: UIConfig.Fonts.OswaldRegular,  size: 16)
-        titleLabel.textAlignment = NSTextAlignment.center
-        titleLabel.text = weatherLocation.currentCity! + ", " + weatherLocation.currentCountry!
-        titleBar.topItem?.titleView = titleLabel
-        
-    }
-*/
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        super.prepare(for: segue, sender: sender)
-        if (segue.identifier == "settingsScreenSegue") {
-            
-            let vc:SettingsViewController = segue.destination as! SettingsViewController
-            vc.delegate = self
-        }
-        
-        if (segue.identifier == "aboutScreenSegue") {
-            
-            
-        }
-        
     }
         
     
@@ -237,7 +238,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         var returnURL = ""
         
         // Obtain the correct latitude and logitude.  This should be in our weatherLocation object
-//        var url = GlobalConstants.BaseWeatherURL + String(weatherLocation.currentLatitude!) + "," + String(weatherLocation.currentLongitude!)
+        let urlWithLocation = GlobalConstants.BaseWeatherURL + String(weatherLocation.currentLatitude!) + "," + String(weatherLocation.currentLongitude!)
         
         // Find out if user preference is celsuis or fahenheight.  Pass relevant parameter on url
         let userDefaults = UserDefaults.standard
@@ -247,11 +248,18 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             celsuisOrFahrenheit = GlobalConstants.DefaultTemperatureUnit  // Celsius
         }
         
+//        if celsuisOrFahrenheit == GlobalConstants.TemperatureUnits.Celsuis {
+//            returnURL = GlobalConstants.WeatherURL + GlobalConstants.celsiusURLParameter
+//        }
+//        else {
+//            returnURL = GlobalConstants.WeatherURL
+//        }
+        
         if celsuisOrFahrenheit == GlobalConstants.TemperatureUnits.Celsuis {
-            returnURL = GlobalConstants.WeatherURL + GlobalConstants.celsiusURLParameter
+            returnURL = urlWithLocation + GlobalConstants.celsiusURLParameter
         }
         else {
-            returnURL = GlobalConstants.WeatherURL
+            returnURL = urlWithLocation
         }
         
         return returnURL
@@ -276,16 +284,20 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 do {
                     let getResponse = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! NSDictionary
 
-                    print("Weather search finished")
+                    print("Weather search complete")
 
                     self.tmpWeather = Weather(fromDictionary: getResponse )
                     self.weather = self.tmpWeather
-                    
-                    NotificationCenter.default.post(name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
 
+                    NotificationCenter.default.post(name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
+                    
                     DispatchQueue.main.async {
+                        
                         self.segmentedControl.isEnabled = true
-                        self.setupTabs()
+                        
+                        if self.loadingMode == "STARTUP" {
+                            self.setupTabs()
+                        }
                         
                         // Hide animation on the main thread, once finished background task
                         self.view.hideToastActivity()
@@ -295,7 +307,9 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 } catch let error as NSError {
                     print("json error: \(error.localizedDescription)")
                     
-                    //                 self.serviceCallFailure(alertTitle: "Error", withMessage: "There was an error processing the response.  Please try again later.  If it persists, please raise a fault with ITSC")
+                    var message = "Weather details cannot be retrieved at this time.  Please try again"
+                    Utility.showMessage(titleString: "Error", messageString: message )
+                    self.view.hideToastActivity()
                 }
                 
             } else if statusCode == 404 {
@@ -307,143 +321,40 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
 
                     if errorString.lowercased().range(of: "custaa_cpva_9003") != nil {
                         message = "Weather details cannot be retrieved at this time.  Please try again"
+                        Utility.showMessage(titleString: "Error", messageString: message )
+                        self.view.hideToastActivity()
                     }
-                        
                 }
                 
                 //             self.serviceCallFailure(alertTitle: "Error", withMessage: message)
             } else {
-                //              self.serviceCallFailure(alertTitle: "Error", withMessage: "Customer service cannot be retrieved.  Please try again later.  If it persists, please raise a fault with ITSC")
-            }
-        }
-    }
-    
-    func refreshWeatherDataFromService2(completionHandler: @escaping GlobalConstants.CompletionHandlerType) {
-
-        // NOTE:  This function is called from a background thread
-        let url = getURL()
-        
-        print("URL= " + url)
-        
-        let scdService = GetWeatherData()
-        
-        scdService.getData(urlAndParameters: url as String) {
-            [unowned self] (response, error, headers, statusCode) -> Void in
-            
-            if statusCode >= 200 && statusCode < 300 {
-                
-                let data = response?.data(using: String.Encoding.utf8)
-                
-                do {
-                    let getResponse = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! NSDictionary
-                    
-                    print("Weather search finished")
-                    
-                    self.tmpWeather = Weather(fromDictionary: getResponse )
-                    self.weather = self.tmpWeather
-
-                    // Return the updated Weather object of successful
-                    completionHandler(GlobalConstants.CompletionResult.Success(self.tmpWeather as AnyObject?))
-                    
-                } catch let error as NSError {
-                    print("json error: \(error.localizedDescription)")
-                    completionHandler(GlobalConstants.CompletionResult.Failure(GlobalConstants.CompletionError.AuthenticationFailure))
-                }
-                
-            } else if statusCode == 404 {
-                // Create default message, may be overridden later if we have found something in response
-                let message = "Weather details cannot be retrieved at this time.  Please try again"
-                Utility.showMessage(titleString: "Error", messageString: message )
-
-                // Check to see why we got a 404.
-//                if let errorString = error?.localizedDescription , !errorString.isEmpty {
-//                    // "No customers found for search"
-//                    
-//                    if errorString.lowercased().range(of: "custaa_cpva_9003") != nil {
-//                        message = "Weather details cannot be retrieved at this time.  Please try again"
-//                    }
-//                    
-//                }
-                completionHandler(GlobalConstants.CompletionResult.Failure(GlobalConstants.CompletionError.AuthenticationFailure))
-
-                //             self.serviceCallFailure(alertTitle: "Error", withMessage: message)
-            } else {
-                let message = "Weather details cannot be retrieved at this time.  Please try again"
+                var message = "Weather details cannot be retrieved at this time.  Please try again"
                 Utility.showMessage(titleString: "Error", messageString: message )
             }
         }
     }
     
     
-    func refreshWeatherDataFromService() {
+    func refreshLocationAndWeatherData() {
         
-        // NOTE:  This function is called from a background thread
-        let url = getURL()
+        // We want to refresh the Location and Weather data and populate the objects.
+        // Once done, the weatherRefreshed notification will fire and then the relevant screen
+        // updates can be performed in DailyTabVC and TodayTabVC accordingly
         
-        print("URL= " + url)
+        loadingMode = "REFRESHING"
         
-        let scdService = GetWeatherData()
+        // Make a toast to say data is refreshing
+        self.view.makeToast("Refreshing data", duration: 1.0, position: .bottom)
+        self.view.makeToastActivity(.center)
         
-        scdService.getData(urlAndParameters: url as String) {
-            [unowned self] (response, error, headers, statusCode) -> Void in
-            
-            if statusCode >= 200 && statusCode < 300 {
-                
-                let data = response?.data(using: String.Encoding.utf8)
-                
-                do {
-                    let getResponse = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! NSDictionary
-                    
-                    // self.customerDataDictionary = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as! NSDictionary
-                    
-                    // Hide animation on the main thread, once finished background task
-                    //dispatch_async(dispatch_get_main_queue()) {
-                    //                       self.view.hideToastActivity()
-                    print("Weather search finished")
-                    //}
-                    
-                    self.tmpWeather = Weather(fromDictionary: getResponse )
-                    self.weather = self.tmpWeather
-                    
-                    //   DispatchQueue.main.async {
-                    //       self.setupTabs()
-                    //       self.setupScreen()
-                    //   }
-                    
-                } catch let error as NSError {
-                    print("json error: \(error.localizedDescription)")
-                }
-                
-            } else if statusCode == 404 {
-                // Create default message, may be overridden later if we have found something in response
-                let message = "Weather details cannot be retrieved at this time.  Please try again"
-                Utility.showMessage(titleString: "Error", messageString: message )
-                
-//                // Check to see why we got a 404.
-//                if let errorString = error?.localizedDescription , !errorString.isEmpty {
-//                    // "No customers found for search"
-//                    
-//                    if errorString.lowercased().range(of: "custaa_cpva_9003") != nil {
-//                        message = "Weather details cannot be retrieved at this time.  Please try again"
-//                    }
-//                    
-//                }
-                
-            } else {
-                let message = "Weather details cannot be retrieved at this time.  Please try again"
-                Utility.showMessage(titleString: "Error", messageString: message )
-            }
-        }
+//        NotificationCenter.default.addObserver(self, selector: #selector(ParentWeatherVC.locationDataRefreshed), name: GlobalConstants.locationRefreshFinishedKey, object: nil)
+//        
+//        NotificationCenter.default.addObserver(self, selector: #selector(ParentWeatherVC.weatherDataRefreshed), name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
+        
+        self.getAndSetLocation()
+        // NOTE:  Weather data will be retrieved once the Location data has loaded and notified
     }
-
-//    func fetch(completionHandler: CompletionHandlerType) {
-//        let random = Int(arc4random_uniform(7))
-//        if (random > 4) {
-//            completionHandler(CompletionResult.Success(1 as AnyObject?))
-//        } else {
-//            completionHandler(CompletionResult.Failure(CompletionError.AuthenticationFailure))
-//        }
-//    }
+    
 
     func returnRefreshedWeatherDetails() -> Weather {
         
@@ -464,8 +375,20 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         self.getAndSetLocation()
         
         // Make a toast to say data is refreshing
-        self.view.makeToast("Refreshing weather data", duration: 1.0, position: .bottom)
+        self.view.makeToast("Refreshing data", duration: 1.0, position: .bottom)
         self.view.makeToastActivity(.center)
+        refreshButton.isEnabled = false
+        
+        //getWeatherDataFromService()
+        
+        // NOTE:  The setup of the screen in the tabs will be done after getWeatherDataFromService() has finished
+    }
+    
+    func retrieveWeatherData () {
+        
+        // Make a toast to say data is refreshing
+//        self.view.makeToast("Refreshing weather data", duration: 1.0, position: .bottom)
+//        self.view.makeToastActivity(.center)
         refreshButton.isEnabled = false
         
         getWeatherDataFromService()
@@ -478,23 +401,20 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         // Get the current location and the weather data based on location
         
         locationFound = getLocation()
-        if locationFound == true {
-            //  setUsersClosestCity()
-        }
-        
     }
     
     func getLocation() -> Bool {
         
-        locationManager = CLLocationManager()
+        //locationManager = CLLocationManager()
 
-        var locationFound = false
+        var lFound = false
 
         locationManager.delegate = self;
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestAlwaysAuthorization()
-        locationManager.startUpdatingLocation()
         locationManager.requestWhenInUseAuthorization()
+        
+        locationManager.startUpdatingLocation()
         locationManager.startMonitoringSignificantLocationChanges()
         
         // Check if the user allowed authorization (TODO:  authorized replaced with authorizedAlways?)
@@ -504,11 +424,18 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             print(locationManager.location ?? "Location Error")
             if locationManager.location != nil {
                 
-                locationFound = true
+                lFound = true
                 locationManager.stopUpdatingLocation()
                 locationManager.stopMonitoringSignificantLocationChanges()
 
-                //  didUpdateLocations will populate longitude and latitude here
+                var currentLocation = CLLocation()
+                currentLocation = locationManager.location!
+                
+                weatherLocation.currentLatitude = currentLocation.coordinate.latitude
+                weatherLocation.currentLongitude = currentLocation.coordinate.longitude
+                weatherLocation.currentLocation = currentLocation
+                setLocationDetails()
+
             }
             
         } else {
@@ -520,23 +447,23 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
 
         }
         
-        return locationFound
+        return lFound
     }
     
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
-        // The following will be called when the location has been updated.
-        // The last location will be stored in the last element of the locations array
-        
-        let latestLocation = locations.last
-        weatherLocation.currentLatitude = latestLocation!.coordinate.latitude
-        weatherLocation.currentLongitude = latestLocation!.coordinate.longitude
-        weatherLocation.currentLocation = locations.last
-        
-        setUsersClosestCity()
-    }
+//    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+//        
+//        // The following will be called when the location has been updated.
+//        // The last location will be stored in the last element of the locations array
+//        
+//        let latestLocation = locations.last
+//        weatherLocation.currentLatitude = latestLocation!.coordinate.latitude
+//        weatherLocation.currentLongitude = latestLocation!.coordinate.longitude
+//        weatherLocation.currentLocation = latestLocation
+//        
+//        setLocationDetails()
+//    }
     
-    func setUsersClosestCity()
+    func setLocationDetails()
     {
 
         let location = CLLocation(latitude: weatherLocation.currentLatitude!, longitude: weatherLocation.currentLongitude!)
@@ -693,25 +620,47 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         print("refreshing data")
     }
     
-    // SettingsViewControllerDelegate delegate Methods
+    // MARK:  Notification Completion methods
+    func locationDataRefreshed() {
+        // NOTE:  This will be called on a background thread
+        
+        print("Location Data Refreshed - Parent")
+        self.view.hideToastActivity()
+        
+        retrieveWeatherData()
+
+        // Remove after refresh  Can add again on the next refresh
+ //       NotificationCenter.default.removeObserver(self, name: GlobalConstants.locationRefreshFinishedKey, object: nil);
+        
+    }
+    
+    func weatherDataRefreshed() {
+        print("Weather Data Refreshed - Parent")
+        self.view.hideToastActivity()
+        
+ //       NotificationCenter.default.removeObserver(self, name: GlobalConstants.weatherRefreshFinishedKey, object: nil);
+
+    }
+    
+    // MARK:  SettingsViewControllerDelegate delegate Methods
     func refreshDataAfterSettingChange() {
 
         Reach().monitorReachabilityChanges()
         
-        var connected = false
+        var connectedToInternet = false
         let status = Reach().connectionStatus()
         switch status {
         case .unknown, .offline:
             print("Not connected")
         case .online(.wwan):
             print("Connected via WWAN")
-            connected = true
+            connectedToInternet = true
         case .online(.wiFi):
             print("Connected via WiFi")
-            connected = true
+            connectedToInternet = true
         }
         
-        if connected
+        if connectedToInternet
         {
             retrieveWeatherAndLocationData()
         }
