@@ -88,6 +88,7 @@ class GlobalConstants: NSObject {
     
     static let MetersPerSecondToMph = Float(2.23694)
     static let RainIconReportThresholdPercent = 4
+    static let RainDistanceReportThreshold = 1
     
     // Keys to read from NSUserDefaults
     struct Defaults {

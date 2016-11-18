@@ -10,6 +10,12 @@ import UIKit
 
 class Utility: NSObject {
 
+    class func getBuildVersion() -> String {
+        
+      return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
+        
+    }
+    
     class func getWeatherIcon(serviceIcon : String) -> String {
         
         var iconName : String!
@@ -190,4 +196,25 @@ class Utility: NSObject {
     }
     
 
+    class func compassDirectionFromDegrees (degrees : Float) -> String {
+        
+        // Reference:  
+        // http://climate.umn.edu/snow_fence/components/winddirectionanddegreeswithouttable3.htm
+        
+        var retVal = ""
+        let directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+                          "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+        
+        let compassSegments = Float(360 / directions.count)  // Will be 22.5
+        
+        let i = (degrees + 11.25) / compassSegments
+        
+        let x = i.truncatingRemainder(dividingBy: 16)
+        let directionsMod = Int(floor(x))
+        
+        // We want to TRUNC the mod so that we get the correct direction range from the array
+        retVal = directions[directionsMod]
+        
+        return retVal
+    }
 }

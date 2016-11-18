@@ -51,13 +51,15 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     @IBOutlet weak var currentTempDetailView : UIView!
     @IBOutlet weak var currentTemp : UILabel!
     @IBOutlet weak var windspeed : UILabel!
+    
+    @IBOutlet weak var nowDetailOneView : UIView!
     @IBOutlet weak var feelsLikeTemp : UILabel!
     @IBOutlet weak var currentWeatherIcon : UIImageView!
     
+    @IBOutlet weak var nowDetailTwoView : UIView!
     @IBOutlet weak var rainNowInfoStackView : UIStackView!
     @IBOutlet weak var rainNowIcon : UIImageView!
     @IBOutlet weak var rainNowProbability : UILabel!
-
     @IBOutlet weak var nearestRainDistance : UILabel!
     @IBOutlet weak var currentWindspeed : UILabel!
     
@@ -376,8 +378,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         switch (detailsMod) {
         case 0:
             hideWeatherDetailsView()
+            hideNowDetailsOneView ()
         case 1:
             showWeatherDetailsView()
+            hideNowDetailsTwoView ()
         case 2:
             return // Do nothing, this wlll have the effect of showing the weather details longer
         default:
@@ -414,6 +418,32 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         }, completion: nil)
     }
     
+    func hideNowDetailsOneView () {
+        
+        self.nowDetailTwoView.alpha = 0
+        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.nowDetailTwoView.alpha = 1
+        }, completion: nil)
+        
+        self.nowDetailOneView.alpha = 1
+        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.nowDetailOneView.alpha = 0
+        }, completion: nil)
+    }
+    
+    func hideNowDetailsTwoView () {
+        
+        self.nowDetailOneView.alpha = 0
+        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.nowDetailOneView.alpha = 1
+        }, completion: nil)
+        
+        self.nowDetailTwoView.alpha = 1
+        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.nowDetailTwoView.alpha = 0
+        }, completion: nil)
+    }
+
     // MARK:  Swipe Gesture functions
     
     func setupSwipeGestures () {
@@ -603,8 +633,11 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             //
             
             currentTemp.text = String(Int(round(todayArray.temperature! as Float))) + degreesSymbol
+            
+            // Inner Pod 1
             feelsLikeTemp.text = "Feels Like: " + String(Int(round(todayArray.apparentTemperature! as Float))) + degreesSymbol
             
+            // Inner Pod 2
             let minuteBreakdown = dailyWeather?.minuteBreakdown
             currentSummary.text = minuteBreakdown?.summary
 
@@ -613,11 +646,24 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             
             if (rainProbabilityNow > GlobalConstants.RainIconReportThresholdPercent) {
                 rainNowIcon.isHidden = false
-                rainNowProbability.text = String(rainProbabilityNow*100) + "%"
+                rainNowProbability.text = String(rainProbabilityNow) + "%"
             }
             else {
                 rainNowIcon.isHidden = true
                 rainNowProbability.text = ""
+            }
+            
+            let windDirection = Utility.compassDirectionFromDegrees(degrees: todayArray.windBearing!)
+
+            currentWindspeed.text = "Wind: " + String(Int(round(todayArray.windSpeed! * GlobalConstants.MetersPerSecondToMph))) + " mph " + windDirection
+            
+            let nearestRain = todayArray.nearestStormDistance!
+            
+            if (nearestRain > GlobalConstants.RainDistanceReportThreshold) {
+                nearestRainDistance.text = "Rain " + String(todayArray.nearestStormDistance!) + " mi away"
+            }
+            else if (nearestRain > 0 && nearestRain <= GlobalConstants.RainDistanceReportThreshold) {
+                nearestRainDistance.text = "Rain nearby"
             }
             
             // Min Temp, Max Temp, Sunrise and Sunset we can get from the 'daily' figures

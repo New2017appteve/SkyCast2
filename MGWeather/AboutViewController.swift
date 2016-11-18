@@ -69,10 +69,6 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
         aboutView.backgroundColor = GlobalConstants.ViewShading.Lighter
         emailView.backgroundColor = GlobalConstants.ViewShading.Lighter
         creditsView.backgroundColor = GlobalConstants.ViewShading.Lighter
-        
-     //   aboutView.alpha = 0.6
-     //   emailView.alpha = 0.6
-      //  creditsView.alpha = 0.6
 
         // Make round corners for the outerviews
         
@@ -104,6 +100,8 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
         photoSource.backgroundColor = GlobalConstants.ViewShading.Darker
 
         aboutTitle.text = GlobalConstants.AppName
+        aboutVersion.text = "Version " + Utility.getBuildVersion()
+        aboutDescription.text = "The latest forecast for your area, utilising Dark Sky data and great photos."
         
         // Make the label to the credits clickable
         let urlString = "Weather API Powered By Dark Sky"
