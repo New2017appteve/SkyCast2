@@ -20,7 +20,9 @@ class DailyWeatherCell: UITableViewCell {
     @IBOutlet weak var dayDurationLabel : UILabel!
     @IBOutlet weak var dailyWeatherIcon : UIImageView!
     @IBOutlet weak var summaryLabel : UILabel!
+    @IBOutlet weak var minTempTitle : UILabel!
     @IBOutlet weak var minTempLabel : UILabel!
+    @IBOutlet weak var maxTempTitle : UILabel!
     @IBOutlet weak var maxTempLabel : UILabel!
     @IBOutlet weak var rainIcon : UIImageView!
     @IBOutlet weak var rainProbabilityLabel : UILabel!

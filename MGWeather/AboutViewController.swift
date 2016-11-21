@@ -20,14 +20,14 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
     @IBOutlet weak var aboutDescription: UILabel!
 
     @IBOutlet weak var emailView: UIView!
+    @IBOutlet weak var supportFeedbackTitle: UILabel!
     @IBOutlet weak var emailButton: UIButton!
     
     @IBOutlet weak var creditsView: UIView!
+    @IBOutlet weak var creditsTitle: UILabel!
     @IBOutlet weak var weatherSource: UITextView!
     @IBOutlet weak var iconSource: UITextView!
     @IBOutlet weak var photoSource: UITextView!
-    
-    @IBOutlet weak var aboutCredits: UITextView!
     
     /// The banner view.
     @IBOutlet weak var bannerView: GADBannerView!
@@ -37,25 +37,25 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
 
         // Do any additional setup after loading the view.
         setupScreen()
+        setupColourScheme()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.aboutView.alpha = 0.6 // CGFloat(GlobalConstants.DisplayViewAlpha)
-        self.emailView.alpha = 0.6 //CGFloat(GlobalConstants.DisplayViewAlpha)
-        self.creditsView.alpha = 0.6 //CGFloat(GlobalConstants.DisplayViewAlpha)
+//        self.aboutView.alpha = 0.6 // CGFloat(GlobalConstants.DisplayViewAlpha)
+//        self.emailView.alpha = 0.6 //CGFloat(GlobalConstants.DisplayViewAlpha)
+//        self.creditsView.alpha = 0.6 //CGFloat(GlobalConstants.DisplayViewAlpha)
     
         // Ease in the outer screen view for effect
         self.weatherImage.alpha = 0.2
         UIView.animate(withDuration: 0.8, delay: 0.15, options: UIViewAnimationOptions.curveEaseIn, animations: {
             
-            self.weatherImage.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-            //self.aboutView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-            //self.emailView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-            //self.creditsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+                self.weatherImage.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
             
             }, completion: nil)
+        
+        setupColourScheme()
     }
 
 
@@ -66,9 +66,9 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
     
     func setupScreen () {
     
-        aboutView.backgroundColor = GlobalConstants.ViewShading.Lighter
-        emailView.backgroundColor = GlobalConstants.ViewShading.Lighter
-        creditsView.backgroundColor = GlobalConstants.ViewShading.Lighter
+//        aboutView.backgroundColor = GlobalConstants.ViewShading.Lighter
+//        emailView.backgroundColor = GlobalConstants.ViewShading.Lighter
+//        creditsView.backgroundColor = GlobalConstants.ViewShading.Lighter
 
         // Make round corners for the outerviews
         
@@ -94,10 +94,10 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
         photoSource.layer.cornerRadius = 10.0
         photoSource.clipsToBounds = true
         
-        emailButton.backgroundColor = GlobalConstants.ViewShading.Darker
-        weatherSource.backgroundColor = GlobalConstants.ViewShading.Darker
-        iconSource.backgroundColor = GlobalConstants.ViewShading.Darker
-        photoSource.backgroundColor = GlobalConstants.ViewShading.Darker
+//        emailButton.backgroundColor = GlobalConstants.ViewShading.Darker
+//        weatherSource.backgroundColor = GlobalConstants.ViewShading.Darker
+//        iconSource.backgroundColor = GlobalConstants.ViewShading.Darker
+//        photoSource.backgroundColor = GlobalConstants.ViewShading.Darker
 
         aboutTitle.text = GlobalConstants.AppName
         aboutVersion.text = "Version " + Utility.getBuildVersion()
@@ -118,12 +118,53 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
         let photosAttributedString = NSMutableAttributedString(string: photosUrlString)
         photosAttributedString.addAttribute(NSLinkAttributeName, value: GlobalConstants.WeatherPhotosURL, range: NSRange(location: 0, length: photosUrlString.characters.count))
         photoSource.attributedText = photosAttributedString
-        
+
         if AppSettings.ShowBannerAds {
             loadBannerAd()
         }
     }
     
+    func setupColourScheme() {
+        
+        // Setup pods and text colour accordingly
+        
+        let colourScheme = Utility.setupColourScheme()
+        
+        let textColourScheme = colourScheme.textColourScheme
+        let podColourScheme = colourScheme.podColourScheme
+//        let titleViewColourScheme = colourScheme.titleViewColourScheme
+        
+        // Labels
+        aboutTitle.textColor = textColourScheme
+        aboutVersion.textColor = textColourScheme
+        aboutAuthor.textColor = textColourScheme
+        aboutDescription.textColor = textColourScheme
+        supportFeedbackTitle.textColor = textColourScheme
+        creditsTitle.textColor = textColourScheme
+        weatherSource.textColor = textColourScheme
+        iconSource.textColor = textColourScheme
+        photoSource.textColor = textColourScheme
+        
+        // Pods
+        creditsView.backgroundColor = podColourScheme
+        aboutView.backgroundColor = podColourScheme
+        emailView.backgroundColor = podColourScheme
+        
+        creditsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha) - 0.2
+        aboutView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha) - 0.2
+        emailView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha) - 0.2
+
+        // Buttons and Title Labels
+        emailButton.backgroundColor = podColourScheme
+//        iconSource.textColor = textColourScheme
+//        photoSource.textColor = textColourScheme
+        
+        weatherSource.backgroundColor = podColourScheme
+        iconSource.backgroundColor = podColourScheme
+        photoSource.backgroundColor = podColourScheme
+        
+    }
+
     func loadBannerAd() {
         
         print("Google Mobile Ads SDK version: \(GADRequest.sdkVersion())")

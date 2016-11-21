@@ -34,6 +34,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     var infoLabelTimerCount = 0
     var weatherDetailsTimerCount = 0
     
+    var podColourScheme: UIColor?
+    var writingColourScheme: UIColor?
+    
     // MARK: Outlets
     
     @IBOutlet weak var outerScreenView : UIView!
@@ -61,18 +64,26 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     @IBOutlet weak var rainNowIcon : UIImageView!
     @IBOutlet weak var rainNowProbability : UILabel!
     @IBOutlet weak var nearestRainDistance : UILabel!
-    @IBOutlet weak var currentWindspeed : UILabel!
     
     @IBOutlet weak var currentSummary : UILabel!
 
     @IBOutlet weak var weatherDetailOuterView : UIView!
     @IBOutlet weak var weatherDetailView : UIView!
     @IBOutlet weak var weatherDetailStackView : UIStackView!
+    
     @IBOutlet weak var todayLabel : UILabel!
     @IBOutlet weak var todaySummary : UILabel!
     @IBOutlet weak var todayHighLowTemp : UILabel!
+    @IBOutlet weak var currentWindspeed : UILabel!
     @IBOutlet weak var cloudCover : UILabel!
     @IBOutlet weak var rainProbability : UILabel!
+    
+    @IBOutlet weak var todayHighLowTempTitle : UILabel!
+    @IBOutlet weak var windspeedTitle : UILabel!
+    @IBOutlet weak var cloudCoverTitle : UILabel!
+    @IBOutlet weak var humidityTitle : UILabel!
+    @IBOutlet weak var rainProbabilityTitle : UILabel!
+    @IBOutlet weak var weatherAlertTitle : UILabel!
     
     @IBOutlet weak var sunriseStackView : UIStackView!
     @IBOutlet weak var sunriseIcon : UIImageView!
@@ -81,7 +92,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     @IBOutlet weak var sunsetIcon : UIImageView!
     @IBOutlet weak var sunset : UILabel!
     @IBOutlet weak var humidity : UILabel!
-    @IBOutlet weak var weatherAlertTitle : UILabel!
+
     @IBOutlet weak var weatherAlertButton : UIButton!
     @IBOutlet weak var bigWeatherAlertButton : UIButton!
     @IBOutlet weak var poweredByDarkSkyButton : UIButton!
@@ -123,12 +134,16 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         setupScreen ()
         populateTodayWeatherDetails()
         bannerOuterView.isHidden = true
-        
+
+        setupColourScheme()
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     
+        setupColourScheme()
+        
         // Ease in the weather background for effect
         self.weatherImage.alpha = 0.2
         UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
@@ -188,16 +203,11 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         bannerOuterView.isHidden = true
         
         poweredByDarkSkyButton.backgroundColor = GlobalConstants.DarkestGray
-        
         nowLabel.backgroundColor = GlobalConstants.DarkestGray
         todayLabel.backgroundColor = GlobalConstants.DarkestGray
 
         let userDefaults = UserDefaults.standard
         dayOrNightColourSetting = userDefaults.string(forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
-        
-        currentTempDetailView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-        weatherDetailOuterView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-        infoView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
         
         // Make round corners for the outerviews
         currentTempDetailView.layer.cornerRadius = 10.0
@@ -209,25 +219,88 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         weatherDetailOuterView.layer.cornerRadius = 10.0
         weatherDetailOuterView.clipsToBounds = true
         
-        sunriseIcon.layer.cornerRadius = 2.0
-        sunriseIcon.clipsToBounds = true
-        sunsetIcon.layer.cornerRadius = 2.0
-        sunsetIcon.clipsToBounds = true
-        
-        if dayOrNightColourSetting == "ON" {
-            sunriseIcon.backgroundColor = GlobalConstants.TableViewAlternateShadingDay.Lighter
-            sunsetIcon.backgroundColor = GlobalConstants.TableViewAlternateShadingNight.Lighter
-        }
-        else {
-            sunriseIcon.backgroundColor = UIColor.clear
-            sunsetIcon.backgroundColor = UIColor.clear
-        }
+//        sunriseIcon.layer.cornerRadius = 2.0
+//        sunriseIcon.clipsToBounds = true
+//        sunsetIcon.layer.cornerRadius = 2.0
+//        sunsetIcon.clipsToBounds = true
+//        
+//        if dayOrNightColourSetting == "ON" {
+//            sunriseIcon.backgroundColor = GlobalConstants.TableViewAlternateShadingDay.Lighter
+//            sunsetIcon.backgroundColor = GlobalConstants.TableViewAlternateShadingNight.Lighter
+//        }
+//        else {
+//            sunriseIcon.backgroundColor = UIColor.clear
+//            sunsetIcon.backgroundColor = UIColor.clear
+//        }
         
         // Hide weather details initially until timer starts
         self.weatherDetailStackView.alpha = 0
         
     }
     
+    func setupColourScheme() {
+        
+        // Setup pods and text colour accordingly
+        
+        let colourScheme = Utility.setupColourScheme()
+        
+        let textColourScheme = colourScheme.textColourScheme
+        let podColourScheme = colourScheme.podColourScheme
+        let titleViewColourScheme = colourScheme.titleViewColourScheme
+        
+        // Labels
+        
+        infoLabel.textColor = textColourScheme
+        nowLabel.textColor = textColourScheme
+        currentTemp.textColor = textColourScheme
+        windspeed.textColor = textColourScheme
+        feelsLikeTemp.textColor = textColourScheme
+        rainNowProbability.textColor = textColourScheme
+        nearestRainDistance.textColor = textColourScheme
+        currentWindspeed.textColor = textColourScheme
+        currentSummary.textColor = textColourScheme
+        todayLabel.textColor = textColourScheme
+        todaySummary.textColor = textColourScheme
+        todayHighLowTemp.textColor = textColourScheme
+        cloudCover.textColor = textColourScheme
+        rainProbability.textColor = textColourScheme
+        sunrise.textColor = textColourScheme
+        sunset.textColor = textColourScheme
+        humidity.textColor = textColourScheme
+        weatherAlertTitle.textColor = textColourScheme
+        
+        todayHighLowTempTitle.textColor = textColourScheme
+        windspeedTitle.textColor = textColourScheme
+        cloudCoverTitle.textColor = textColourScheme
+        humidityTitle.textColor = textColourScheme
+        rainProbabilityTitle.textColor = textColourScheme
+        weatherAlertTitle.textColor = textColourScheme
+        
+        // Pods
+        
+        infoView.backgroundColor = podColourScheme
+        currentTempDetailView.backgroundColor = podColourScheme
+        
+        infoView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+        currentTempDetailView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+        weatherDetailOuterView.alpha = 1.0 //CGFloat(GlobalConstants.DisplayViewAlpha)
+
+        nowDetailOneView.backgroundColor = podColourScheme
+        nowDetailTwoView.backgroundColor = podColourScheme
+        nowDetailOneView.alpha = 0 //CGFloat(GlobalConstants.DisplayViewAlpha)
+        nowDetailTwoView.alpha = 0 //CGFloat(GlobalConstants.DisplayViewAlpha)
+        
+        weatherDetailOuterView.backgroundColor = UIColor.clear //podColourScheme
+        weatherDetailView.backgroundColor = podColourScheme
+        
+        // Buttons and Title Labels
+        nowLabel.backgroundColor = titleViewColourScheme
+        todayLabel.backgroundColor = titleViewColourScheme
+        poweredByDarkSkyButton.backgroundColor = titleViewColourScheme
+        
+    }
+    
+
     func loadBannerAd() {
         
         print("Google Mobile Ads SDK version: \(GADRequest.sdkVersion())")
@@ -422,10 +495,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         
         self.nowDetailTwoView.alpha = 0
         UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-            self.nowDetailTwoView.alpha = 1
+            self.nowDetailTwoView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
         }, completion: nil)
         
-        self.nowDetailOneView.alpha = 1
+        self.nowDetailOneView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
         UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
             self.nowDetailOneView.alpha = 0
         }, completion: nil)
@@ -435,10 +508,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         
         self.nowDetailOneView.alpha = 0
         UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-            self.nowDetailOneView.alpha = 1
+            self.nowDetailOneView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
         }, completion: nil)
         
-        self.nowDetailTwoView.alpha = 1
+        self.nowDetailTwoView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
         UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
             self.nowDetailTwoView.alpha = 0
         }, completion: nil)
@@ -644,6 +717,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             let minuteStats = minuteBreakdown?.minuteStats
             let rainProbabilityNow = Int(round((minuteStats?[0].precipProbability!)!*100))
             
+            // Populate with the correct rain icon scheme
+            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA")
+            rainNowIcon.image = UIImage(named: rainIconImage)!
+
             if (rainProbabilityNow > GlobalConstants.RainIconReportThresholdPercent) {
                 rainNowIcon.isHidden = false
                 rainNowProbability.text = String(rainProbabilityNow) + "%"
@@ -658,13 +735,17 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             currentWindspeed.text = "Wind: " + String(Int(round(todayArray.windSpeed! * GlobalConstants.MetersPerSecondToMph))) + " mph " + windDirection
             
             let nearestRain = todayArray.nearestStormDistance!
-            
-            if (nearestRain > GlobalConstants.RainDistanceReportThreshold) {
-                nearestRainDistance.text = "Rain " + String(todayArray.nearestStormDistance!) + " mi away"
+        
+            if (nearestRain == 0) {
+                nearestRainDistance.text = "Rain nearby" //"Raining"
             }
             else if (nearestRain > 0 && nearestRain <= GlobalConstants.RainDistanceReportThreshold) {
                 nearestRainDistance.text = "Rain nearby"
             }
+            else if (nearestRain > GlobalConstants.RainDistanceReportThreshold) {
+                nearestRainDistance.text = "Rain " + String(todayArray.nearestStormDistance!) + " mi away"
+            }
+
             
             // Min Temp, Max Temp, Sunrise and Sunset we can get from the 'daily' figures
             
@@ -695,7 +776,13 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                     sunriseTimeStamp = days.sunriseTimeStamp as NSDate?
                     sunsetTimeStamp = days.sunsetTimeStamp as NSDate?
                     
-                    //var attributedText =
+                    // Populate with the correct sunrise/sunset icon scheme
+                    let sunriseIconImage = Utility.getWeatherIcon(serviceIcon: "SUNRISE")
+                    sunriseIcon.image = UIImage(named: sunriseIconImage)!
+                    
+                    let sunsetIconImage = Utility.getWeatherIcon(serviceIcon: "SUNSET")
+                    sunsetIcon.image = UIImage(named: sunsetIconImage)!
+
                 }
                 
                 // We want tomorrows sunrise and sunset times as well for use in calculations later
@@ -928,6 +1015,11 @@ extension TodayTabVC : UITableViewDataSource {
         cell.temperatureLabel.text = String(Int(round(hourWeather!.temperature!))) + degreesSymbol
         
         if (Int(round(hourWeather!.precipProbability!*100)) > GlobalConstants.RainIconReportThresholdPercent) {
+            
+            // Populate with the correct rain icon scheme
+            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA")
+            cell.rainIcon.image = UIImage(named: rainIconImage)!
+
             cell.rainIcon.isHidden = false
             cell.rainProbabilityLabel.text = String(Int(round(hourWeather!.precipProbability!*100))) + "%"
         }
@@ -941,6 +1033,33 @@ extension TodayTabVC : UITableViewDataSource {
         
         if iconName != "" {
             cell.summaryIcon.image = UIImage(named: iconName)!
+        }
+        
+        // Setup text colour according to colour scheme.  However, we want to override the
+        // colouring if the scheme is Dark and Daytime colours is ON
+        
+        let colourScheme = Utility.setupColourScheme()
+        let textColourScheme = colourScheme.textColourScheme
+        
+        if (dayOrNightColourSetting == "ON" && colourScheme.type == GlobalConstants.ColourScheme.Dark) {
+          
+            cell.hourLabel.textColor = UIColor.black
+            cell.temperatureLabel.textColor = UIColor.black
+            cell.rainProbabilityLabel.textColor = UIColor.black
+            
+            // Force rain umbrella and weather icon black
+            let lRainIconImage = GlobalConstants.WeatherIcon.umbrella
+            cell.rainIcon.image = UIImage(named: lRainIconImage)!
+            
+            var lWeatherIcon = Utility.getWeatherIcon(serviceIcon: icon!, scheme: GlobalConstants.ColourScheme.Light)
+            cell.summaryIcon.image = UIImage(named: lWeatherIcon)!
+
+        }
+        else {
+            cell.hourLabel.textColor = textColourScheme
+            cell.temperatureLabel.textColor = textColourScheme
+            cell.rainProbabilityLabel.textColor = textColourScheme
+            // Umbrella already set
         }
         
         // Alternate the shading of each table view cell
@@ -965,12 +1084,23 @@ extension TodayTabVC : UITableViewDataSource {
             }
         }
         else {
-            if (indexPath.row % 2 == 0) {
-                // Lighter Shade
-                cell.backgroundColor = GlobalConstants.TableViewAlternateShading.Darker
+            if (colourScheme.type == GlobalConstants.ColourScheme.Dark) {
+                if (indexPath.row % 2 == 0) {
+                    // Lighter Shade
+                    cell.backgroundColor = GlobalConstants.TableViewAlternateShadingDayDarkTheme.Darker
+                }
+                else {
+                    cell.backgroundColor = GlobalConstants.TableViewAlternateShadingDayDarkTheme.Lighter
+                }
             }
             else {
-                cell.backgroundColor = GlobalConstants.TableViewAlternateShading.Lighter
+                if (indexPath.row % 2 == 0) {
+                    // Lighter Shade
+                    cell.backgroundColor = GlobalConstants.TableViewAlternateShading.Darker
+                }
+                else {
+                    cell.backgroundColor = GlobalConstants.TableViewAlternateShading.Lighter
+                }
             }
         }
 

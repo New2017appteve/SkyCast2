@@ -42,8 +42,9 @@ class DailyTabVC: UIViewController {
         super.viewDidLoad()
 
         setupScreen()
+      //  setupColourScheme()
         setupSwipeGestures()
-        populateDailyWeatherDetails()
+     //   populateDailyWeatherDetails()
         bannerOuterView.isHidden = true
         
     }
@@ -61,6 +62,7 @@ class DailyTabVC: UIViewController {
             }, completion: nil)
 
         populateDailyWeatherDetails()
+        setupColourScheme()
         
         if AppSettings.ShowBannerAds {
             // For this screen we only want to randomly show the banner ad, so thats its an
@@ -83,9 +85,9 @@ class DailyTabVC: UIViewController {
     
     func setupScreen () {
         
-        nextDaysSummary.backgroundColor = GlobalConstants.ViewShading.Lighter
+  //      nextDaysSummary.backgroundColor = GlobalConstants.ViewShading.Lighter
         
-        nextDaysSummary.alpha = 0.8
+  //      nextDaysSummary.alpha = 0.8
         nextDaysSummary.layer.cornerRadius = 5.0
         nextDaysSummary.clipsToBounds = true
 
@@ -93,6 +95,24 @@ class DailyTabVC: UIViewController {
         dailyWeatherTableView.layer.cornerRadius = 10.0
         dailyWeatherTableView.clipsToBounds = true
 
+    }
+    
+    func setupColourScheme() {
+
+        // Setup pods and text colour accordingly
+        
+        let colourScheme = Utility.setupColourScheme()
+        
+        let textColourScheme = colourScheme.textColourScheme
+        let podColourScheme = colourScheme.podColourScheme
+
+        dailyWeatherTableView.backgroundColor = podColourScheme
+        nextDaysSummary.backgroundColor = podColourScheme
+        
+        nextDaysSummary.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+        
+        // Labels
+        nextDaysSummary.textColor = textColourScheme
     }
     
     func loadBannerAd() {
@@ -345,13 +365,49 @@ extension DailyTabVC : UITableViewDataSource {
         let hoursAndMinutes = String(h) + "h " + String(m) + "m"
         
         cell.dayDurationLabel.text = hoursAndMinutes
+
+        // Setup text colour according to colour scheme
+        
+        let colourScheme = Utility.setupColourScheme()
+        let textColourScheme = colourScheme.textColourScheme
+        
+        cell.dateLabel.textColor = textColourScheme
+        cell.sunriseLabel.textColor = textColourScheme
+        cell.sunsetLabel.textColor = textColourScheme
+        cell.dayDurationLabel.textColor = textColourScheme
+        cell.summaryLabel.textColor = textColourScheme
+        cell.minTempTitle.textColor = textColourScheme
+        cell.maxTempTitle.textColor = textColourScheme
+        cell.rainProbabilityLabel.textColor = textColourScheme
+        
+        // Populate with the correct rain icon scheme
+        let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA")
+        cell.rainIcon.image = UIImage(named: rainIconImage)!
+
+        // Populate with the correct sunrise/sunset icon scheme
+        let sunriseIconImage = Utility.getWeatherIcon(serviceIcon: "SUNRISE")
+        cell.sunriseIcon.image = UIImage(named: sunriseIconImage)!
+
+        let sunsetIconImage = Utility.getWeatherIcon(serviceIcon: "SUNSET")
+        cell.sunsetIcon.image = UIImage(named: sunsetIconImage)!
+        
         
         // Alternate the shading of each table view cell
-        if (indexPath.row % 2 == 0) {
-            cell.backgroundColor = GlobalConstants.TableViewAlternateShading.Darker
+        if (colourScheme.type == GlobalConstants.ColourScheme.Dark) {
+            if (indexPath.row % 2 == 0) {
+                cell.backgroundColor = GlobalConstants.TableViewAlternateShadingDayDarkTheme.Darker
+            }
+            else {
+                cell.backgroundColor = GlobalConstants.TableViewAlternateShadingDayDarkTheme.Lighter
+            }
         }
         else {
-            cell.backgroundColor = UIColor.white // GlobalConstants.TableViewAlternateShading.Lightest
+            if (indexPath.row % 2 == 0) {
+                cell.backgroundColor = GlobalConstants.TableViewAlternateShading.Darker
+            }
+            else {
+                cell.backgroundColor = UIColor.white // GlobalConstants.TableViewAlternateShading.Lightest
+            }
         }
   
         return cell

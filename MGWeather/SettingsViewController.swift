@@ -23,8 +23,12 @@ class SettingsViewController: UIViewController {
     
     @IBOutlet weak var backButton : UIButton!
     @IBOutlet weak var okButton : UIButton!
-    
+
+    @IBOutlet weak var colourSchemeTitle : UILabel!
+    @IBOutlet weak var colourSchemeControl : UISegmentedControl!
+    @IBOutlet weak var tempUnitsTitle : UILabel!
     @IBOutlet weak var tempUnitsControl : UISegmentedControl!
+    @IBOutlet weak var dayNightColourTitle : UILabel!
     @IBOutlet weak var dayNightColourControl : UISegmentedControl!
     
     /// The banner view.
@@ -47,13 +51,6 @@ class SettingsViewController: UIViewController {
         UIView.animate(withDuration: 0.8, delay: 0.15, options: UIViewAnimationOptions.curveEaseIn, animations: {
                 self.weatherImage.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
             }, completion: nil)
-        
-//        // Register to receive notification for Location and weather
-//        NotificationCenter.default.addObserver(self, selector:
-//            #selector(SettingsViewController.locationDataRefreshed), name: GlobalConstants.locationRefreshFinishedKey, object: nil)
-//        
-//        NotificationCenter.default.addObserver(self, selector:
-//            #selector(SettingsViewController.weatherDataRefreshed), name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
     }
 
 
@@ -65,17 +62,68 @@ class SettingsViewController: UIViewController {
     
     func setupScreen () {
     
-        settingsView.backgroundColor = GlobalConstants.ViewShading.Lighter
-        
-        settingsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+ //       settingsView.backgroundColor = GlobalConstants.ViewShading.Lighter
+ //       settingsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
 
         // Make round corners for the outerviews
         settingsView.layer.cornerRadius = 10.0
         settingsView.clipsToBounds = true
         
+        setupColourScheme()
+
         if AppSettings.ShowBannerAds {
             loadBannerAd()
         }
+    }
+    
+    func setupColourScheme() {
+        
+        // Setup pods and text colour accordingly
+        
+        let colourScheme = Utility.setupColourScheme()
+        
+        let textColourScheme = colourScheme.textColourScheme
+        let podColourScheme = colourScheme.podColourScheme
+//        let titleViewColourScheme = colourScheme.titleViewColourScheme
+        
+        // Labels
+        tempUnitsTitle.textColor = textColourScheme
+        dayNightColourTitle.textColor = textColourScheme
+        colourSchemeTitle.textColor = textColourScheme
+        
+        // Pods
+        settingsView.backgroundColor = podColourScheme
+        settingsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+        
+    }
+
+    func switchColourSchemesInternally () {
+        
+        var textColourScheme : UIColor!
+        var podColourScheme : UIColor!
+        var titleViewColourScheme : UIColor!
+        
+        if (colourSchemeControl.selectedSegmentIndex == 0) {
+            // Dark
+            
+            podColourScheme = GlobalConstants.podDark
+            textColourScheme = GlobalConstants.writingLight
+            titleViewColourScheme = UIColor.black
+        }
+        else {
+            podColourScheme = UIColor.white //GlobalConstants.podLight
+            textColourScheme = UIColor.black //GlobalConstants.writingDark
+            titleViewColourScheme = GlobalConstants.DarkestGray
+        }
+        
+        // Labels
+        tempUnitsTitle.textColor = textColourScheme
+        dayNightColourTitle.textColor = textColourScheme
+        colourSchemeTitle.textColor = textColourScheme
+        
+        // Pods
+        settingsView.backgroundColor = podColourScheme
+
     }
     
     func loadBannerAd() {
@@ -99,6 +147,7 @@ class SettingsViewController: UIViewController {
         let userDefaults = UserDefaults.standard
         var celsuisOrFahrenheit = userDefaults.string(forKey: GlobalConstants.Defaults.SavedTemperatureUnits)
         var dayOrNightColours = userDefaults.string(forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
+        var colourSchemeSet = userDefaults.string(forKey: GlobalConstants.Defaults.SavedColourScheme)
         
         if (celsuisOrFahrenheit == nil) {
             celsuisOrFahrenheit = GlobalConstants.DefaultTemperatureUnit  // Celsius
@@ -125,6 +174,20 @@ class SettingsViewController: UIViewController {
                 dayNightColourControl.selectedSegmentIndex = 1
             }
         }
+        
+        if (colourSchemeSet == nil) {
+            colourSchemeSet = GlobalConstants.DefaultDayOrNightSwitch  // On
+            saveSettings()
+        }
+        else {
+            if colourSchemeSet == GlobalConstants.ColourScheme.Dark {
+                colourSchemeControl.selectedSegmentIndex = 0
+            }
+            else {
+                colourSchemeControl.selectedSegmentIndex = 1
+            }
+        }
+        
 
     }
     
@@ -133,6 +196,7 @@ class SettingsViewController: UIViewController {
         // Save any settings to NSUserDefaults
         var celsuisOrFahrenheit : String!
         var dayOrNightColours : String!
+        var colourSchemeSet : String!
         
         if (tempUnitsControl.selectedSegmentIndex == 0) {
             celsuisOrFahrenheit = GlobalConstants.TemperatureUnits.Celsuis
@@ -148,9 +212,17 @@ class SettingsViewController: UIViewController {
             dayOrNightColours = "OFF"
         }
 
+        if (colourSchemeControl.selectedSegmentIndex == 0) {
+            colourSchemeSet = GlobalConstants.ColourScheme.Dark
+        }
+        else {
+            colourSchemeSet = GlobalConstants.ColourScheme.Light
+        }
+
         let userDefaults = UserDefaults.standard
         userDefaults.set(celsuisOrFahrenheit, forKey: GlobalConstants.Defaults.SavedTemperatureUnits)
         userDefaults.set(dayOrNightColours, forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
+        userDefaults.set(colourSchemeSet, forKey: GlobalConstants.Defaults.SavedColourScheme)
         
         userDefaults.synchronize() //  Explicitly save the settings
         
@@ -172,6 +244,12 @@ class SettingsViewController: UIViewController {
         
         // Dismiss view
         self.dismiss(animated: true, completion: nil)
+    }
+
+    // MARK:  SegmentedControl actions
+    
+    @IBAction func olourSchemeChanged(_ sender: Any) {
+        switchColourSchemesInternally()
     }
 
 //    // MARK:  Notification complete methods

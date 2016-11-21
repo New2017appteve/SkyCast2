@@ -69,11 +69,35 @@ class InfoPopupViewController: UIViewController {
         
         informationText.text = informationString
         
+        setupColourScheme()
+
         if AppSettings.ShowBannerAds {
             loadBannerAd()
         }
     }
     
+    func setupColourScheme() {
+        
+        // Setup pods and text colour accordingly
+        
+        let colourScheme = Utility.setupColourScheme()
+        
+        let textColourScheme = colourScheme.textColourScheme
+        let podColourScheme = colourScheme.podColourScheme
+        let titleViewColourScheme = colourScheme.titleViewColourScheme
+       
+        // Labels
+        informationText.textColor = textColourScheme
+        
+        // Pods
+        alertInfoOuterView.backgroundColor = podColourScheme
+        weatherAlertSourceButtonOuterView.backgroundColor = podColourScheme
+        
+        // Buttons and Title Labels
+        weatherAlertSourceButton.backgroundColor = titleViewColourScheme
+        
+    }
+
     func loadBannerAd() {
         
         print("Google Mobile Ads SDK version: \(GADRequest.sdkVersion())")

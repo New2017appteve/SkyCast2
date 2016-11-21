@@ -29,6 +29,18 @@ class GlobalConstants: NSObject {
         case AuthenticationFailure
     }
 
+    // Colour Scheme
+    
+    struct ColourScheme {
+        static var Dark = "Dark"
+        static var Light = "Light"
+    }
+    
+    static var podDark = UIColor(red: 24/255, green: 25/255, blue: 26/255, alpha: 0.85)
+    static var podLight = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 0.85)
+
+    static var writingDark = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 1)
+    static var writingLight = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1)
 
     // Colour Shades
     static var DarkestGray = UIColor(red: 203/255, green: 210/255, blue: 214/255, alpha: 0.95)
@@ -36,11 +48,15 @@ class GlobalConstants: NSObject {
     static var LighterGray = UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 0.95)
     static var LightestGray = UIColor(red: 250/255, green: 245/255, blue: 245/255, alpha: 1)
     
+        // Day/Night colours for lighter theme
     static var DarkerYellow = UIColor(red: 250/255, green: 239/255, blue: 117/255, alpha: 0.95)
     static var LighterYellow = UIColor(red: 252/255, green: 218/255, blue: 116/255, alpha: 0.95)
- 
     static var DarkerBlue = UIColor(red: 154/255, green: 181/255, blue: 224/255, alpha: 0.95)
     static var LighterBlue = UIColor(red: 179/255, green: 202/255, blue: 239/255, alpha: 0.95)
+
+        // Day/Night colours for darker theme
+    static var DarkerBlack = UIColor(red: 30/255, green: 30/255, blue: 30/255, alpha: 0.85)
+    static var LighterBlack = UIColor(red: 70/255, green: 70/255, blue: 65/255, alpha: 0.85)
 
     
     // Tableview shading
@@ -58,16 +74,26 @@ class GlobalConstants: NSObject {
         static var Darker = DarkerBlue
         static var Lighter = LighterBlue
     }
-    
+
+    // Dark Theme
+    struct TableViewAlternateShadingDayDarkTheme {
+        static var Darker = DarkerBlack
+        static var Lighter = LighterBlack
+    }
+    struct TableViewAlternateShadingNightDarkTheme {
+        static var Darker = DarkerBlack
+        static var Lighter = LighterBlack
+    }
+
     static let DisplayViewAlpha = 0.85
     
     // Tableview 
     static let NumberOfHoursToShowFromNow = 12
     
-    // Weather Screen View Shaiding
+    // Weather Screen View Shading
     struct ViewShading {
-        static var Darker = UIColor(red: 227/255, green: 230/255, blue: 232/255, alpha: 0.95) // Darker Shade
-        static var Lighter = UIColor(red: 245/255, green: 247/255, blue: 245/255, alpha: 0.95) // Lighter Shade
+        static var Darker = UIColor(red: 227/255, green: 230/255, blue: 232/255, alpha: 1) // Darker Shade
+        static var Lighter = UIColor(red: 245/255, green: 247/255, blue: 245/255, alpha: 1) // Lighter Shade
     }
     
     // Ensure no spaces in URL
@@ -94,6 +120,7 @@ class GlobalConstants: NSObject {
     struct Defaults {
         static let SavedTemperatureUnits = "savedTemperatureUnits"
         static let SavedDayOrNightColourSetting = "savedDayOrNightColourSetting"
+        static let SavedColourScheme = "savedColourScheme"
         static let LastLoadedBackground = "lastLoadedBackground"
     }
     
@@ -108,8 +135,9 @@ class GlobalConstants: NSObject {
         static let Fahrenheit = "fahrenheit"
     }
     
-    static let DefaultTemperatureUnit = "celsuis"
+    static let DefaultTemperatureUnit = TemperatureUnits.Celsuis
     static let DefaultDayOrNightSwitch = "ON"
+    static let DefaultColourScheme = GlobalConstants.ColourScheme.Light
     static let DefaultBackgroundImage = "sky_background_PEXELS"
     
     // Icon Constants  (Icons from https://icons8.com/web-app/category/Weather) //TODO:  Include Credits for each icon
@@ -180,19 +208,49 @@ class GlobalConstants: NSObject {
         static var rain = "Rain-50"
         static var snow = "Snow-50"
         static var sleet = "Sleet-50"
-        static var wind = "Cloud-50"  // TODO:  Find icon
-        static var fog = "Fog Day-50"  // TODO:  Do Fog Day/Night
+        static var wind = "Windy"  // TODO:  Find icon
+        static var fog = "Fog Day-50"
+        static var fogNight = "Fog Night-50" 
         static var cloudy = "Cloud-50"
         static var partlyCloudyDay = "Partly Cloudy Day-50"
         static var partlyCloudyNight = "Partly Cloudy Night-50"
         
         // Future
         static var hail = "Hail-50"
-        static var thunderstorm = "Storm-50"
-        static var tornado = "tornado"
+        static var thunderstorm = "Thunderstorm"
+        static var tornado = "Tornado"
         
         // Custom
         static var umbrella = "Umbrella"
+        static var sunrise = "Sunrise-50"
+        static var sunset = "Sunset-50"
+        
+        //
+        // WHITE
+        //
+        
+        static var clearDay_White = "Sun-White"
+        static var clearNight_White = "Bright-Moon-White"
+        static var rain_White = "Rain-White"
+        static var snow_White = "Snow-White"
+        static var sleet_White = "Sleet-White"
+        static var wind_White = "Windy-White"
+        static var fog_White = "Fog-Day-White"
+        static var fogNight_White = "Fog-Night-White"
+        static var cloudy_White = "Cloud-White"
+        static var partlyCloudyDay_White = "Partly-Cloudy-Day-White"
+        static var partlyCloudyNight_White = "Partly-Cloudy-Night-White"
+        
+        // Future
+        static var hail_White = "Hail-White"
+        static var thunderstorm_White = "Thunderstorm-White"
+        static var tornado_White = "Tornado-White"
+        
+        // Custom
+        static var umbrella_White = "Umbrella-White"
+        static var sunrise_White = "Sunrise-White"
+        static var sunset_White = "Sunset-White"
+
     }
     
     enum DistanceUnits: String {

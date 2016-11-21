@@ -3,7 +3,6 @@
 //  MGWeather
 //
 //  Created by Mark Gumbs on 02/09/2016.
-//  Copyright © 2016 britishairways. All rights reserved.
 //
 
 import UIKit
@@ -16,37 +15,97 @@ class Utility: NSObject {
         
     }
     
+    class func getWeatherIcon(serviceIcon : String, scheme : String) -> String {
+
+        var iconName : String!
+        
+        if (scheme == GlobalConstants.ColourScheme.Light) {
+            
+            switch serviceIcon {
+            case "clear-day":
+                iconName = GlobalConstants.WeatherIcon.clearDay
+            case "clear-night" :
+                iconName = GlobalConstants.WeatherIcon.clearNight
+            case "rain" :
+                iconName = GlobalConstants.WeatherIcon.rain
+            case "snow":
+                iconName = GlobalConstants.WeatherIcon.snow
+            case "sleet":
+                iconName = GlobalConstants.WeatherIcon.sleet
+            case "wind":
+                iconName = GlobalConstants.WeatherIcon.wind
+            case "fog":
+                iconName = GlobalConstants.WeatherIcon.fog
+            case "cloudy":
+                iconName = GlobalConstants.WeatherIcon.cloudy
+            case "partly-cloudy-day":
+                iconName = GlobalConstants.WeatherIcon.partlyCloudyDay
+            case "partly-cloudy-night":
+                iconName = GlobalConstants.WeatherIcon.partlyCloudyNight
+            // Custom
+            case "UMBRELLA":
+                iconName = GlobalConstants.WeatherIcon.umbrella
+            case "SUNRISE":
+                iconName = GlobalConstants.WeatherIcon.sunrise
+            case "SUNSET":
+                iconName = GlobalConstants.WeatherIcon.sunset
+            default:
+                iconName = ""
+            }
+            
+        }
+        else {
+            switch serviceIcon {
+            case "clear-day":
+                iconName = GlobalConstants.WeatherIcon.clearDay_White
+            case "clear-night" :
+                iconName = GlobalConstants.WeatherIcon.clearNight_White
+            case "rain" :
+                iconName = GlobalConstants.WeatherIcon.rain_White
+            case "snow":
+                iconName = GlobalConstants.WeatherIcon.snow_White
+            case "sleet":
+                iconName = GlobalConstants.WeatherIcon.sleet_White
+            case "wind":
+                iconName = GlobalConstants.WeatherIcon.wind_White
+            case "fog":
+                iconName = GlobalConstants.WeatherIcon.fog_White
+            case "cloudy":
+                iconName = GlobalConstants.WeatherIcon.cloudy_White
+            case "partly-cloudy-day":
+                iconName = GlobalConstants.WeatherIcon.partlyCloudyDay_White
+            case "partly-cloudy-night":
+                iconName = GlobalConstants.WeatherIcon.partlyCloudyNight_White
+            // Custom
+            case "UMBRELLA":
+                iconName = GlobalConstants.WeatherIcon.umbrella_White
+            case "SUNRISE":
+                iconName = GlobalConstants.WeatherIcon.sunrise_White
+            case "SUNSET":
+                iconName = GlobalConstants.WeatherIcon.sunset_White
+                
+            default:
+                iconName = ""
+            }
+            
+        }
+
+        return iconName
+    }
+    
     class func getWeatherIcon(serviceIcon : String) -> String {
         
         var iconName : String!
         
-        // TODO:  If its a 'special' day (Halloween, Bonfire Night) etc, and we are in the
-        // UK or US where they celebrate it, we can show a themed background
+        // Load the saved colour scheme that user selected.  If not set, use default
+        let userDefaults = UserDefaults.standard
+        var scheme = userDefaults.string(forKey: GlobalConstants.Defaults.SavedColourScheme)
         
-        switch serviceIcon {
-        case "clear-day":
-            iconName = GlobalConstants.WeatherIcon.clearDay
-        case "clear-night" :
-            iconName = GlobalConstants.WeatherIcon.clearNight
-        case "rain" :
-            iconName = GlobalConstants.WeatherIcon.rain
-        case "snow":
-            iconName = GlobalConstants.WeatherIcon.snow
-        case "sleet":
-            iconName = GlobalConstants.WeatherIcon.sleet
-        case "wind":
-            iconName = GlobalConstants.WeatherIcon.wind
-        case "fog":
-            iconName = GlobalConstants.WeatherIcon.fog
-        case "cloudy":
-            iconName = GlobalConstants.WeatherIcon.cloudy
-        case "partly-cloudy-day":
-            iconName = GlobalConstants.WeatherIcon.partlyCloudyDay
-        case "partly-cloudy-night":
-            iconName = GlobalConstants.WeatherIcon.partlyCloudyNight
-        default:
-            iconName = ""
+        if (scheme == nil) {
+            scheme = GlobalConstants.DefaultColourScheme  // Dark
         }
+        
+        iconName = getWeatherIcon(serviceIcon: serviceIcon, scheme: scheme!)
         
         return iconName
     }
@@ -216,5 +275,40 @@ class Utility: NSObject {
         retVal = directions[directionsMod]
         
         return retVal
+    }
+    
+    class func setupColourScheme() -> ColourScheme {
+        
+        // Load the saved colour scheme that user selected.  If not set, use default
+        let userDefaults = UserDefaults.standard
+        var scheme = userDefaults.string(forKey: GlobalConstants.Defaults.SavedColourScheme)
+        
+        if (scheme == nil) {
+            scheme = GlobalConstants.DefaultColourScheme  // Dark
+        }
+
+        var textColourScheme : UIColor!
+        var podColourScheme : UIColor!
+        var titleViewColourScheme : UIColor!
+        
+        if (scheme == GlobalConstants.ColourScheme.Dark) {
+            podColourScheme = GlobalConstants.podDark
+            textColourScheme = GlobalConstants.writingLight
+            titleViewColourScheme = UIColor.black
+        }
+        else {
+            podColourScheme = UIColor.white //GlobalConstants.podLight
+            textColourScheme = UIColor.black //GlobalConstants.writingDark
+            titleViewColourScheme = GlobalConstants.DarkestGray
+        }
+        
+        let returnColourScheme = ColourScheme()
+        
+        returnColourScheme.type = scheme
+        returnColourScheme.podColourScheme = podColourScheme
+        returnColourScheme.textColourScheme = textColourScheme
+        returnColourScheme.titleViewColourScheme = titleViewColourScheme
+        
+        return returnColourScheme
     }
 }
