@@ -147,6 +147,28 @@ class Utility: NSObject {
         return imageName
     }
     
+//    class func getSpecialRainIcon (precipitation : Float) {
+//        
+//        var rainType = ""
+//        
+//        if (precipitation > 0 && precipitation < 0.098) {
+//            rainType = "LIGHT"
+//        }
+//        else if (precipitation >= 0.098 && precipitation < 0.39) {
+//            rainType = "MODERATE"
+//        }
+//        else if (precipitation >= 0.39 ) {
+//            rainType = "HEAVY"
+//        }
+//        
+//    }
+    /*
+    Light rain — when the precipitation rate is < 2.5 mm (0.098 in) per hour
+    Moderate rain — when the precipitation rate is between 2.5 mm (0.098 in) - 7.6 mm (0.30 in) or 10 mm (0.39 in) per hour[105][106]
+    Heavy rain — when the precipitation rate is > 7.6 mm (0.30 in) per hour,[105] or between 10 mm (0.39 in) and 50 mm (2.0 in) per hour[106]
+    Violent rain — when the precipitation rate is > 50 mm (2.0 in) per hour[106]
+    
+    */
     class func getSpecialDayWeatherImage(dayOrNight : String) -> String {
         
         // Based on the day, return a special background image regardless of the weather conditions

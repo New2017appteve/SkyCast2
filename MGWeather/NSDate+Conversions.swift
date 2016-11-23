@@ -20,6 +20,13 @@ extension NSDate {
         dateFormatter.dateFormat = "EEE"
         return dateFormatter.string(from: self as Date)
     }
+
+    func shortDayMonthYear() -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yy"
+        return dateFormatter.string(from: self as Date)
+    }
+
     
     func shortTimeString() -> String
     {

@@ -96,6 +96,19 @@ class GlobalConstants: NSObject {
         static var Lighter = UIColor(red: 245/255, green: 247/255, blue: 245/255, alpha: 1) // Lighter Shade
     }
     
+    // Segmented Control Colours
+    struct SegmentedControlTheme {
+        struct Dark {
+            static var Buttons = UIColor.white
+            static var Text = UIColor.black
+        }
+        struct Light {
+            static var Buttons = UIColor(red: 49/255, green: 121/255, blue: 214/255, alpha: 1)
+            static var Text = UIColor.white
+        }
+    }
+
+    
     // Ensure no spaces in URL
     
     static let SupportEmailAddress = "mgdeveloper7@gmail.com"

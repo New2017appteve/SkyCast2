@@ -313,11 +313,10 @@ extension DailyTabVC : UITableViewDataSource {
         return tableView.rowHeight-2
     }
 
-    func numberOfSectionsInTableView(tableView:UITableView)->Int
-    {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let lWeather = dailyWeather

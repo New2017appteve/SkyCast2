@@ -29,6 +29,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     var sunsetTimeStamp: NSDate?
     var tomorrowSunriseTimeStamp: NSDate?
     var tomorrowSunsetTimeStamp: NSDate?
+    var lastUpdatedTimeStamp: NSDate?
     var lastUpdatedTime = ""
 
     var infoLabelTimerCount = 0
@@ -431,6 +432,8 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         infoLabelTimerCount += 1
         weatherDetailsTimerCount += 1
         
+        lastUpdatedTime = reformatLastUpdatedTimeIfNeeded(lastUpdatedDate: lastUpdatedTimeStamp!)
+        
         // Do a mod of 4, so that we can display the 'Last Updated' time slightly longer than
         let mod = infoLabelTimerCount % 4
         switch (mod) {
@@ -633,45 +636,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         
         // Data for Location and Weather will be updated once each notification has fired
         
-        /*
-        self.delegate?.getAndSetLocation()
-        self.delegate?.refreshWeatherDataFromService2
-            { (result) -> Void in
-                switch (result) {
-                    
-                // A refreshed weather object is returned, pass this back into dailyWeather
-                case .Success(let refreshedWeatherData):
-                    
-                    self.dailyWeather = refreshedWeatherData as! Weather
-                    
-                    // Refresh the screen and table view
-                    DispatchQueue.main.async {
-
-                        self.populateTodayWeatherDetails()
-                        self.hourlyWeatherTableView.reloadData()
-                        self.enableScreen()
-                        
-                        self.view.hideToastActivity()
-                        
-                        // Scroll to the top of the table view
-                        self.hourlyWeatherTableView.contentOffset = CGPoint(x: 0, y: 0 - self.hourlyWeatherTableView.contentInset.top)
-                    }
-                    
-                    break;
-                case .Failure(let error):
-                    let messageText = "Weather data cannot be retrieved at this moment.  Please try again later"
-                    Utility.showMessage(titleString: "Error", messageString: messageText )
-
-                    self.enableScreen()
-                    break;
-                }
-        }
-        */
-    }
-    
-    func textView(textView: UITextView, shouldInteractWithURL URL: NSURL, inRange characterRange: NSRange) -> Bool {
-        UIApplication.shared.openURL(URL as URL)
-        return false
     }
     
     func getLastUpdatedTime() -> String {
@@ -679,10 +643,27 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         let today = NSDate()
         let timeNow = today.shortTimeString()
         
+        lastUpdatedTimeStamp = today
+        
         return timeNow
 
     }
-    
+
+    func reformatLastUpdatedTimeIfNeeded(lastUpdatedDate: NSDate) -> String {
+        
+        // If the last updated time is yesterday, add on the datestamp before the timestamp
+        
+        let today = NSDate()
+        var returnTime = lastUpdatedDate.shortTimeString()
+        
+        if !Utility.areDatesSameDay(date1: today, date2: lastUpdatedDate) {
+            returnTime = (lastUpdatedDate.shortDayMonthYear())! + " @ " + (lastUpdatedDate.shortTimeString())
+        }
+        
+        return returnTime
+        
+    }
+
     func populateTodayWeatherDetails() {
 
         var degreesSymbol = ""
@@ -897,7 +878,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     
     // MARK:  Reach methods
     func networkStatusChanged(_ notification: Notification) {
-        let userInfo = (notification as NSNotification).userInfo
+        _ = (notification as NSNotification).userInfo
         print("Network Status Changed")
     }
     
@@ -957,15 +938,16 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
 
 extension TodayTabVC : UIPopoverPresentationControllerDelegate {
     
-    func popoverPresentationControllerDidDismissPopover(popoverPresentationController: UIPopoverPresentationController) {
+    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
         
     }
     
-    func popoverPresentationController(popoverPresentationController: UIPopoverPresentationController, willRepositionPopoverToRect rect: UnsafeMutablePointer<CGRect>, inView view: AutoreleasingUnsafeMutablePointer<UIView?>) {
+    func popoverPresentationController(_ popoverPresentationController: UIPopoverPresentationController, willRepositionPopoverTo rect: UnsafeMutablePointer<CGRect>, in view: AutoreleasingUnsafeMutablePointer<UIView>) {
         
     }
     
-    func popoverPresentationControllerShouldDismissPopover(popoverPresentationController: UIPopoverPresentationController) -> Bool {
+    
+    func popoverPresentationControllerShouldDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) -> Bool {
         return true
     }
     
@@ -979,8 +961,7 @@ extension TodayTabVC : UITableViewDataSource {
         return GlobalConstants.NumberOfHoursToShowFromNow
     }
     
-    func numberOfSectionsInTableView(tableView:UITableView)->Int
-    {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
@@ -1051,7 +1032,7 @@ extension TodayTabVC : UITableViewDataSource {
             let lRainIconImage = GlobalConstants.WeatherIcon.umbrella
             cell.rainIcon.image = UIImage(named: lRainIconImage)!
             
-            var lWeatherIcon = Utility.getWeatherIcon(serviceIcon: icon!, scheme: GlobalConstants.ColourScheme.Light)
+            let lWeatherIcon = Utility.getWeatherIcon(serviceIcon: icon!, scheme: GlobalConstants.ColourScheme.Light)
             cell.summaryIcon.image = UIImage(named: lWeatherIcon)!
 
         }

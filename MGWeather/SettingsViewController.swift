@@ -70,7 +70,7 @@ class SettingsViewController: UIViewController {
         settingsView.clipsToBounds = true
         
         setupColourScheme()
-
+       
         if AppSettings.ShowBannerAds {
             loadBannerAd()
         }
@@ -95,25 +95,71 @@ class SettingsViewController: UIViewController {
         settingsView.backgroundColor = podColourScheme
         settingsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
         
+        // Segmented Controls
+
+        // Change default colours if dark theme
+        if (colourScheme.type == GlobalConstants.ColourScheme.Dark) {
+            changeSegmentedControlColours(scheme: GlobalConstants.ColourScheme.Dark)
+        }
+        else {
+            changeSegmentedControlColours(scheme: GlobalConstants.ColourScheme.Light)
+        }
+        
     }
 
+    func changeSegmentedControlColours(scheme : String) {
+        
+        if (scheme == GlobalConstants.ColourScheme.Dark) {
+            (dayNightColourControl.subviews[0] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Dark.Buttons
+            (dayNightColourControl.subviews[1] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Dark.Buttons
+            dayNightColourControl.setTitleTextAttributes([NSForegroundColorAttributeName: GlobalConstants.SegmentedControlTheme.Dark.Text], for: UIControlState.selected)
+            
+            (tempUnitsControl.subviews[0] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Dark.Buttons
+            (tempUnitsControl.subviews[1] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Dark.Buttons
+            tempUnitsControl.setTitleTextAttributes([NSForegroundColorAttributeName: GlobalConstants.SegmentedControlTheme.Dark.Text], for: UIControlState.selected)
+            
+            (colourSchemeControl.subviews[0] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Dark.Buttons
+            (colourSchemeControl.subviews[1] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Dark.Buttons
+            colourSchemeControl.setTitleTextAttributes([NSForegroundColorAttributeName: GlobalConstants.SegmentedControlTheme.Dark.Text], for: UIControlState.selected)
+
+        }
+        else {
+            (dayNightColourControl.subviews[0] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Light.Buttons
+            (dayNightColourControl.subviews[1] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Light.Buttons
+            dayNightColourControl.setTitleTextAttributes([NSForegroundColorAttributeName: GlobalConstants.SegmentedControlTheme.Light.Text], for: UIControlState.selected)
+            
+            (tempUnitsControl.subviews[0] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Light.Buttons
+            (tempUnitsControl.subviews[1] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Light.Buttons
+            tempUnitsControl.setTitleTextAttributes([NSForegroundColorAttributeName: GlobalConstants.SegmentedControlTheme.Light.Text], for: UIControlState.selected)
+            
+            (colourSchemeControl.subviews[0] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Light.Buttons
+            (colourSchemeControl.subviews[1] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Light.Buttons
+            colourSchemeControl.setTitleTextAttributes([NSForegroundColorAttributeName: GlobalConstants.SegmentedControlTheme.Light.Text], for: UIControlState.selected)
+        }
+
+    }
     func switchColourSchemesInternally () {
         
         var textColourScheme : UIColor!
         var podColourScheme : UIColor!
-        var titleViewColourScheme : UIColor!
+ //       var titleViewColourScheme : UIColor!
         
         if (colourSchemeControl.selectedSegmentIndex == 0) {
             // Dark
             
             podColourScheme = GlobalConstants.podDark
             textColourScheme = GlobalConstants.writingLight
-            titleViewColourScheme = UIColor.black
+//            titleViewColourScheme = UIColor.black
+            
+            changeSegmentedControlColours(scheme: GlobalConstants.ColourScheme.Dark)
         }
         else {
             podColourScheme = UIColor.white //GlobalConstants.podLight
             textColourScheme = UIColor.black //GlobalConstants.writingDark
-            titleViewColourScheme = GlobalConstants.DarkestGray
+//            titleViewColourScheme = GlobalConstants.DarkestGray
+            
+            changeSegmentedControlColours(scheme: GlobalConstants.ColourScheme.Light)
+
         }
         
         // Labels

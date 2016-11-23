@@ -307,7 +307,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 } catch let error as NSError {
                     print("json error: \(error.localizedDescription)")
                     
-                    var message = "Weather details cannot be retrieved at this time.  Please try again"
+                    let message = "Weather details cannot be retrieved at this time.  Please try again"
                     Utility.showMessage(titleString: "Error", messageString: message )
                     self.view.hideToastActivity()
                 }
@@ -328,7 +328,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 
                 //             self.serviceCallFailure(alertTitle: "Error", withMessage: message)
             } else {
-                var message = "Weather details cannot be retrieved at this time.  Please try again"
+                let message = "Weather details cannot be retrieved at this time.  Please try again"
                 Utility.showMessage(titleString: "Error", messageString: message )
             }
         }
@@ -574,7 +574,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         
         if let popover = actionMenu.popoverPresentationController{
             
-            popover.barButtonItem = sender as! UIBarButtonItem
+            popover.barButtonItem = sender as? UIBarButtonItem
             popover.permittedArrowDirections = UIPopoverArrowDirection.down
             popover.popoverLayoutMargins = UIEdgeInsets(top: 10, left: 4, bottom: 10, right: 4)
         }
@@ -586,7 +586,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         self.present(actionMenu, animated: true, completion: nil)
         
     }
-        
+    
     // MARK:- Menu action methods
     
     var weatherAction: UIAlertAction {
@@ -674,7 +674,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     // MARK:  Reach methods
     func networkStatusChanged(_ notification: Notification) {
         let userInfo = (notification as NSNotification).userInfo
-        print(userInfo)
+        print(userInfo ?? "Network Status Changed Default Message")
     }
 
 }
