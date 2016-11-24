@@ -3,7 +3,6 @@
 //  MGWeather
 //
 //  Created by Mark Gumbs on 20/07/2016.
-//  Copyright © 2016 britishairways. All rights reserved.
 //
 
 import UIKit
@@ -58,14 +57,9 @@ class InfoPopupViewController: UIViewController {
     }
     
     func initialScreenSetup () {
-        
-        alertInfoOuterView.backgroundColor = GlobalConstants.ViewShading.Lighter
-        alertInfoOuterView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
 
         alertInfoOuterView.layer.cornerRadius = 10.0
         alertInfoOuterView.clipsToBounds = true
-        
-        weatherAlertSourceButtonOuterView.backgroundColor = GlobalConstants.DarkestGray
         
         informationText.text = informationString
         
@@ -91,10 +85,13 @@ class InfoPopupViewController: UIViewController {
         
         // Pods
         alertInfoOuterView.backgroundColor = podColourScheme
+        alertInfoOuterView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha) + 5.0
+
         weatherAlertSourceButtonOuterView.backgroundColor = podColourScheme
         
         // Buttons and Title Labels
         weatherAlertSourceButton.backgroundColor = titleViewColourScheme
+        weatherAlertSourceButton.titleEdgeInsets.right = 10 // Add right padding of text
         
     }
 

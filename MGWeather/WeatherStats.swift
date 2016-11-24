@@ -3,7 +3,6 @@
 //  Weather
 //
 //  Created by Mark Gumbs on 25/06/2016.
-//  Copyright © 2016 britishairways. All rights reserved.
 //
 
 import UIKit
@@ -13,7 +12,6 @@ class WeatherStats: NSObject {
     // NOTE:  Ties are in Unix timestamps (e.g. 1467154800 = 06/28/2016 @ 11:00pm (UTC) )
     var dateAndTime : Double? // NOTE:  We may need bigger than an Int for future robustness
     var dateAndTimeStamp : NSDate?
-//    var dayOrNight : String?
     var summary : String?
     var icon : String?
     var sunriseTime : Double?
@@ -67,13 +65,6 @@ class WeatherStats: NSObject {
   
         if let lIcon  = weatherDict["icon"] as? String {
             icon = lIcon
-            
-//            if lIcon.contains("night") {
-//                dayOrNight = "NIGHT"
-//            }
-//            else {
-//                dayOrNight = "DAY"
-//            }
         }
         
         if let lSunriseTime  = weatherDict["sunriseTime"] as? Double {

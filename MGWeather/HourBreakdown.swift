@@ -3,7 +3,6 @@
 //  Weather
 //
 //  Created by Mark Gumbs on 25/06/2016.
-//  Copyright © 2016 britishairways. All rights reserved.
 //
 
 import UIKit

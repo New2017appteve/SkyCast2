@@ -42,10 +42,6 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-//        self.aboutView.alpha = 0.6 // CGFloat(GlobalConstants.DisplayViewAlpha)
-//        self.emailView.alpha = 0.6 //CGFloat(GlobalConstants.DisplayViewAlpha)
-//        self.creditsView.alpha = 0.6 //CGFloat(GlobalConstants.DisplayViewAlpha)
     
         // Ease in the outer screen view for effect
         self.weatherImage.alpha = 0.2
@@ -65,10 +61,6 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
     }
     
     func setupScreen () {
-    
-//        aboutView.backgroundColor = GlobalConstants.ViewShading.Lighter
-//        emailView.backgroundColor = GlobalConstants.ViewShading.Lighter
-//        creditsView.backgroundColor = GlobalConstants.ViewShading.Lighter
 
         // Make round corners for the outerviews
         
@@ -93,11 +85,6 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
         
         photoSource.layer.cornerRadius = 10.0
         photoSource.clipsToBounds = true
-        
-//        emailButton.backgroundColor = GlobalConstants.ViewShading.Darker
-//        weatherSource.backgroundColor = GlobalConstants.ViewShading.Darker
-//        iconSource.backgroundColor = GlobalConstants.ViewShading.Darker
-//        photoSource.backgroundColor = GlobalConstants.ViewShading.Darker
 
         aboutTitle.text = GlobalConstants.AppName
         aboutVersion.text = "Version " + Utility.getBuildVersion()
@@ -132,7 +119,6 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
         
         let textColourScheme = colourScheme.textColourScheme
         let podColourScheme = colourScheme.podColourScheme
-//        let titleViewColourScheme = colourScheme.titleViewColourScheme
         
         // Labels
         aboutTitle.textColor = textColourScheme
@@ -156,8 +142,6 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
 
         // Buttons and Title Labels
         emailButton.backgroundColor = podColourScheme
-//        iconSource.textColor = textColourScheme
-//        photoSource.textColor = textColourScheme
         
         weatherSource.backgroundColor = podColourScheme
         iconSource.backgroundColor = podColourScheme

@@ -16,6 +16,9 @@ protocol DailyTabVCDelegate
 
 class DailyTabVC: UIViewController {
 
+    var dailyWeather : Weather!  // This is passed in from ParentWeatherVC
+    var weatherLocation : Location!  // This is passed in from ParentWeatherVC
+    
     var delegate:DailyTabVCDelegate?
     var sunriseTimeStamp: NSDate?
     var sunsetTimeStamp: NSDate?
@@ -29,9 +32,6 @@ class DailyTabVC: UIViewController {
     @IBOutlet weak var outerScreenView : UIView!
     @IBOutlet weak var weatherImage : UIImageView!
     @IBOutlet weak var nextDaysSummary : UITextView!
-    
-    @IBOutlet weak var dailyWeather : Weather!  // This is passed in from ParentWeatherVC
-    @IBOutlet weak var weatherLocation : Location!  // This is passed in from ParentWeatherVC
     
     // The banner views.
     @IBOutlet weak var bannerOuterView: UIView!
@@ -61,8 +61,8 @@ class DailyTabVC: UIViewController {
             self.weatherImage.alpha = 1
             }, completion: nil)
 
-        populateDailyWeatherDetails()
         setupColourScheme()
+        populateDailyWeatherDetails()
         
         if AppSettings.ShowBannerAds {
             // For this screen we only want to randomly show the banner ad, so thats its an
@@ -79,15 +79,12 @@ class DailyTabVC: UIViewController {
     }
 
     override func viewDidDisappear(_ animated: Bool) {
- //       NotificationCenter.default.removeObserver(self, name: GlobalConstants.weatherRefreshFinishedKey, object: nil);
+
     }
 
     
     func setupScreen () {
         
-  //      nextDaysSummary.backgroundColor = GlobalConstants.ViewShading.Lighter
-        
-  //      nextDaysSummary.alpha = 0.8
         nextDaysSummary.layer.cornerRadius = 5.0
         nextDaysSummary.clipsToBounds = true
 

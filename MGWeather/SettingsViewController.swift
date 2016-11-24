@@ -61,9 +61,6 @@ class SettingsViewController: UIViewController {
     
     
     func setupScreen () {
-    
- //       settingsView.backgroundColor = GlobalConstants.ViewShading.Lighter
- //       settingsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
 
         // Make round corners for the outerviews
         settingsView.layer.cornerRadius = 10.0
@@ -84,7 +81,6 @@ class SettingsViewController: UIViewController {
         
         let textColourScheme = colourScheme.textColourScheme
         let podColourScheme = colourScheme.podColourScheme
-//        let titleViewColourScheme = colourScheme.titleViewColourScheme
         
         // Labels
         tempUnitsTitle.textColor = textColourScheme
@@ -142,21 +138,18 @@ class SettingsViewController: UIViewController {
         
         var textColourScheme : UIColor!
         var podColourScheme : UIColor!
- //       var titleViewColourScheme : UIColor!
         
         if (colourSchemeControl.selectedSegmentIndex == 0) {
             // Dark
             
             podColourScheme = GlobalConstants.podDark
             textColourScheme = GlobalConstants.writingLight
-//            titleViewColourScheme = UIColor.black
             
             changeSegmentedControlColours(scheme: GlobalConstants.ColourScheme.Dark)
         }
         else {
             podColourScheme = UIColor.white //GlobalConstants.podLight
             textColourScheme = UIColor.black //GlobalConstants.writingDark
-//            titleViewColourScheme = GlobalConstants.DarkestGray
             
             changeSegmentedControlColours(scheme: GlobalConstants.ColourScheme.Light)
 
@@ -297,22 +290,5 @@ class SettingsViewController: UIViewController {
     @IBAction func olourSchemeChanged(_ sender: Any) {
         switchColourSchemesInternally()
     }
-
-//    // MARK:  Notification complete methods
-//    
-//    func weatherDataRefreshed() {
-//        print("Weather Data Refreshed - SettingsViewController")
-//        
-//            NotificationCenter.default.removeObserver(self, name: GlobalConstants.weatherRefreshFinishedKey, object: nil);
-//        
-//    }
-//    
-//    func locationDataRefreshed() {
-//        print("Location Data Refreshed - SettingsViewController")
-//        
-//        // Remove after refresh  Can add again on the next refresh
-//        NotificationCenter.default.removeObserver(self, name: GlobalConstants.locationRefreshFinishedKey, object: nil);
-//        
-//    }
 
 }

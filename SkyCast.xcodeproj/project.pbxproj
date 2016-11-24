@@ -11,6 +11,7 @@
 		C0042E831DB81F09007506AC /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0042E821DB81F09007506AC /* Reachability.swift */; };
 		C00A7B121DDA7ABF00C8F996 /* Flags.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00A7B111DDA7ABF00C8F996 /* Flags.swift */; };
 		C00A7B181DE25F0300C8F996 /* ColourScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00A7B171DE25F0300C8F996 /* ColourScheme.swift */; };
+		C00F9ABA1DE65E3500E373EB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C00F9AB91DE65E3500E373EB /* GoogleService-Info.plist */; };
 		C018BA061DA2FE64009706F9 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = C018BA051DA2FE64009706F9 /* Toast.swift */; };
 		C0617F881DD33BB60003B844 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0617F871DD33BB60003B844 /* AppSettings.swift */; };
 		C0EFA2CD1DCF9DA100D873E9 /* Reach.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EFA2CC1DCF9DA100D873E9 /* Reach.swift */; };
@@ -51,6 +52,8 @@
 		C0042E821DB81F09007506AC /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		C00A7B111DDA7ABF00C8F996 /* Flags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Flags.swift; sourceTree = "<group>"; };
 		C00A7B171DE25F0300C8F996 /* ColourScheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColourScheme.swift; sourceTree = "<group>"; };
+		C00F9AB91DE65E3500E373EB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		C00F9ABB1DE666B400E373EB /* SkyCast.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SkyCast.entitlements; sourceTree = "<group>"; };
 		C018BA051DA2FE64009706F9 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		C0617F871DD33BB60003B844 /* AppSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		C0EFA2CC1DCF9DA100D873E9 /* Reach.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reach.swift; sourceTree = "<group>"; };
@@ -137,6 +140,7 @@
 		C7175A8F1D31683700788F09 = {
 			isa = PBXGroup;
 			children = (
+				C00F9ABB1DE666B400E373EB /* SkyCast.entitlements */,
 				C7175A9A1D31683700788F09 /* MGWeather */,
 				C7175A991D31683700788F09 /* Products */,
 				359E2F85336AC5A29DA94A61 /* Pods */,
@@ -168,6 +172,7 @@
 				C7175AAD1D3168CE00788F09 /* ViewControllers */,
 				C7175A9B1D31683700788F09 /* AppDelegate.swift */,
 				C7175AA21D31683700788F09 /* Assets.xcassets */,
+				C00F9AB91DE65E3500E373EB /* GoogleService-Info.plist */,
 				C7175AA71D31683700788F09 /* Info.plist */,
 			);
 			path = MGWeather;
@@ -307,6 +312,11 @@
 						DevelopmentTeam = SCV8CWA773;
 						LastSwiftMigration = 0800;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -338,6 +348,7 @@
 				C7175AA31D31683700788F09 /* Assets.xcassets in Resources */,
 				C7175AC91D316A6A00788F09 /* sample_data_cippenham2.json in Resources */,
 				C7175AA11D31683700788F09 /* Main.storyboard in Resources */,
+				C00F9ABA1DE65E3500E373EB /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -539,6 +550,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = SkyCast.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = SCV8CWA773;
 				INFOPLIST_FILE = MGWeather/Info.plist;
@@ -559,6 +571,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = SkyCast.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = SCV8CWA773;
 				INFOPLIST_FILE = MGWeather/Info.plist;

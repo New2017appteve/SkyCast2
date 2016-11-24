@@ -7,3 +7,4 @@
 // The following is required for UIDeviceHardware
 #include <sys/types.h>
 #include <sys/sysctl.h>
+#import <Google/Analytics.h>

@@ -3,7 +3,6 @@
 //  Weather
 //
 //  Created by Mark Gumbs on 28/06/2016.
-//  Copyright © 2016 britishairways. All rights reserved.
 //
 
 import UIKit
@@ -21,6 +20,9 @@ protocol TodayTabVCDelegate
 }
 
 class TodayTabVC: UIViewController, UITextViewDelegate {
+    
+    var dailyWeather : Weather!  // This is passed in from ParentWeatherVC
+    var weatherLocation : Location!  // This is passed in from ParentWeatherVC
     
     var delegate:TodayTabVCDelegate?
     var dayOrNightColourSetting: String?
@@ -42,10 +44,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     
     @IBOutlet weak var outerScreenView : UIView!
     @IBOutlet weak var weatherImageOuterView : UIView!
-    
-    @IBOutlet weak var weatherLabel : UILabel!
     @IBOutlet weak var weatherImage : UIImageView!
-    @IBOutlet weak var lastUpdatedLabel : UILabel!
 
     @IBOutlet weak var infoView : UIView!
     @IBOutlet weak var infoLabel : UILabel!
@@ -101,10 +100,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     private let cellId = "cellId"
     
     @IBOutlet weak var hourlyWeatherTableView : UITableView!
-    @IBOutlet weak var hourlyWeatherTableViewHeight : NSLayoutConstraint!
-    
-    @IBOutlet weak var dailyWeather : Weather!
-    @IBOutlet weak var weatherLocation : Location!
     
     // The banner views.
     @IBOutlet weak var bannerOuterView: UIView!
@@ -172,8 +167,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-//        NotificationCenter.default.removeObserver(self, name: GlobalConstants.weatherRefreshFinishedKey, object: nil);
-//        NotificationCenter.default.removeObserver(self, name: GlobalConstants.locationRefreshFinishedKey, object: nil);
+
     }
 
     
@@ -202,10 +196,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     func setupScreen () {
         
         bannerOuterView.isHidden = true
-        
-        poweredByDarkSkyButton.backgroundColor = GlobalConstants.DarkestGray
-        nowLabel.backgroundColor = GlobalConstants.DarkestGray
-        todayLabel.backgroundColor = GlobalConstants.DarkestGray
 
         let userDefaults = UserDefaults.standard
         dayOrNightColourSetting = userDefaults.string(forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
@@ -220,19 +210,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         weatherDetailOuterView.layer.cornerRadius = 10.0
         weatherDetailOuterView.clipsToBounds = true
         
-//        sunriseIcon.layer.cornerRadius = 2.0
-//        sunriseIcon.clipsToBounds = true
-//        sunsetIcon.layer.cornerRadius = 2.0
-//        sunsetIcon.clipsToBounds = true
-//        
-//        if dayOrNightColourSetting == "ON" {
-//            sunriseIcon.backgroundColor = GlobalConstants.TableViewAlternateShadingDay.Lighter
-//            sunsetIcon.backgroundColor = GlobalConstants.TableViewAlternateShadingNight.Lighter
-//        }
-//        else {
-//            sunriseIcon.backgroundColor = UIColor.clear
-//            sunsetIcon.backgroundColor = UIColor.clear
-//        }
+        poweredByDarkSkyButton.titleEdgeInsets.right = 10 // Add right padding of text
         
         // Hide weather details initially until timer starts
         self.weatherDetailStackView.alpha = 0

@@ -248,13 +248,6 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             celsuisOrFahrenheit = GlobalConstants.DefaultTemperatureUnit  // Celsius
         }
         
-//        if celsuisOrFahrenheit == GlobalConstants.TemperatureUnits.Celsuis {
-//            returnURL = GlobalConstants.WeatherURL + GlobalConstants.celsiusURLParameter
-//        }
-//        else {
-//            returnURL = GlobalConstants.WeatherURL
-//        }
-        
         if celsuisOrFahrenheit == GlobalConstants.TemperatureUnits.Celsuis {
             returnURL = urlWithLocation + GlobalConstants.celsiusURLParameter
         }
@@ -347,10 +340,6 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         self.view.makeToast("Refreshing data", duration: 1.0, position: .bottom)
         self.view.makeToastActivity(.center)
         
-//        NotificationCenter.default.addObserver(self, selector: #selector(ParentWeatherVC.locationDataRefreshed), name: GlobalConstants.locationRefreshFinishedKey, object: nil)
-//        
-//        NotificationCenter.default.addObserver(self, selector: #selector(ParentWeatherVC.weatherDataRefreshed), name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
-        
         self.getAndSetLocation()
         // NOTE:  Weather data will be retrieved once the Location data has loaded and notified
     }
@@ -379,16 +368,11 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         self.view.makeToastActivity(.center)
         refreshButton.isEnabled = false
         
-        //getWeatherDataFromService()
-        
         // NOTE:  The setup of the screen in the tabs will be done after getWeatherDataFromService() has finished
     }
     
     func retrieveWeatherData () {
         
-        // Make a toast to say data is refreshing
-//        self.view.makeToast("Refreshing weather data", duration: 1.0, position: .bottom)
-//        self.view.makeToastActivity(.center)
         refreshButton.isEnabled = false
         
         getWeatherDataFromService()
@@ -662,6 +646,10 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         
         if connectedToInternet
         {
+            // Force tab back to main screen (TODO:  Review)
+            segmentedControl.selectedSegmentIndex = TabIndex.FirstChildTab.rawValue
+            displayCurrentTab(tabIndex: TabIndex.FirstChildTab.rawValue)
+
             retrieveWeatherAndLocationData()
         }
         else

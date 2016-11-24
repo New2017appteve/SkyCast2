@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F5D6F207E3771F9724746F161CD85DC5"
+               BlueprintIdentifier = "FED15BDCC5FE02E65560DC3B38CC274E"
                BuildableName = "Pods_SkyCast.framework"
                BlueprintName = "Pods-SkyCast"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F5D6F207E3771F9724746F161CD85DC5"
+            BlueprintIdentifier = "FED15BDCC5FE02E65560DC3B38CC274E"
             BuildableName = "Pods_SkyCast.framework"
             BlueprintName = "Pods-SkyCast"
             ReferencedContainer = "container:Pods.xcodeproj">
