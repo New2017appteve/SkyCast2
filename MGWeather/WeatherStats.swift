@@ -51,12 +51,11 @@ class WeatherStats: NSObject {
     init(fromDictionary weatherDict: NSDictionary){
         
         if let lDateAndTime  = weatherDict["time"] as? Double {
-            dateAndTime = lDateAndTime
-            dateAndTimeStamp = NSDate(timeIntervalSince1970: dateAndTime!)  // NOTE:  Remember to add offset etc
             
-            let formatter = DateFormatter()
-            //formatter.dateFormat = "h:mm a"
-            formatter.timeZone = NSTimeZone(forSecondsFromGMT: 7 * 3600) as TimeZone!  // original string in GMT
+            dateAndTime = lDateAndTime
+            dateAndTimeStamp = NSDate(timeIntervalSince1970: dateAndTime!)
+            dateAndTimeStamp = Utility.getTimeInWeatherTimezone(dateAndTime: dateAndTimeStamp!)
+            
         }
 
         if let lSummary  = weatherDict["summary"] as? String {
@@ -69,12 +68,14 @@ class WeatherStats: NSObject {
         
         if let lSunriseTime  = weatherDict["sunriseTime"] as? Double {
             sunriseTime = lSunriseTime
-            sunriseTimeStamp = NSDate(timeIntervalSince1970: sunriseTime!)  // NOTE:  Remember to add offset etc
+            sunriseTimeStamp = NSDate(timeIntervalSince1970: sunriseTime!)
+            sunriseTimeStamp = Utility.getTimeInWeatherTimezone(dateAndTime: sunriseTimeStamp!)
         }
         
         if let lSunsetTime = weatherDict["sunsetTime"] as? Double {
             sunsetTime = lSunsetTime
-            sunsetTimeStamp = NSDate(timeIntervalSince1970: sunsetTime!)  // NOTE:  Remember to add offset etc
+            sunsetTimeStamp = NSDate(timeIntervalSince1970: sunsetTime!)
+            sunsetTimeStamp = Utility.getTimeInWeatherTimezone(dateAndTime: sunsetTimeStamp!)
             
         }
         

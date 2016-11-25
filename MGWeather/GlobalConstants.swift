@@ -13,8 +13,18 @@ class GlobalConstants: NSObject {
     // Create a singleton so that the variables can be called outside of the class
     static let sharedInstance = GlobalConstants()
     
-    static let AppName = "SkyCast"
+    //
+    // Variables written to
+    //
     
+    static var timezoneOffset = 0
+    
+    //
+    //
+    // The remainder will be read-only
+    //
+    
+    static let AppName = "SkyCast"
 
     // Completion Handler code (NOT CURRENTLY USED)
    // http://www.developerdave.co.uk/2015/09/better-completion-handlers-in-swift/
@@ -184,6 +194,7 @@ class GlobalConstants: NSObject {
     struct ImageFile {
         enum FileName : String {
             
+            // Relates to standard from Dark Sky API
             case clearDay = "clear_day_sunshine-186980-pexels.jpeg"
             case clearNight = "clear_night_moon-pexels-26341.jpg"
             case rain = "rain_day-125510-pexels.jpeg"
@@ -191,18 +202,20 @@ class GlobalConstants: NSObject {
             case sleet = "sleet_pexels-12875.jpeg"
             case wind = "wind_person-woman-girl-blonde-pexels.jpg"
             case fog = "fog_day_road_foggy-mist-pexels.jpg"
-            case fogNight = "fog_night_foggy-mist-forest-trees-42263-pexels"
             case cloudy = "cloud_overcast-27194-pexels.jpg"
             case partlyCloudyDay = "partial_cloud_day-28501-pexels.jpg"
-            case partlyCloudyNight = "partial-cloud-night-30376-pexels" //"partial_cloudy_night-70439-pexels.jpeg"
+            case partlyCloudyNight = "partial-cloud-night-30376-pexels"
             
             // Future
             case hail = "hail"
             case thunderstorm = "lightning-day-sky-53459-pexels.jpeg"
             case tornado = "tornado"
             
-            // Custom
+            // Custom (variations on the standard)
             case rainNight = "rain_night-pexels"
+            case fogNight = "fog_night_foggy-mist-forest-trees-42263-pexels"
+            case partlyCloudyDayAlternate = "partial_cloud_day_water-163900-pexels"
+            case partlyCloudyNightAlternate = "partial_cloudy_night-70439-pexels.jpeg"
             
             // Themed Occasions
             case halloween = "halloween-pumpkin-carving-face"

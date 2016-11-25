@@ -112,7 +112,6 @@ class InfoPopupViewController: UIViewController {
     }
 
     
-    
     // MARK: Button related methods
     
     @IBAction func backButtonPressed(_ sender: AnyObject) {

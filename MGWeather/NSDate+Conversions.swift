@@ -97,4 +97,10 @@ extension NSDate {
         return date1.compare(self as Date) == self.compare(date2 as Date)
     }
 
+    
+    func add(minutes: Int) -> Date {
+        return Calendar(identifier: .gregorian).date(byAdding: .minute, value: minutes, to: self as Date)!
+    }
+
+
 }

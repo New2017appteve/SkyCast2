@@ -29,7 +29,8 @@ class WeatherAlerts: NSObject {
         
         if let lDateAndTime  = weatherDict["time"] as? Double {
             alertDateAndTime = lDateAndTime
-            alertDateAndTimeStamp = NSDate(timeIntervalSince1970: alertDateAndTime!)  // NOTE:  Remember to add offset etc
+            alertDateAndTimeStamp = NSDate(timeIntervalSince1970: alertDateAndTime!)
+            alertDateAndTimeStamp = Utility.getTimeInWeatherTimezone(dateAndTime: alertDateAndTimeStamp!)
             
             let formatter = DateFormatter()
             formatter.timeZone = TimeZone(secondsFromGMT: 7 * 3600) as TimeZone!  // original string in GMT
@@ -38,7 +39,9 @@ class WeatherAlerts: NSObject {
         
         if let lDateAndTime  = weatherDict["expires"] as? Double {
             alertExpiryDateAndTime = lDateAndTime
-            alertExpiryDateAndTimeStamp = NSDate(timeIntervalSince1970: alertExpiryDateAndTime!)  // NOTE:  Remember to add offset etc
+            alertExpiryDateAndTimeStamp = NSDate(timeIntervalSince1970: alertExpiryDateAndTime!)
+            alertExpiryDateAndTimeStamp = Utility.getTimeInWeatherTimezone(dateAndTime: alertExpiryDateAndTimeStamp!)
+
         }
         
         if let lAlertDescription  = weatherDict["description"] as? String {

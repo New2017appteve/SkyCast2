@@ -137,6 +137,7 @@ class Utility: NSObject {
         case "cloudy":
             imageName  = GlobalConstants.ImageFile.FileName.cloudy.rawValue
         case "partly-cloudy-day":
+            // TODO:  Random choosing of some alternate pcs
             imageName  = GlobalConstants.ImageFile.FileName.partlyCloudyDay.rawValue
         case "partly-cloudy-night":
             imageName = GlobalConstants.ImageFile.FileName.partlyCloudyNight.rawValue
@@ -177,7 +178,9 @@ class Utility: NSObject {
         
         var imageName : String!
         
-        let today = Date()
+        var today = Date()
+        today = Utility.getTimeInWeatherTimezone(dateAndTime: today as NSDate) as Date
+
         let df = DateFormatter()
         df.dateFormat = "MM-dd"  // Remove timestamp for comparison
         
@@ -260,7 +263,9 @@ class Utility: NSObject {
         
         var retVal = false
         
-        let today = Date()
+        var today = Date()
+        today = Utility.getTimeInWeatherTimezone(dateAndTime: today as NSDate) as Date
+        
         let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)
         
         let df = DateFormatter()
@@ -276,7 +281,15 @@ class Utility: NSObject {
         return retVal
     }
     
-
+    class func getTimeInWeatherTimezone(dateAndTime: NSDate) -> NSDate {
+        
+        let timezoneOffsetMinutes = GlobalConstants.timezoneOffset * 60
+        let localDateTimeStamp = dateAndTime.add(minutes: timezoneOffsetMinutes)
+        
+        return localDateTimeStamp as NSDate
+    }
+    
+    
     class func compassDirectionFromDegrees (degrees : Float) -> String {
         
         // Reference:  

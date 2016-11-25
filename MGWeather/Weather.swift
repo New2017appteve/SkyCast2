@@ -27,6 +27,13 @@ class Weather: NSObject {
     
     init(fromDictionary weatherDict: NSDictionary){
         
+        if let lOffset  = weatherDict["offset"] as? Int {
+            offset = lOffset
+            
+            // Set the timezone offset globally so all classes can use it
+            GlobalConstants.timezoneOffset = lOffset
+        }
+        
         if let lLatitude  = weatherDict["latitude"] as? Float {
             latitude = lLatitude
         }
@@ -39,27 +46,22 @@ class Weather: NSObject {
             timezone = lTimezone
         }
         
-        if let lOffset  = weatherDict["offset"] as? Int {
-            offset = lOffset
-        }
         
         if let lCurrentBreakdown = weatherDict["currently"] as? NSDictionary {
             print("..currentBreakdown dict")
             
-            currentBreakdown = WeatherStats(fromDictionary: lCurrentBreakdown )
+            currentBreakdown = WeatherStats(fromDictionary: lCurrentBreakdown)
         }
         
         if let lMinuteBreakdown = weatherDict["minutely"] as? NSDictionary {
             print("..minuteBreakdown dict")
             
-            //minuteBreakdown = lMinuteBreakdown.flatMap({ MinuteBreakdown(fromDictionary: $0) })
             minuteBreakdown = MinuteBreakdown(fromDictionary: lMinuteBreakdown )
         }
 
         if let lHourBreakdown = weatherDict["hourly"] as? NSDictionary {
             print("..hourBreakdown dict")
             
-            //hourBreakdown = lHourBreakdown.flatMap({ HourBreakdown(fromDictionary: $0) })
             hourBreakdown = HourBreakdown(fromDictionary: lHourBreakdown )
         }
 

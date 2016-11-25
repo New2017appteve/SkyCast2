@@ -164,7 +164,9 @@ class DailyTabVC: UIViewController {
             }
 
             var isItDayOrNight = "NIGHT"
-            let timeNow = NSDate()
+            var timeNow = NSDate()
+            timeNow = Utility.getTimeInWeatherTimezone(dateAndTime: timeNow)
+
             if isDayTime(dateTime: timeNow) {
                 isItDayOrNight = "DAY"
             }

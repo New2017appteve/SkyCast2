@@ -618,7 +618,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     
     func getLastUpdatedTime() -> String {
         
-        let today = NSDate()
+        var today = NSDate()
+        today = Utility.getTimeInWeatherTimezone(dateAndTime: today)
+
         let timeNow = today.shortTimeString()
         
         lastUpdatedTimeStamp = today
@@ -631,7 +633,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         
         // If the last updated time is yesterday, add on the datestamp before the timestamp
         
-        let today = NSDate()
+        var today = NSDate()
+        today = Utility.getTimeInWeatherTimezone(dateAndTime: today)
+        
         var returnTime = lastUpdatedDate.shortTimeString()
         
         if !Utility.areDatesSameDay(date1: today, date2: lastUpdatedDate) {
@@ -761,7 +765,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             // the current time is day or night
             
             var isItDayOrNight = "NIGHT"
-            let timeNow = NSDate()
+            
+            var timeNow = NSDate()
+            timeNow = Utility.getTimeInWeatherTimezone(dateAndTime: timeNow)
+            
             if isDayTime(dateTime: timeNow) {
                 isItDayOrNight = "DAY"
             }
