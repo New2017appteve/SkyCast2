@@ -215,7 +215,7 @@ class SettingsViewController: UIViewController {
         }
         
         if (colourSchemeSet == nil) {
-            colourSchemeSet = GlobalConstants.DefaultDayOrNightSwitch  // On
+            colourSchemeSet = GlobalConstants.DefaultColourScheme  // On
             saveSettings()
         }
         else {

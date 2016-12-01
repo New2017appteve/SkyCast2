@@ -14,7 +14,7 @@ class AppSettings: NSObject {
     static let ShowBannerAds = true
     static let SpecialThemedBackgroundsForEvents = true
     
-    static let BannerAdsTestMode = true     // Set this to TRUE to show test ads
+    static let BannerAdsTestMode = false    // Set this to TRUE to show test ads
     static let AdMobAppID = GlobalConstants.AdMobAppID
     static let AdMobBannerID = GlobalConstants.AdMobBannerID
     

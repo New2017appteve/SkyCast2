@@ -423,11 +423,16 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             }
             
         } else {
-            Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
+            Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location.  Please ensure that Skycast is allowed to access your location on this device." )
+            
             locationManager.stopUpdatingLocation()
             locationManager.stopMonitoringSignificantLocationChanges()
             self.view.hideToastActivity()
             refreshButton.isEnabled = true
+            
+            // NOTE:  We dont want to post a finished notification here since its likely that the
+            // iPhone is asking the user to allow location to be used.  Or location service is off.
+   //         NotificationCenter.default.post(name: GlobalConstants.locationRefreshFinishedKey, object: nil)
 
         }
         
@@ -459,6 +464,10 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
                 self.view.hideToastActivity()
                 self.refreshButton.isEnabled = true
+                
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: GlobalConstants.locationRefreshFinishedKey, object: nil)
+                }
                 return
             }
             if (placemarks?.count)! > 0 {
@@ -506,8 +515,9 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                     
                 }
                 
-                NotificationCenter.default.post(name: GlobalConstants.locationRefreshFinishedKey, object: nil)
-                
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: GlobalConstants.locationRefreshFinishedKey, object: nil)
+                }
             }
                 
             else {
@@ -515,6 +525,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
                 self.view.hideToastActivity()
                 self.refreshButton.isEnabled = true
+                NotificationCenter.default.post(name: GlobalConstants.locationRefreshFinishedKey, object: nil)
 
             }
             
@@ -612,17 +623,12 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         self.view.hideToastActivity()
         
         retrieveWeatherData()
-
-        // Remove after refresh  Can add again on the next refresh
- //       NotificationCenter.default.removeObserver(self, name: GlobalConstants.locationRefreshFinishedKey, object: nil);
         
     }
     
     func weatherDataRefreshed() {
         print("Weather Data Refreshed - Parent")
         self.view.hideToastActivity()
-        
- //       NotificationCenter.default.removeObserver(self, name: GlobalConstants.weatherRefreshFinishedKey, object: nil);
 
     }
     

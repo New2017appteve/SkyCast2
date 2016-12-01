@@ -97,6 +97,7 @@ class GetWeatherData: NSObject {
                 
                 // Get JSON
                 do {
+                    // TODO:  Review below, not using the getResponse variable
                     let getResponse = try JSONSerialization.jsonObject(with: receivedData, options: .allowFragments)
                     print (getResponse)
                     

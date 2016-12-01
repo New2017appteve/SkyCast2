@@ -68,7 +68,7 @@
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wednesday" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cDW-f7-Ynh">
-                                                                    <rect key="frame" x="5" y="4" width="108" height="14"/>
+                                                                    <rect key="frame" x="5" y="4" width="108" height="12"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="width" constant="108" id="fph-zl-fMJ"/>
                                                                     </constraints>
@@ -134,8 +134,8 @@
                                                                         </label>
                                                                     </subviews>
                                                                 </stackView>
-                                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="bT2-G4-tTa">
-                                                                    <rect key="frame" x="7" y="26" width="52" height="57"/>
+                                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bT2-G4-tTa">
+                                                                    <rect key="frame" x="7" y="26" width="52" height="55"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="width" constant="52" id="cGu-dX-glC"/>
                                                                     </constraints>
@@ -229,9 +229,9 @@
                                                                 <constraint firstItem="bT2-G4-tTa" firstAttribute="top" secondItem="cDW-f7-Ynh" secondAttribute="bottom" constant="8" id="68R-5j-PgB"/>
                                                                 <constraint firstAttribute="bottom" secondItem="pbG-Xr-4yO" secondAttribute="bottom" constant="4" id="9pY-Un-JxP"/>
                                                                 <constraint firstAttribute="bottom" secondItem="DVg-6b-hfN" secondAttribute="bottom" constant="4" id="IqO-01-E2w"/>
-                                                                <constraint firstItem="bT2-G4-tTa" firstAttribute="centerY" secondItem="D0g-eO-EDm" secondAttribute="centerY" constant="0.5" id="Jh9-o9-0m5"/>
+                                                                <constraint firstItem="bT2-G4-tTa" firstAttribute="centerY" secondItem="D0g-eO-EDm" secondAttribute="centerY" constant="-1.5" id="Jh9-o9-0m5"/>
                                                                 <constraint firstItem="bT2-G4-tTa" firstAttribute="leading" secondItem="D0g-eO-EDm" secondAttribute="leadingMargin" constant="-1" id="LS3-MI-ku1"/>
-                                                                <constraint firstItem="DVg-6b-hfN" firstAttribute="top" secondItem="bT2-G4-tTa" secondAttribute="bottom" constant="1" id="LY2-mn-gRF"/>
+                                                                <constraint firstItem="DVg-6b-hfN" firstAttribute="top" secondItem="bT2-G4-tTa" secondAttribute="bottom" constant="3" id="LY2-mn-gRF"/>
                                                                 <constraint firstItem="DVg-6b-hfN" firstAttribute="bottom" secondItem="pbG-Xr-4yO" secondAttribute="bottom" id="MLI-U9-gGe"/>
                                                                 <constraint firstItem="23o-hg-qw2" firstAttribute="top" secondItem="D0g-eO-EDm" secondAttribute="top" constant="5" id="T6D-UI-Fea"/>
                                                                 <constraint firstItem="cDW-f7-Ynh" firstAttribute="leading" secondItem="D0g-eO-EDm" secondAttribute="leading" constant="5" id="WXz-fB-E7a"/>
