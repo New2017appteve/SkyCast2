@@ -19,6 +19,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     
     @IBOutlet weak var segmentedControl: WeatherSegmentedControl!
     @IBOutlet weak var titleBar: UINavigationBar!
+    @IBOutlet weak var barButtonAction: UIBarButtonItem!
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var weatherImage : UIImageView!
     @IBOutlet weak var refreshButton : UIButton!
@@ -59,6 +60,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         loadingMode = "STARTUP"
         setupScreen()
         segmentedControl.isEnabled = false
+        barButtonAction.isEnabled = false
+        
         setViewControllerTitle()
         
         // Register to receive notification for location and Reachability
@@ -86,8 +89,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         if connectedToInternet
         {
             // Make a toast to say data is refreshing
-            self.view.makeToast("Refreshing data", duration: 1.0, position: .bottom)
-            self.view.makeToastActivity(.center)
+//            self.view.makeToast("Refreshing data", duration: 1.0, position: .bottom)
+//            self.view.makeToastActivity(.center)
 
             self.getAndSetLocation()
             
@@ -286,7 +289,9 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                     
                     DispatchQueue.main.async {
                         
+                        // Reenable controls
                         self.segmentedControl.isEnabled = true
+                        self.barButtonAction.isEnabled = true
                         
                         if self.loadingMode == "STARTUP" {
                             self.setupTabs()
@@ -337,8 +342,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         loadingMode = "REFRESHING"
         
         // Make a toast to say data is refreshing
-        self.view.makeToast("Refreshing data", duration: 1.0, position: .bottom)
-        self.view.makeToastActivity(.center)
+//        self.view.makeToast("Refreshing data", duration: 1.0, position: .bottom)
+//        self.view.makeToastActivity(.center)
         
         self.getAndSetLocation()
         // NOTE:  Weather data will be retrieved once the Location data has loaded and notified
@@ -363,17 +368,22 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         
         self.getAndSetLocation()
         
-        // Make a toast to say data is refreshing
-        self.view.makeToast("Refreshing data", duration: 1.0, position: .bottom)
-        self.view.makeToastActivity(.center)
-        refreshButton.isEnabled = false
+//        // Make a toast to say data is refreshing
+//        self.view.makeToast("Refreshing data", duration: 1.0, position: .bottom)
+//        self.view.makeToastActivity(.center)
+//        refreshButton.isEnabled = false
         
         // NOTE:  The setup of the screen in the tabs will be done after getWeatherDataFromService() has finished
     }
     
     func retrieveWeatherData () {
-        
+  
+        // Make a toast to say data is refreshing
+        self.view.makeToast("Refreshing data", duration: 1.0, position: .bottom)
+        self.view.makeToastActivity(.center)
         refreshButton.isEnabled = false
+
+//        refreshButton.isEnabled = false
         
         getWeatherDataFromService()
         
@@ -423,7 +433,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             }
             
         } else {
-            Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location.  Please ensure that Skycast is allowed to access your location on this device." )
+            Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location.  Please ensure that Skycast is allowed to access your location on this device. \n\nGo to Settings -> SkyCast and turn Location to Always" )
             
             locationManager.stopUpdatingLocation()
             locationManager.stopMonitoringSignificantLocationChanges()

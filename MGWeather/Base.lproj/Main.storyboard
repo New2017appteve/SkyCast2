@@ -1657,6 +1657,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="barButtonAction" destination="tvv-Nf-nav" id="HlO-jP-GUs"/>
                         <outlet property="contentView" destination="dIc-nj-hkY" id="0Cf-DL-mrf"/>
                         <outlet property="refreshButton" destination="P3h-58-jYx" id="Kn1-Vj-sry"/>
                         <outlet property="segmentedControl" destination="Sp5-WY-IFe" id="ACc-Ov-Chs"/>

@@ -171,9 +171,9 @@
 				C7175AB01D31692A00788F09 /* Model */,
 				C7175AAD1D3168CE00788F09 /* ViewControllers */,
 				C7175A9B1D31683700788F09 /* AppDelegate.swift */,
+				C7175AA71D31683700788F09 /* Info.plist */,
 				C7175AA21D31683700788F09 /* Assets.xcassets */,
 				C00F9AB91DE65E3500E373EB /* GoogleService-Info.plist */,
-				C7175AA71D31683700788F09 /* Info.plist */,
 			);
 			path = MGWeather;
 			sourceTree = "<group>";
