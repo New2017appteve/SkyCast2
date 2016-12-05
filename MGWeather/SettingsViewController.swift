@@ -66,6 +66,7 @@ class SettingsViewController: UIViewController {
         settingsView.layer.cornerRadius = 10.0
         settingsView.clipsToBounds = true
         
+        changeBackground()
         setupColourScheme()
        
         if AppSettings.ShowBannerAds {
@@ -103,6 +104,29 @@ class SettingsViewController: UIViewController {
         
     }
 
+    func changeBackground () {
+    
+        // Change the background between three different types
+        
+        var backgroundImageName : String!
+        
+        let rand = Int(arc4random_uniform(3))
+        switch (rand) {
+        case 0:
+            backgroundImageName = GlobalConstants.SettingsScreenBackground.One.rawValue
+        case 1:
+            backgroundImageName = GlobalConstants.SettingsScreenBackground.Two.rawValue
+        case 2:
+            backgroundImageName = GlobalConstants.SettingsScreenBackground.Three.rawValue
+        default:
+            backgroundImageName = GlobalConstants.SettingsScreenBackground.One.rawValue
+        }
+
+        weatherImage.image = UIImage(named: backgroundImageName)!
+
+    }
+    
+    
     func changeSegmentedControlColours(scheme : String) {
         
         if (scheme == GlobalConstants.ColourScheme.Dark) {

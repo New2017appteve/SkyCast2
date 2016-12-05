@@ -352,7 +352,7 @@ extension DailyTabVC : UITableViewDataSource {
         }
         
         let icon = dayWeather.icon
-        let iconName = Utility.getWeatherIcon(serviceIcon: icon!)
+        let iconName = Utility.getWeatherIcon(serviceIcon: icon!, dayOrNight: "")
 
         if iconName != "" {
             cell.dailyWeatherIcon.image = UIImage(named: iconName)!
@@ -379,14 +379,14 @@ extension DailyTabVC : UITableViewDataSource {
         cell.rainProbabilityLabel.textColor = textColourScheme
         
         // Populate with the correct rain icon scheme
-        let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA")
+        let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
         cell.rainIcon.image = UIImage(named: rainIconImage)!
 
         // Populate with the correct sunrise/sunset icon scheme
-        let sunriseIconImage = Utility.getWeatherIcon(serviceIcon: "SUNRISE")
+        let sunriseIconImage = Utility.getWeatherIcon(serviceIcon: "SUNRISE", dayOrNight: "")
         cell.sunriseIcon.image = UIImage(named: sunriseIconImage)!
 
-        let sunsetIconImage = Utility.getWeatherIcon(serviceIcon: "SUNSET")
+        let sunsetIconImage = Utility.getWeatherIcon(serviceIcon: "SUNSET", dayOrNight: "")
         cell.sunsetIcon.image = UIImage(named: sunsetIconImage)!
         
         

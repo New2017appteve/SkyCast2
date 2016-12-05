@@ -15,9 +15,19 @@ class Utility: NSObject {
         
     }
     
-    class func getWeatherIcon(serviceIcon : String, scheme : String) -> String {
+    class func getWeatherIcon(serviceIcon : String, scheme : String, dayOrNight : String) -> String {
 
         var iconName : String!
+        var lDayOrNight : String!
+        
+        // If no parameter for DayOrNight, assume Day
+        
+        if (dayOrNight == "") {
+            lDayOrNight = "DAY"
+        }
+        else {
+            lDayOrNight = dayOrNight
+        }
         
         if (scheme == GlobalConstants.ColourScheme.Light) {
             
@@ -35,7 +45,12 @@ class Utility: NSObject {
             case "wind":
                 iconName = GlobalConstants.WeatherIcon.wind
             case "fog":
-                iconName = GlobalConstants.WeatherIcon.fog
+                if lDayOrNight == "DAY" {
+                    iconName = GlobalConstants.WeatherIcon.fog
+                }
+                else {
+                    iconName = GlobalConstants.WeatherIcon.fogNight
+                }
             case "cloudy":
                 iconName = GlobalConstants.WeatherIcon.cloudy
             case "partly-cloudy-day":
@@ -69,7 +84,12 @@ class Utility: NSObject {
             case "wind":
                 iconName = GlobalConstants.WeatherIcon.wind_White
             case "fog":
-                iconName = GlobalConstants.WeatherIcon.fog_White
+                if lDayOrNight == "DAY" {
+                    iconName = GlobalConstants.WeatherIcon.fog_White
+                }
+                else {
+                    iconName = GlobalConstants.WeatherIcon.fogNight_White
+                }
             case "cloudy":
                 iconName = GlobalConstants.WeatherIcon.cloudy_White
             case "partly-cloudy-day":
@@ -105,11 +125,31 @@ class Utility: NSObject {
             scheme = GlobalConstants.DefaultColourScheme  // Dark
         }
         
-        iconName = getWeatherIcon(serviceIcon: serviceIcon, scheme: scheme!)
+        iconName = getWeatherIcon(serviceIcon: serviceIcon, scheme: scheme!, dayOrNight: "" )
         
         return iconName
     }
     
+    // Overloaded function, pass in if time is Day or Night so we can get correct icons
+    // where necessary.
+    class func getWeatherIcon(serviceIcon : String, dayOrNight : String) -> String {
+        
+        var iconName : String!
+        
+        // Load the saved colour scheme that user selected.  If not set, use default
+        let userDefaults = UserDefaults.standard
+        var scheme = userDefaults.string(forKey: GlobalConstants.Defaults.SavedColourScheme)
+        
+        if (scheme == nil) {
+            scheme = GlobalConstants.DefaultColourScheme  // Dark
+        }
+        
+        iconName = getWeatherIcon(serviceIcon: serviceIcon, scheme: scheme!, dayOrNight: dayOrNight )
+        
+        return iconName
+    }
+    
+
     class func getWeatherImage(serviceIcon : String, dayOrNight : String) -> String {
         
         var imageName : String!

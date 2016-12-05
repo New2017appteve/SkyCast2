@@ -461,6 +461,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     func showWeatherDetailsView () {
         
         // Hide the weather details view whilst showing the today summary text
+        self.todayLabel.text = "  Today's Summary"
         self.todaySummary.alpha = 1
         UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
             self.todaySummary.alpha = 0
@@ -474,6 +475,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     
     func hideNowDetailsOneView () {
         
+        self.todayLabel.text = "  Next 24 Hours"
         self.nowDetailTwoView.alpha = 0
         UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
             self.nowDetailTwoView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
@@ -681,7 +683,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             let rainProbabilityNow = Int(round((minuteStats?[0].precipProbability!)!*100))
             
             // Populate with the correct rain icon scheme
-            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA")
+            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
             rainNowIcon.image = UIImage(named: rainIconImage)!
 
             if (rainProbabilityNow > GlobalConstants.RainIconReportThresholdPercent) {
@@ -694,7 +696,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             }
             
             let windDirection = Utility.compassDirectionFromDegrees(degrees: todayArray.windBearing!)
+            let rainDirection = Utility.compassDirectionFromDegrees(degrees: Float(todayArray.nearestStormBearing!))
 
+            // TODO:  Report KM or MI accordingly.  Create utility to see if units in MPH/KPH from service
+            
             currentWindspeed.text = "Wind: " + String(Int(round(todayArray.windSpeed! * GlobalConstants.MetersPerSecondToMph))) + " mph " + windDirection
             
             let nearestRain = todayArray.nearestStormDistance!
@@ -706,7 +711,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                 nearestRainDistance.text = "Rain nearby"
             }
             else if (nearestRain > GlobalConstants.RainDistanceReportThreshold) {
-                nearestRainDistance.text = "Rain " + String(todayArray.nearestStormDistance!) + " mi away"
+                nearestRainDistance.text = "Rain " + String(todayArray.nearestStormDistance!) + " mi " + rainDirection
             }
 
             
@@ -740,10 +745,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                     sunsetTimeStamp = days.sunsetTimeStamp as NSDate?
                     
                     // Populate with the correct sunrise/sunset icon scheme
-                    let sunriseIconImage = Utility.getWeatherIcon(serviceIcon: "SUNRISE")
+                    let sunriseIconImage = Utility.getWeatherIcon(serviceIcon: "SUNRISE", dayOrNight: "")
                     sunriseIcon.image = UIImage(named: sunriseIconImage)!
                     
-                    let sunsetIconImage = Utility.getWeatherIcon(serviceIcon: "SUNSET")
+                    let sunsetIconImage = Utility.getWeatherIcon(serviceIcon: "SUNSET", dayOrNight: "")
                     sunsetIcon.image = UIImage(named: sunsetIconImage)!
 
                 }
@@ -795,7 +800,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             // Populate the weather icons
             
             let weatherIconEnumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
-            let weatherIconName = Utility.getWeatherIcon(serviceIcon: (weatherIconEnumVal?.rawValue)!)
+            let weatherIconName = Utility.getWeatherIcon(serviceIcon: (weatherIconEnumVal?.rawValue)!, dayOrNight: isItDayOrNight)
             if String(weatherIconName).isEmpty != nil {
                 currentWeatherIcon.image = UIImage(named: weatherIconName)!
             }
@@ -977,13 +982,15 @@ extension TodayTabVC : UITableViewDataSource {
         
         let hourTimeStamp = hourWeather?.dateAndTimeStamp
         
+        let dayOrNight = (isDayTime(dateTime: hourTimeStamp!) ? "DAY" : "NIGHT")
+
         cell.hourLabel.text = hourWeather?.dateAndTimeStamp!.shortHourTimeString()
         cell.temperatureLabel.text = String(Int(round(hourWeather!.temperature!))) + degreesSymbol
         
         if (Int(round(hourWeather!.precipProbability!*100)) > GlobalConstants.RainIconReportThresholdPercent) {
             
             // Populate with the correct rain icon scheme
-            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA")
+            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
             cell.rainIcon.image = UIImage(named: rainIconImage)!
 
             cell.rainIcon.isHidden = false
@@ -995,7 +1002,7 @@ extension TodayTabVC : UITableViewDataSource {
         }
         
         let icon = hourWeather?.icon
-        let iconName = Utility.getWeatherIcon(serviceIcon: icon!)
+        let iconName = Utility.getWeatherIcon(serviceIcon: icon!, dayOrNight: dayOrNight)
         
         if iconName != "" {
             cell.summaryIcon.image = UIImage(named: iconName)!
@@ -1017,7 +1024,7 @@ extension TodayTabVC : UITableViewDataSource {
             let lRainIconImage = GlobalConstants.WeatherIcon.umbrella
             cell.rainIcon.image = UIImage(named: lRainIconImage)!
             
-            let lWeatherIcon = Utility.getWeatherIcon(serviceIcon: icon!, scheme: GlobalConstants.ColourScheme.Light)
+            let lWeatherIcon = Utility.getWeatherIcon(serviceIcon: icon!, scheme: GlobalConstants.ColourScheme.Light, dayOrNight: dayOrNight)
             cell.summaryIcon.image = UIImage(named: lWeatherIcon)!
 
         }

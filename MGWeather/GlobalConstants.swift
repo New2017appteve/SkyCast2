@@ -14,10 +14,12 @@ class GlobalConstants: NSObject {
     static let sharedInstance = GlobalConstants()
     
     //
-    // Variables written to
+    // Variables written to at some point in the code (only done for performance issues, for example,
+    // to avoid reading from NSUserDefaults mutiple times)
     //
     
     static var timezoneOffset = 0
+    static var urlUnitsChosen = ""
     
     //
     //
@@ -130,6 +132,8 @@ class GlobalConstants: NSObject {
     static let BaseWeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/"
 
     static let celsiusURLParameter = "?units=si"
+    static let siUnitURLParameter = "?units=uk2"
+    static let imperialUnitURLParameter = "?units=us"
     
     static let DemoWeatherFile = "sample_data_cippenham2"
     
@@ -141,6 +145,7 @@ class GlobalConstants: NSObject {
     
     // Keys to read from NSUserDefaults
     struct Defaults {
+        static let URLDefaultUnits = "urlDefaultUnits"
         static let SavedTemperatureUnits = "savedTemperatureUnits"
         static let SavedDayOrNightColourSetting = "savedDayOrNightColourSetting"
         static let SavedColourScheme = "savedColourScheme"
@@ -158,10 +163,17 @@ class GlobalConstants: NSObject {
         static let Fahrenheit = "fahrenheit"
     }
     
+    // Defaults
+    
+    static let DefaultURLUnit = "uk2"
     static let DefaultTemperatureUnit = TemperatureUnits.Celsuis
     static let DefaultDayOrNightSwitch = "ON"
     static let DefaultColourScheme = GlobalConstants.ColourScheme.Light
     static let DefaultBackgroundImage = "sky_background_PEXELS"
+    
+    //
+    // WEATHER BACKGROUNDS
+    //
     
     // Icon Constants  (Icons from https://icons8.com/web-app/category/Weather) //TODO:  Include Credits for each icon
     // https://makeappicon.com/
@@ -207,9 +219,9 @@ class GlobalConstants: NSObject {
             case partlyCloudyNight = "partial-cloud-night-30376-pexels"
             
             // Future
-            case hail = "hail"
+            case hail = "hail" // TO FIND
             case thunderstorm = "lightning-day-sky-53459-pexels.jpeg"
-            case tornado = "tornado"
+            case tornado = "tornado"  // TO FIND
             
             // Custom (variations on the standard)
             case rainNight = "rain_night-pexels"
@@ -227,6 +239,18 @@ class GlobalConstants: NSObject {
         }
     }
     
+    // The following define 3 backgrounds we can use in the settings screen
+    
+    struct SettingsScreenBackground {
+        static var One = ImageFile.FileName.thunderstorm
+        static var Two = ImageFile.FileName.bonfireNight
+        static var Three = ImageFile.FileName.wind
+    }
+    
+    //
+    // WEATHER ICONS
+    //
+    
     struct WeatherIcon {
         
         static var clearDay = "Sun-50"
@@ -234,9 +258,9 @@ class GlobalConstants: NSObject {
         static var rain = "Rain-50"
         static var snow = "Snow-50"
         static var sleet = "Sleet-50"
-        static var wind = "Windy"  // TODO:  Find icon
-        static var fog = "Fog Day-50"
-        static var fogNight = "Fog Night-50" 
+        static var wind = "Windy"
+        static var fog = "Fog Day-50"  // NOTE: Day and Night def for fog is not from API
+        static var fogNight = "Fog Night-50" // NOTE: Day and Night def for fog is not from API
         static var cloudy = "Cloud-50"
         static var partlyCloudyDay = "Partly Cloudy Day-50"
         static var partlyCloudyNight = "Partly Cloudy Night-50"
@@ -279,6 +303,9 @@ class GlobalConstants: NSObject {
 
     }
     
+    // Distance and unit related
+    
+    
     enum DistanceUnits: String {
         case Meters = "meters"
         case Miles = "miles"
@@ -290,7 +317,7 @@ class GlobalConstants: NSObject {
     
     // MARK:  Banner Ad related
     
-    // https://firebase.google.com/docs/admob/ios/quick-start
+    // Get Started:  https://firebase.google.com/docs/admob/ios/quick-start
     
     struct BannerAdTestIDs {
         // List of devices used whilst testing, in order to see test banner ads
@@ -303,5 +330,8 @@ class GlobalConstants: NSObject {
     
     static let TestAdMobAppID = "ca-app-pub-3940256099942544~1458002511"
     static let TestAdMobBannerID = "ca-app-pub-3940256099942544/2934735716"
+    
+    // Test Latitude and Longitude
+    // Baird Close - latitude = 51.5082001314047 longitude = -0.62429395504354
 
 }

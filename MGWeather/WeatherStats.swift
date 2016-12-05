@@ -9,7 +9,7 @@ import UIKit
 
 class WeatherStats: NSObject {
     
-    // NOTE:  Ties are in Unix timestamps (e.g. 1467154800 = 06/28/2016 @ 11:00pm (UTC) )
+    // NOTE:  Times are in Unix timestamps (e.g. 1467154800 = 06/28/2016 @ 11:00pm (UTC) )
     var dateAndTime : Double? // NOTE:  We may need bigger than an Int for future robustness
     var dateAndTimeStamp : NSDate?
     var summary : String?
@@ -20,6 +20,7 @@ class WeatherStats: NSObject {
     var sunsetTimeStamp : NSDate?
     var moonPhase : Float?
     var nearestStormDistance : Int?
+    var nearestStormDistanceUnits : String?
     var nearestStormBearing : Int?
     var precipIntensity : Float?
     var precipIntensityMax : Float?
@@ -27,6 +28,7 @@ class WeatherStats: NSObject {
     var precipProbability : Float?
     var precipType  : String?
     var temperature : Float?
+    var temperatureUnits : String?
     var temperatureMin : Float?
     var temperatureMinTime : String?
     var temperatureMax : Float?
@@ -38,14 +40,17 @@ class WeatherStats: NSObject {
     var apparentTemperatureMaxTime : String?
     var humidity : Float?
     var windSpeed : Float?
+    var windSpeedUnits : String?
     var windBearing : Float?
     var visibility : Float?
     var cloudCover : Float?
     
+    var urlUnits = GlobalConstants.urlUnitsChosen
+    
     // var date = NSDate(timeIntervalSince1970: timeInterval)
     
     override init(){
-        
+
     }
     
     init(fromDictionary weatherDict: NSDictionary){
@@ -85,6 +90,20 @@ class WeatherStats: NSObject {
         
         if let lNearestStormDistance  = weatherDict["nearestStormDistance"] as? Int {
             nearestStormDistance = lNearestStormDistance
+            
+            // NOTE:  Cant call method in an init sohave to do the calculation of units here
+            
+            var returnUnits = ""
+            switch (urlUnits) {
+            case "us", "uk2":
+                returnUnits = "m"
+            case "si", "ca":
+                returnUnits = "km"
+            default:
+                returnUnits = "m"
+            }
+            
+            nearestStormDistanceUnits = returnUnits
         }
         
         if let lNearestStormBearing  = weatherDict["nearestStormBearing"] as? Int {
@@ -113,6 +132,21 @@ class WeatherStats: NSObject {
         
         if let lTemperature  = weatherDict["temperature"] as? Float {
             temperature = lTemperature
+            
+            // NOTE:  Cant call method in an init sohave to do the calculation of units here
+            
+            var returnUnits = ""
+            
+            switch (urlUnits) {
+            case "us":
+                returnUnits = "F"
+            case "si", "uk2", "ca":
+                returnUnits = "C"
+            default:
+                returnUnits = "C"
+            }
+            
+            temperatureUnits = returnUnits
         }
         
         if let lTemperatureMin  = weatherDict["temperatureMin"] as? Float {
@@ -157,6 +191,24 @@ class WeatherStats: NSObject {
         
         if let lWindSpeed  = weatherDict["windSpeed"] as? Float {
             windSpeed = lWindSpeed
+
+            // NOTE:  Cant call method in an init sohave to do the calculation of units here
+            
+            var returnUnits = ""
+            
+            switch (urlUnits) {
+            case "us", "uk2":
+                returnUnits = "mph"
+            case "si":
+                returnUnits = "mps"
+            case "ca":
+                returnUnits = "kph"
+            default:
+                returnUnits = "mph"
+            }
+            
+            windSpeedUnits = returnUnits
+
         }
         
         if let lWindBearing  = weatherDict["windBearing"] as? Float {
@@ -170,8 +222,8 @@ class WeatherStats: NSObject {
         if let lCloudCover    = weatherDict["cloudCover"] as? Float {
             cloudCover = lCloudCover
         }
-        
 
     }
+    
 }
 

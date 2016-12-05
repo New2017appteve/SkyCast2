@@ -58,6 +58,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         super.viewDidLoad()
         
         loadingMode = "STARTUP"
+        getURLUnits()
         setupScreen()
         segmentedControl.isEnabled = false
         barButtonAction.isEnabled = false
@@ -155,6 +156,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         displayCurrentTab(tabIndex: TabIndex.FirstChildTab.rawValue)
     }
     
+   
     func setViewControllerTitle () {
         
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.frame.size.width - 120, height: 44))
@@ -236,12 +238,35 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     
     // MARK:  Weather Data Loading functions
     
+    func getURLUnits() {
+        
+        // Populate the chosen URL units and save to constants
+        
+        let userDefaults = UserDefaults.standard
+        var urlUnits = userDefaults.string(forKey: GlobalConstants.Defaults.URLDefaultUnits)
+        
+        if (urlUnits == nil) {
+            urlUnits = GlobalConstants.DefaultURLUnit  // uk2
+            GlobalConstants.urlUnitsChosen = GlobalConstants.DefaultURLUnit
+            
+            // Save this as a default
+            userDefaults.set(urlUnits, forKey: GlobalConstants.Defaults.URLDefaultUnits)
+            userDefaults.synchronize() //  Explicitly save the settings
+        }
+        else {
+            GlobalConstants.urlUnitsChosen = urlUnits!
+        }
+        
+    }
+    
     func getURL () -> String {
         
         var returnURL = ""
         
         // Obtain the correct latitude and logitude.  This should be in our weatherLocation object
         let urlWithLocation = GlobalConstants.BaseWeatherURL + String(weatherLocation.currentLatitude!) + "," + String(weatherLocation.currentLongitude!)
+        
+        // TODO:  REplace with URL Unit
         
         // Find out if user preference is celsuis or fahenheight.  Pass relevant parameter on url
         let userDefaults = UserDefaults.standard
