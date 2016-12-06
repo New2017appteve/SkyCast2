@@ -168,7 +168,7 @@ class GlobalConstants: NSObject {
     static let DefaultURLUnit = "uk2"
     static let DefaultTemperatureUnit = TemperatureUnits.Celsuis
     static let DefaultDayOrNightSwitch = "ON"
-    static let DefaultColourScheme = GlobalConstants.ColourScheme.Light
+    static let DefaultColourScheme = GlobalConstants.ColourScheme.Dark
     static let DefaultBackgroundImage = "sky_background_PEXELS"
     
     //

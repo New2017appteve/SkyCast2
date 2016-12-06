@@ -200,6 +200,13 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         let userDefaults = UserDefaults.standard
         dayOrNightColourSetting = userDefaults.string(forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
         
+        if (dayOrNightColourSetting == nil) {
+            
+            // Set default and save it
+            dayOrNightColourSetting = GlobalConstants.DefaultColourScheme  // Dark
+            userDefaults.set(dayOrNightColourSetting, forKey: GlobalConstants.Defaults.SavedColourScheme)
+        }
+        
         // Make round corners for the outerviews
         currentTempDetailView.layer.cornerRadius = 10.0
         currentTempDetailView.clipsToBounds = true
@@ -211,6 +218,11 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         weatherDetailOuterView.clipsToBounds = true
         
         poweredByDarkSkyButton.titleEdgeInsets.right = 10 // Add right padding of text
+        
+        nowDetailOneView.backgroundColor = UIColor.clear
+        nowDetailTwoView.backgroundColor = UIColor.clear
+        nowDetailOneView.alpha = 0
+        nowDetailTwoView.alpha = 1
         
         // Hide weather details initially until timer starts
         self.weatherDetailStackView.alpha = 0
@@ -263,11 +275,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         infoView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
         currentTempDetailView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
         weatherDetailOuterView.alpha = 1.0 //CGFloat(GlobalConstants.DisplayViewAlpha)
-
-        nowDetailOneView.backgroundColor = podColourScheme
-        nowDetailTwoView.backgroundColor = podColourScheme
-        nowDetailOneView.alpha = 0 //CGFloat(GlobalConstants.DisplayViewAlpha)
-        nowDetailTwoView.alpha = 0 //CGFloat(GlobalConstants.DisplayViewAlpha)
         
         weatherDetailOuterView.backgroundColor = UIColor.clear //podColourScheme
         weatherDetailView.backgroundColor = podColourScheme

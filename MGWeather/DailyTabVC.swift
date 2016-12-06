@@ -106,10 +106,11 @@ class DailyTabVC: UIViewController {
         dailyWeatherTableView.backgroundColor = podColourScheme
         nextDaysSummary.backgroundColor = podColourScheme
         
-        nextDaysSummary.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-        
         // Labels
         nextDaysSummary.textColor = textColourScheme
+
+        nextDaysSummary.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+
     }
     
     func loadBannerAd() {
@@ -290,6 +291,8 @@ class DailyTabVC: UIViewController {
 
         // NOTE:  This will be run on a background thread
         DispatchQueue.main.async {
+            
+            self.setupColourScheme()
             self.populateDailyWeatherDetails()
             
             // Scroll to the top of the table view

@@ -267,7 +267,7 @@ class SettingsViewController: UIViewController {
 
             saveSettings()
         }
-        else {
+//        else {
             if urlUnits == GlobalConstants.urlUnit.us {
                 tempUnitsControl.selectedSegmentIndex = 0
             }
@@ -283,34 +283,34 @@ class SettingsViewController: UIViewController {
             
             GlobalConstants.urlUnitsChosen = urlUnits!
 
-        }
+//        }
 
         
         if (dayOrNightColours == nil) {
             dayOrNightColours = GlobalConstants.DefaultDayOrNightSwitch  // On
             saveSettings()
         }
-        else {
+//        else {
             if dayOrNightColours == "ON" {
                 dayNightColourControl.selectedSegmentIndex = 0
             }
             else {
                 dayNightColourControl.selectedSegmentIndex = 1
             }
-        }
+//        }
         
         if (colourSchemeSet == nil) {
             colourSchemeSet = GlobalConstants.DefaultColourScheme  // On
             saveSettings()
         }
-        else {
+//        else {
             if colourSchemeSet == GlobalConstants.ColourScheme.Dark {
                 colourSchemeControl.selectedSegmentIndex = 0
             }
             else {
                 colourSchemeControl.selectedSegmentIndex = 1
             }
-        }
+//        }
         
 
     }

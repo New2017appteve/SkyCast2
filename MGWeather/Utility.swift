@@ -364,7 +364,11 @@ class Utility: NSObject {
         var scheme = userDefaults.string(forKey: GlobalConstants.Defaults.SavedColourScheme)
         
         if (scheme == nil) {
+            
+            // Set default and save it
             scheme = GlobalConstants.DefaultColourScheme  // Dark
+            userDefaults.set(scheme, forKey: GlobalConstants.Defaults.SavedColourScheme)
+
         }
 
         var textColourScheme : UIColor!
