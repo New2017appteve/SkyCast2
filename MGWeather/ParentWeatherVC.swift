@@ -266,23 +266,24 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         // Obtain the correct latitude and logitude.  This should be in our weatherLocation object
         let urlWithLocation = GlobalConstants.BaseWeatherURL + String(weatherLocation.currentLatitude!) + "," + String(weatherLocation.currentLongitude!)
         
-        // TODO:  REplace with URL Unit
+        var urlUnits = GlobalConstants.urlUnitsChosen  // This should be set by now or set to default
+        returnURL = urlWithLocation + "?units=" + urlUnits
         
-        // Find out if user preference is celsuis or fahenheight.  Pass relevant parameter on url
-        let userDefaults = UserDefaults.standard
-        var celsuisOrFahrenheit = userDefaults.string(forKey: GlobalConstants.Defaults.SavedTemperatureUnits)
-        
-        if (celsuisOrFahrenheit == nil) {
-            celsuisOrFahrenheit = GlobalConstants.DefaultTemperatureUnit  // Celsius
-        }
-        
-        if celsuisOrFahrenheit == GlobalConstants.TemperatureUnits.Celsuis {
-            returnURL = urlWithLocation + GlobalConstants.celsiusURLParameter
-        }
-        else {
-            returnURL = urlWithLocation
-        }
-        
+//        // Find out if user preference is celsuis or fahrenheit.  Pass relevant parameter on url
+//        let userDefaults = UserDefaults.standard
+//        var celsuisOrFahrenheit = userDefaults.string(forKey: GlobalConstants.Defaults.SavedTemperatureUnits)
+//        
+//        if (celsuisOrFahrenheit == nil) {
+//            celsuisOrFahrenheit = GlobalConstants.DefaultTemperatureUnit  // Celsius
+//        }
+//        
+//        if celsuisOrFahrenheit == GlobalConstants.TemperatureUnits.Celsuis {
+//            returnURL = urlWithLocation + GlobalConstants.celsiusURLParameter
+//        }
+//        else {
+//            returnURL = urlWithLocation
+//        }
+//        
         return returnURL
     }
 

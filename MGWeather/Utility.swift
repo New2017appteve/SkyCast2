@@ -173,7 +173,12 @@ class Utility: NSObject {
         case "wind":
             imageName  = GlobalConstants.ImageFile.FileName.wind.rawValue
         case "fog":
-            imageName  = GlobalConstants.ImageFile.FileName.fog.rawValue
+            if dayOrNight == "DAY" {
+                imageName  = GlobalConstants.ImageFile.FileName.fog.rawValue
+            }
+            else {
+                imageName  = GlobalConstants.ImageFile.FileName.fogNight.rawValue
+            }
         case "cloudy":
             imageName  = GlobalConstants.ImageFile.FileName.cloudy.rawValue
         case "partly-cloudy-day":

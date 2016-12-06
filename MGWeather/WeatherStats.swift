@@ -45,8 +45,6 @@ class WeatherStats: NSObject {
     var visibility : Float?
     var cloudCover : Float?
     
-    var urlUnits = GlobalConstants.urlUnitsChosen
-    
     // var date = NSDate(timeIntervalSince1970: timeInterval)
     
     override init(){
@@ -54,6 +52,8 @@ class WeatherStats: NSObject {
     }
     
     init(fromDictionary weatherDict: NSDictionary){
+        
+        let urlUnits = GlobalConstants.urlUnitsChosen
         
         if let lDateAndTime  = weatherDict["time"] as? Double {
             
@@ -200,7 +200,7 @@ class WeatherStats: NSObject {
             case "us", "uk2":
                 returnUnits = "mph"
             case "si":
-                returnUnits = "mps"
+                returnUnits = "ms"
             case "ca":
                 returnUnits = "kph"
             default:

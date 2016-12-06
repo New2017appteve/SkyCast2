@@ -28,6 +28,13 @@ class SettingsViewController: UIViewController {
     @IBOutlet weak var colourSchemeControl : UISegmentedControl!
     @IBOutlet weak var tempUnitsTitle : UILabel!
     @IBOutlet weak var tempUnitsControl : UISegmentedControl!
+    
+    @IBOutlet weak var tempUnitsDescriptionView: UIView!
+    @IBOutlet weak var usUnitLabel : UILabel!
+    @IBOutlet weak var siUnitLabel : UILabel!
+    @IBOutlet weak var ukUnitLabel : UILabel!
+    @IBOutlet weak var caUnitLabel : UILabel!
+    
     @IBOutlet weak var dayNightColourTitle : UILabel!
     @IBOutlet weak var dayNightColourControl : UISegmentedControl!
     
@@ -66,6 +73,10 @@ class SettingsViewController: UIViewController {
         settingsView.layer.cornerRadius = 10.0
         settingsView.clipsToBounds = true
         
+        tempUnitsDescriptionView.layer.borderWidth = 1.0
+        tempUnitsDescriptionView.layer.cornerRadius = 5
+        tempUnitsDescriptionView.clipsToBounds = true
+
         changeBackground()
         setupColourScheme()
        
@@ -87,10 +98,17 @@ class SettingsViewController: UIViewController {
         tempUnitsTitle.textColor = textColourScheme
         dayNightColourTitle.textColor = textColourScheme
         colourSchemeTitle.textColor = textColourScheme
+        usUnitLabel.textColor = textColourScheme
+        ukUnitLabel.textColor = textColourScheme
+        siUnitLabel.textColor = textColourScheme
+        caUnitLabel.textColor = textColourScheme
         
         // Pods
         settingsView.backgroundColor = podColourScheme
         settingsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+        
+        // Borders
+        tempUnitsDescriptionView.layer.borderColor = textColourScheme?.cgColor
         
         // Segmented Controls
 
@@ -136,6 +154,9 @@ class SettingsViewController: UIViewController {
             
             (tempUnitsControl.subviews[0] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Dark.Buttons
             (tempUnitsControl.subviews[1] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Dark.Buttons
+            (tempUnitsControl.subviews[2] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Dark.Buttons
+            (tempUnitsControl.subviews[3] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Dark.Buttons
+            
             tempUnitsControl.setTitleTextAttributes([NSForegroundColorAttributeName: GlobalConstants.SegmentedControlTheme.Dark.Text], for: UIControlState.selected)
             
             (colourSchemeControl.subviews[0] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Dark.Buttons
@@ -150,6 +171,9 @@ class SettingsViewController: UIViewController {
             
             (tempUnitsControl.subviews[0] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Light.Buttons
             (tempUnitsControl.subviews[1] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Light.Buttons
+            (tempUnitsControl.subviews[2] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Light.Buttons
+            (tempUnitsControl.subviews[3] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Light.Buttons
+            
             tempUnitsControl.setTitleTextAttributes([NSForegroundColorAttributeName: GlobalConstants.SegmentedControlTheme.Light.Text], for: UIControlState.selected)
             
             (colourSchemeControl.subviews[0] as UIView).tintColor = GlobalConstants.SegmentedControlTheme.Light.Buttons
@@ -169,12 +193,18 @@ class SettingsViewController: UIViewController {
             podColourScheme = GlobalConstants.podDark
             textColourScheme = GlobalConstants.writingLight
             
+            // Borders
+            tempUnitsDescriptionView.layer.borderColor = GlobalConstants.writingLight.cgColor
+
             changeSegmentedControlColours(scheme: GlobalConstants.ColourScheme.Dark)
         }
         else {
             podColourScheme = UIColor.white //GlobalConstants.podLight
             textColourScheme = UIColor.black //GlobalConstants.writingDark
             
+            // Borders
+            tempUnitsDescriptionView.layer.borderColor = UIColor.black.cgColor
+
             changeSegmentedControlColours(scheme: GlobalConstants.ColourScheme.Light)
 
         }
@@ -183,6 +213,10 @@ class SettingsViewController: UIViewController {
         tempUnitsTitle.textColor = textColourScheme
         dayNightColourTitle.textColor = textColourScheme
         colourSchemeTitle.textColor = textColourScheme
+        usUnitLabel.textColor = textColourScheme
+        ukUnitLabel.textColor = textColourScheme
+        siUnitLabel.textColor = textColourScheme
+        caUnitLabel.textColor = textColourScheme
         
         // Pods
         settingsView.backgroundColor = podColourScheme
@@ -208,22 +242,49 @@ class SettingsViewController: UIViewController {
     func loadSettings() {
         
         let userDefaults = UserDefaults.standard
-        var celsuisOrFahrenheit = userDefaults.string(forKey: GlobalConstants.Defaults.SavedTemperatureUnits)
+        var urlUnits = userDefaults.string(forKey: GlobalConstants.Defaults.URLDefaultUnits)
+
+ //       var celsuisOrFahrenheit = userDefaults.string(forKey: GlobalConstants.Defaults.SavedTemperatureUnits)
         var dayOrNightColours = userDefaults.string(forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
         var colourSchemeSet = userDefaults.string(forKey: GlobalConstants.Defaults.SavedColourScheme)
         
-        if (celsuisOrFahrenheit == nil) {
-            celsuisOrFahrenheit = GlobalConstants.DefaultTemperatureUnit  // Celsius
+//        if (celsuisOrFahrenheit == nil) {
+//            celsuisOrFahrenheit = GlobalConstants.DefaultTemperatureUnit  // Celsius
+//            saveSettings()
+//        }
+//        else {
+//            if celsuisOrFahrenheit == GlobalConstants.TemperatureUnits.Celsuis {
+//                tempUnitsControl.selectedSegmentIndex = 0
+//            }
+//            else {
+//                tempUnitsControl.selectedSegmentIndex = 1
+//            }
+//        }
+        
+        if (urlUnits == nil) {
+            urlUnits = GlobalConstants.DefaultURLUnit  // uk2
+            GlobalConstants.urlUnitsChosen = GlobalConstants.DefaultURLUnit
+
             saveSettings()
         }
         else {
-            if celsuisOrFahrenheit == GlobalConstants.TemperatureUnits.Celsuis {
+            if urlUnits == GlobalConstants.urlUnit.us {
                 tempUnitsControl.selectedSegmentIndex = 0
             }
-            else {
+            else if urlUnits == GlobalConstants.urlUnit.si {
                 tempUnitsControl.selectedSegmentIndex = 1
             }
+            else if urlUnits == GlobalConstants.urlUnit.uk {
+                tempUnitsControl.selectedSegmentIndex = 2
+            }
+            else if urlUnits == GlobalConstants.urlUnit.ca {
+                tempUnitsControl.selectedSegmentIndex = 3
+            }
+            
+            GlobalConstants.urlUnitsChosen = urlUnits!
+
         }
+
         
         if (dayOrNightColours == nil) {
             dayOrNightColours = GlobalConstants.DefaultDayOrNightSwitch  // On
@@ -257,16 +318,32 @@ class SettingsViewController: UIViewController {
     func saveSettings() {
         
         // Save any settings to NSUserDefaults
-        var celsuisOrFahrenheit : String!
+//        var celsuisOrFahrenheit : String!
         var dayOrNightColours : String!
         var colourSchemeSet : String!
+        var urlUnits : String!
         
         if (tempUnitsControl.selectedSegmentIndex == 0) {
-            celsuisOrFahrenheit = GlobalConstants.TemperatureUnits.Celsuis
+            urlUnits = GlobalConstants.urlUnit.us
         }
-        else {
-            celsuisOrFahrenheit = GlobalConstants.TemperatureUnits.Fahrenheit
+        else if (tempUnitsControl.selectedSegmentIndex == 1) {
+            urlUnits = GlobalConstants.urlUnit.si
         }
+        else if (tempUnitsControl.selectedSegmentIndex == 2) {
+            urlUnits = GlobalConstants.urlUnit.uk
+        }
+        else if (tempUnitsControl.selectedSegmentIndex == 3) {
+            urlUnits = GlobalConstants.urlUnit.ca
+        }
+        
+        GlobalConstants.urlUnitsChosen = urlUnits!  // Important
+
+//        if (tempUnitsControl.selectedSegmentIndex == 0) {
+//            celsuisOrFahrenheit = GlobalConstants.TemperatureUnits.Celsuis
+//        }
+//        else {
+//            celsuisOrFahrenheit = GlobalConstants.TemperatureUnits.Fahrenheit
+//        }
 
         if (dayNightColourControl.selectedSegmentIndex == 0) {
             dayOrNightColours = "ON"
@@ -283,7 +360,8 @@ class SettingsViewController: UIViewController {
         }
 
         let userDefaults = UserDefaults.standard
-        userDefaults.set(celsuisOrFahrenheit, forKey: GlobalConstants.Defaults.SavedTemperatureUnits)
+        userDefaults.set(urlUnits, forKey: GlobalConstants.Defaults.URLDefaultUnits)
+//        userDefaults.set(celsuisOrFahrenheit, forKey: GlobalConstants.Defaults.SavedTemperatureUnits)
         userDefaults.set(dayOrNightColours, forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
         userDefaults.set(colourSchemeSet, forKey: GlobalConstants.Defaults.SavedColourScheme)
         

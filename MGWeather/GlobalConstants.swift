@@ -312,6 +312,13 @@ class GlobalConstants: NSObject {
         case Kilometers = "kilometers"
     }
     
+    struct urlUnit {
+        static let ca = "ca"
+        static let uk = "uk2"
+        static let us = "us"
+        static let si = "si"
+    }
+    
     // TODO:  Convert wind direction
     // http://climate.umn.edu/snow_fence/components/winddirectionanddegreeswithouttable3.htm
     

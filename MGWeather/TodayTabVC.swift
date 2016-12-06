@@ -649,19 +649,19 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     }
 
     func populateTodayWeatherDetails() {
-
-        var degreesSymbol = ""
-        
-        // Rather than force unwrapping, use conditional let to check weather array
-        if let lWeather = dailyWeather {
-            if lWeather.flags.units == "si" {
-                degreesSymbol = GlobalConstants.degreesSymbol + "C"
-            }
-            else {
-                degreesSymbol = GlobalConstants.degreesSymbol + "F"
-            }
-        }
-        
+//
+//        var degreesSymbol = ""
+//        
+//        // Rather than force unwrapping, use conditional let to check weather array
+//        if let lWeather = dailyWeather {
+//            if lWeather.flags.units == "si" {
+//                degreesSymbol = GlobalConstants.degreesSymbol + "C"
+//            }
+//            else {
+//                degreesSymbol = GlobalConstants.degreesSymbol + "F"
+//            }
+//        }
+//        
         if let todayArray = dailyWeather?.currentBreakdown {
             
             lastUpdatedTime  = getLastUpdatedTime()
@@ -670,6 +670,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             // Now Pod
             //
             
+            var degreesSymbol = GlobalConstants.degreesSymbol + todayArray.temperatureUnits!
             currentTemp.text = String(Int(round(todayArray.temperature! as Float))) + degreesSymbol
             
             // Inner Pod 1
@@ -700,7 +701,12 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
 
             // TODO:  Report KM or MI accordingly.  Create utility to see if units in MPH/KPH from service
             
-            currentWindspeed.text = "Wind: " + String(Int(round(todayArray.windSpeed! * GlobalConstants.MetersPerSecondToMph))) + " mph " + windDirection
+            let windSpeedUnits = todayArray.windSpeedUnits!
+            
+            // TODO: Tidy up string concat
+ //           currentWindspeed.text = "Wind: " + String(Int(round(todayArray.windSpeed! * GlobalConstants.MetersPerSecondToMph)))
+            currentWindspeed.text = "Wind: " + String(Int(todayArray.windSpeed!))
+            currentWindspeed.text = currentWindspeed.text! + " " + windSpeedUnits + " " + windDirection
             
             let nearestRain = todayArray.nearestStormDistance!
         
@@ -711,7 +717,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                 nearestRainDistance.text = "Rain nearby"
             }
             else if (nearestRain > GlobalConstants.RainDistanceReportThreshold) {
-                nearestRainDistance.text = "Rain " + String(todayArray.nearestStormDistance!) + " mi " + rainDirection
+                let rainUnits = todayArray.nearestStormDistanceUnits
+                // TODO: Tidy up string concat
+                nearestRainDistance.text = "Rain " + String(todayArray.nearestStormDistance!) + " "
+                nearestRainDistance.text = nearestRainDistance.text! + rainUnits! + " " + rainDirection
             }
 
             
@@ -727,14 +736,18 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                 if sameDay {
                     
                     //
-                    // Today Pod
+                    // Today Summary Pod
                     //
                     
                     let minTempString = String(Int(round(days.temperatureMin!))) + degreesSymbol
                     let maxTempString = String(Int(round(days.temperatureMax!))) + degreesSymbol
                     todayHighLowTemp.text = maxTempString + " / " + minTempString
                     
-                    windspeed.text = String(Int(round(days.windSpeed! * GlobalConstants.MetersPerSecondToMph))) + " mph"
+                    let windspeedUnits = days.windSpeedUnits
+                    
+//                    windspeed.text = String(Int(round(days.windSpeed! * GlobalConstants.MetersPerSecondToMph))) + " " + windspeedUnits!
+                    windspeed.text = String(Int(days.windSpeed!)) + " " + windspeedUnits!
+
                     cloudCover.text = String(Int(round(days.cloudCover!*100))) + "%"
                     humidity.text = String(Int(round(days.humidity!*100))) + "%"
                     rainProbability.text = String(Int(round(days.precipProbability!*100))) + "%"
@@ -964,16 +977,16 @@ extension TodayTabVC : UITableViewDataSource {
             }
         }
         
-        var degreesSymbol = ""
-        
-        if let lWeather = dailyWeather {
-            if lWeather.flags.units == "si" {
-                degreesSymbol = GlobalConstants.degreesSymbol + "C"
-            }
-            else {
-                degreesSymbol = GlobalConstants.degreesSymbol + "F"
-            }
-        }
+//        var degreesSymbol = ""
+//        
+//        if let lWeather = dailyWeather {
+//            if lWeather.flags.units == "si" {
+//                degreesSymbol = GlobalConstants.degreesSymbol + "C"
+//            }
+//            else {
+//                degreesSymbol = GlobalConstants.degreesSymbol + "F"
+//            }
+//        }
         
         // We dont want the current hour in this list so +1
         let hourWeather = dailyWeather?.hourBreakdown.hourStats[indexPath.row + 1]
@@ -985,6 +998,8 @@ extension TodayTabVC : UITableViewDataSource {
         let dayOrNight = (isDayTime(dateTime: hourTimeStamp!) ? "DAY" : "NIGHT")
 
         cell.hourLabel.text = hourWeather?.dateAndTimeStamp!.shortHourTimeString()
+        
+        let degreesSymbol = GlobalConstants.degreesSymbol + hourWeather!.temperatureUnits!
         cell.temperatureLabel.text = String(Int(round(hourWeather!.temperature!))) + degreesSymbol
         
         if (Int(round(hourWeather!.precipProbability!*100)) > GlobalConstants.RainIconReportThresholdPercent) {
