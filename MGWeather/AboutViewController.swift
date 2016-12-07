@@ -32,6 +32,8 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
     /// The banner view.
     @IBOutlet weak var bannerView: GADBannerView!
     
+    var DisplayViewAlphaForSettingsScreen = GlobalConstants.DisplayViewAlpha - 0.2
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -45,13 +47,30 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
     
         // Ease in the outer screen view for effect
         self.weatherImage.alpha = 0.2
-        UIView.animate(withDuration: 0.8, delay: 0.15, options: UIViewAnimationOptions.curveEaseIn, animations: {
+        UIView.animate(withDuration: 1.0, delay: 0.5, options: UIViewAnimationOptions.curveEaseIn, animations: {
             
-                self.weatherImage.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+                self.weatherImage.alpha = CGFloat(self.DisplayViewAlphaForSettingsScreen)
             
             }, completion: nil)
         
         setupColourScheme()
+        
+        // Ease in the two pods
+        self.aboutView.alpha = 0.0
+        UIView.animate(withDuration: 1.0, delay: 1.5, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.aboutView.alpha = CGFloat(self.DisplayViewAlphaForSettingsScreen)
+        }, completion: nil)
+        
+        self.emailView.alpha = 0.0
+        UIView.animate(withDuration: 1.0, delay: 2.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.emailView.alpha = CGFloat(self.DisplayViewAlphaForSettingsScreen)
+        }, completion: nil)
+        
+        self.creditsView.alpha = 0.0
+        UIView.animate(withDuration: 1.0, delay: 2.5, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.creditsView.alpha = CGFloat(self.DisplayViewAlphaForSettingsScreen)
+        }, completion: nil)
+        
     }
 
 
@@ -101,7 +120,7 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
         iconAttributedString.addAttribute(NSLinkAttributeName, value: GlobalConstants.WeatherIconURL, range: NSRange(location: 0, length: iconUrlString.characters.count))
         iconSource.attributedText = iconAttributedString
 
-        let photosUrlString = "Weather photos from Pexels"
+        let photosUrlString = "Photos from Pexels"
         let photosAttributedString = NSMutableAttributedString(string: photosUrlString)
         photosAttributedString.addAttribute(NSLinkAttributeName, value: GlobalConstants.WeatherPhotosURL, range: NSRange(location: 0, length: photosUrlString.characters.count))
         photoSource.attributedText = photosAttributedString
@@ -113,6 +132,7 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
     
     func setupColourScheme() {
         
+        changeBackground () 
         // Setup pods and text colour accordingly
         
         let colourScheme = Utility.setupColourScheme()
@@ -146,6 +166,28 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
         weatherSource.backgroundColor = podColourScheme
         iconSource.backgroundColor = podColourScheme
         photoSource.backgroundColor = podColourScheme
+        
+    }
+
+    func changeBackground () {
+        
+        // Change the background between three different types
+        
+        var backgroundImageName : String!
+        
+        let rand = Int(arc4random_uniform(3))
+        switch (rand) {
+        case 0:
+            backgroundImageName = GlobalConstants.AboutScreenBackground.One.rawValue
+        case 1:
+            backgroundImageName = GlobalConstants.AboutScreenBackground.Two.rawValue
+        case 2:
+            backgroundImageName = GlobalConstants.AboutScreenBackground.Three.rawValue
+        default:
+            backgroundImageName = GlobalConstants.AboutScreenBackground.One.rawValue
+        }
+        
+        weatherImage.image = UIImage(named: backgroundImageName)!
         
     }
 

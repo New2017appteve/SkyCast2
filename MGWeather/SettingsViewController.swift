@@ -52,12 +52,21 @@ class SettingsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        setupScreen ()
+        
         // Ease in the outer screen view for effect
         self.weatherImage.alpha = 0.2
         self.settingsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
         UIView.animate(withDuration: 0.8, delay: 0.15, options: UIViewAnimationOptions.curveEaseIn, animations: {
                 self.weatherImage.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
             }, completion: nil)
+        
+        // Ease in the two pods
+        self.settingsView.alpha = 0.0
+        UIView.animate(withDuration: 1.5, delay: 0.5, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.settingsView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+        }, completion: nil)
+
     }
 
 

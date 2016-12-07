@@ -284,6 +284,17 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         todayLabel.backgroundColor = titleViewColourScheme
         poweredByDarkSkyButton.backgroundColor = titleViewColourScheme
         
+        // Ease in the two pods
+        self.currentTempView.alpha = 0.0
+        UIView.animate(withDuration: 1.2, delay: 0.5, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.currentTempView.alpha = 1
+        }, completion: nil)
+        
+        self.weatherDetailOuterView.alpha = 0.0
+        UIView.animate(withDuration: 1.2, delay: 0.5, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.weatherDetailOuterView.alpha = 1
+        }, completion: nil)
+        
     }
     
 
@@ -983,17 +994,6 @@ extension TodayTabVC : UITableViewDataSource {
                 dayOrNightColourSetting = GlobalConstants.DefaultDayOrNightSwitch  // ON
             }
         }
-        
-//        var degreesSymbol = ""
-//        
-//        if let lWeather = dailyWeather {
-//            if lWeather.flags.units == "si" {
-//                degreesSymbol = GlobalConstants.degreesSymbol + "C"
-//            }
-//            else {
-//                degreesSymbol = GlobalConstants.degreesSymbol + "F"
-//            }
-//        }
         
         // We dont want the current hour in this list so +1
         let hourWeather = dailyWeather?.hourBreakdown.hourStats[indexPath.row + 1]

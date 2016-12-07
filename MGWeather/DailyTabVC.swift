@@ -61,6 +61,17 @@ class DailyTabVC: UIViewController {
             self.weatherImage.alpha = 1
             }, completion: nil)
 
+        // Ease in the two pods
+        self.nextDaysSummary.alpha = 0.0
+        UIView.animate(withDuration: 1.2, delay: 0.5, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.nextDaysSummary.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+        }, completion: nil)
+        
+        self.dailyWeatherTableView.alpha = 0.0
+        UIView.animate(withDuration: 1.2, delay: 0.5, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.dailyWeatherTableView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+        }, completion: nil)
+
         setupColourScheme()
         populateDailyWeatherDetails()
         

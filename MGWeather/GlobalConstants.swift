@@ -131,9 +131,9 @@ class GlobalConstants: NSObject {
     static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/51.508146,-0.624004"
     static let BaseWeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/"
 
-    static let celsiusURLParameter = "?units=si"
-    static let siUnitURLParameter = "?units=uk2"
-    static let imperialUnitURLParameter = "?units=us"
+//    static let celsiusURLParameter = "?units=si"
+//    static let siUnitURLParameter = "?units=uk2"
+//    static let imperialUnitURLParameter = "?units=us"
     
     static let DemoWeatherFile = "sample_data_cippenham2"
     
@@ -236,15 +236,26 @@ class GlobalConstants: NSObject {
             case xmasNight = "christmas-candles-54512-pexels"
             case newYearsEve = "new-year-night-38196-pexels"
             
+            // Misc (used in Settings and About screens)
+            case miscSunsetPoppy = "sunset-field-poppy-pexels"
+            case miscMountainFlowers = "mountain-flowers-pexels"
+            case miscSunsetTwighlight = "sky_background_PEXELS"
+            
         }
     }
     
-    // The following define 3 backgrounds we can use in the settings screen
+    // The following define 3 backgrounds we can use in the settings and about screen
     
     struct SettingsScreenBackground {
         static var One = ImageFile.FileName.thunderstorm
         static var Two = ImageFile.FileName.bonfireNight
         static var Three = ImageFile.FileName.wind
+    }
+    
+    struct AboutScreenBackground {
+        static var One = ImageFile.FileName.miscSunsetPoppy
+        static var Two = ImageFile.FileName.miscMountainFlowers
+        static var Three = ImageFile.FileName.miscSunsetTwighlight
     }
     
     //

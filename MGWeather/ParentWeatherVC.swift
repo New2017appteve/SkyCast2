@@ -87,12 +87,22 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             connectedToInternet = true
         }
         
+        // Ease in the pod
+        self.contentView.alpha = 0.2
+        UIView.animate(withDuration: 0.8, delay: 0.1, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.contentView.alpha = 1
+        }, completion: nil)
+  
+        
         if connectedToInternet
         {
-            // Make a toast to say data is refreshing
-//            self.view.makeToast("Refreshing data", duration: 1.0, position: .bottom)
-//            self.view.makeToastActivity(.center)
-
+            if (loadingMode == "STARTUP") {
+                // Make a toast to say data is refreshing
+                self.view.makeToast("Getting Location", duration: 2.0, position: .bottom)
+                self.view.makeToastActivity(.center)
+            }
+            
+            refreshButton.isEnabled = false
             self.getAndSetLocation()
             
             // NOTE:  Weather data will be retrieved once the Location data has loaded and notified
@@ -162,7 +172,6 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.frame.size.width - 120, height: 44))
         titleLabel.backgroundColor = UIColor.clear
         titleLabel.numberOfLines = 1
-        //titleLabel.font = UIFont(name: UIConfig.Fonts.OswaldRegular,  size: 16)
         titleLabel.textAlignment = NSTextAlignment.center
         titleLabel.text = GlobalConstants.AppName
         titleBar.topItem?.titleView = titleLabel
@@ -367,10 +376,6 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         
         loadingMode = "REFRESHING"
         
-        // Make a toast to say data is refreshing
-//        self.view.makeToast("Refreshing data", duration: 1.0, position: .bottom)
-//        self.view.makeToastActivity(.center)
-        
         self.getAndSetLocation()
         // NOTE:  Weather data will be retrieved once the Location data has loaded and notified
     }
@@ -394,11 +399,6 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         
         self.getAndSetLocation()
         
-//        // Make a toast to say data is refreshing
-//        self.view.makeToast("Refreshing data", duration: 1.0, position: .bottom)
-//        self.view.makeToastActivity(.center)
-//        refreshButton.isEnabled = false
-        
         // NOTE:  The setup of the screen in the tabs will be done after getWeatherDataFromService() has finished
     }
     
@@ -408,8 +408,6 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         self.view.makeToast("Refreshing data", duration: 1.0, position: .bottom)
         self.view.makeToastActivity(.center)
         refreshButton.isEnabled = false
-
-//        refreshButton.isEnabled = false
         
         getWeatherDataFromService()
         
@@ -552,6 +550,9 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 }
                 
                 DispatchQueue.main.async {
+                    
+                    self.view.hideToastActivity()
+
                     NotificationCenter.default.post(name: GlobalConstants.locationRefreshFinishedKey, object: nil)
                 }
             }
