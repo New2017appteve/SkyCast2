@@ -326,6 +326,25 @@ class Utility: NSObject {
         return retVal
     }
     
+    
+    class func getHoursForToday () -> NSArray {
+        
+        let cal = Calendar.current
+        var date = cal.startOfDay(for: Date())
+        var hours = [Int]()
+        var dateAndTimes = [Date]()
+        for _ in 1 ... 24 {
+            let hour = cal.component(.hour, from: date)
+            hours.append(hour)
+            dateAndTimes.append(date)
+            
+            date = cal.date(byAdding: .hour, value: 1, to: date)!
+        }
+        
+        return dateAndTimes as NSArray
+    }
+    
+    
     class func getTimeInWeatherTimezone(dateAndTime: NSDate) -> NSDate {
         
         let timezoneOffsetMinutes = GlobalConstants.timezoneOffset * 60
@@ -334,6 +353,11 @@ class Utility: NSObject {
         return localDateTimeStamp as NSDate
     }
     
+    
+    class func secondsToHoursMinutesSeconds (seconds : Int) -> (Int, Int, Int) {
+        return (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
+    }
+
     
     class func compassDirectionFromDegrees (degrees : Float) -> String {
         

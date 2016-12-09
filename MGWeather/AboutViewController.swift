@@ -32,7 +32,7 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
     /// The banner view.
     @IBOutlet weak var bannerView: GADBannerView!
     
-    var DisplayViewAlphaForSettingsScreen = GlobalConstants.DisplayViewAlpha - 0.2
+    var DisplayViewAlphaForSettingsScreen = GlobalConstants.DisplayViewAlpha - 0.15
     
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -21,8 +21,8 @@ class SettingsViewController: UIViewController {
     @IBOutlet weak var weatherImage : UIImageView!
     @IBOutlet weak var settingsView: UIView!
     
-    @IBOutlet weak var backButton : UIButton!
-    @IBOutlet weak var okButton : UIButton!
+ //   @IBOutlet weak var backButton : UIButton!
+ //   @IBOutlet weak var okButton : UIButton!
 
     @IBOutlet weak var colourSchemeTitle : UILabel!
     @IBOutlet weak var colourSchemeControl : UISegmentedControl!

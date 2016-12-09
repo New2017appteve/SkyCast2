@@ -688,7 +688,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             // Now Pod
             //
             
-            var degreesSymbol = GlobalConstants.degreesSymbol + todayArray.temperatureUnits!
+            let degreesSymbol = GlobalConstants.degreesSymbol + todayArray.temperatureUnits!
             currentTemp.text = String(Int(round(todayArray.temperature! as Float))) + degreesSymbol
             
             // Inner Pod 1
@@ -714,17 +714,26 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                 rainNowProbability.text = ""
             }
             
-            let windDirection = Utility.compassDirectionFromDegrees(degrees: todayArray.windBearing!)
-            let rainDirection = Utility.compassDirectionFromDegrees(degrees: Float(todayArray.nearestStormBearing!))
+            var windDirection = ""
+            if (todayArray.windBearing != nil) {
+                windDirection = Utility.compassDirectionFromDegrees(degrees: todayArray.windBearing!)
+            }
+            
+            var rainDirection = ""
+            if (todayArray.nearestStormBearing != nil) {
+                rainDirection = Utility.compassDirectionFromDegrees(degrees: Float(todayArray.nearestStormBearing!))
+            }
 
             // TODO:  Report KM or MI accordingly.  Create utility to see if units in MPH/KPH from service
             
             let windSpeedUnits = todayArray.windSpeedUnits!
             
             // TODO: Tidy up string concat
- //           currentWindspeed.text = "Wind: " + String(Int(round(todayArray.windSpeed! * GlobalConstants.MetersPerSecondToMph)))
-            currentWindspeed.text = "Wind: " + String(Int(todayArray.windSpeed!))
-            currentWindspeed.text = currentWindspeed.text! + " " + windSpeedUnits + " " + windDirection
+            
+            if (windDirection != nil || windDirection != "") {
+                currentWindspeed.text = "Wind: " + String(Int(todayArray.windSpeed!))
+                currentWindspeed.text = currentWindspeed.text! + " " + windSpeedUnits + " " + windDirection
+            }
             
             let nearestRain = todayArray.nearestStormDistance!
         
@@ -736,9 +745,13 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             }
             else if (nearestRain > GlobalConstants.RainDistanceReportThreshold) {
                 let rainUnits = todayArray.nearestStormDistanceUnits
+                
                 // TODO: Tidy up string concat
-                nearestRainDistance.text = "Rain " + String(todayArray.nearestStormDistance!) + " "
-                nearestRainDistance.text = nearestRainDistance.text! + rainUnits! + " " + rainDirection
+                
+                if (rainDirection != nil || rainDirection != "") {
+                    nearestRainDistance.text = "Rain " + String(todayArray.nearestStormDistance!) + " "
+                    nearestRainDistance.text = nearestRainDistance.text! + rainUnits! + " " + rainDirection
+                }
             }
 
             
@@ -876,7 +889,48 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         
         return retVal
     }
+
+    func isSunriseHour (dateTime : NSDate) -> Bool {
+        
+        var retVal : Bool!
+        
+        // Calculate whether the sun rises in next hour
+        
+        let nextHourTime = dateTime.add(minutes: 60) as NSDate
+        
+        if (sunriseTimeStamp!.isBetweeen(date: nextHourTime, andDate: dateTime) ||
+            tomorrowSunriseTimeStamp!.isBetweeen(date: nextHourTime, andDate: dateTime) ) {
+            
+            retVal = true
+        }
+        else {
+            retVal = false
+        }
+        
+        return retVal
+    }
     
+    func isSunsetHour (dateTime : NSDate) -> Bool {
+        
+        var retVal : Bool!
+        
+        // Calculate whether the sun rises in next hour
+        
+        let nextHourTime = dateTime.add(minutes: 60) as NSDate
+        
+        if (sunsetTimeStamp!.isBetweeen(date: nextHourTime, andDate: dateTime) ||
+            tomorrowSunriseTimeStamp!.isBetweeen(date: nextHourTime, andDate: dateTime) ) {
+            
+            retVal = true
+        }
+        else {
+            retVal = false
+        }
+        
+        return retVal
+    }
+
+
     // MARK:  Button Press Methods
 
     @IBAction func closeBannerAdButtonPressed(_ sender: AnyObject) {
@@ -997,15 +1051,21 @@ extension TodayTabVC : UITableViewDataSource {
         
         // We dont want the current hour in this list so +1
         let hourWeather = dailyWeather?.hourBreakdown.hourStats[indexPath.row + 1]
-        
+
         let cell:HourlyWeatherCell = self.hourlyWeatherTableView.dequeueReusableCell(withIdentifier: "HourWeatherCellID") as! HourlyWeatherCell
         
         let hourTimeStamp = hourWeather?.dateAndTimeStamp
         
+        let sunriseHour = isSunriseHour(dateTime: hourTimeStamp!)
+        let sunSetHour = isSunsetHour(dateTime: hourTimeStamp!)
         let dayOrNight = (isDayTime(dateTime: hourTimeStamp!) ? "DAY" : "NIGHT")
 
         cell.hourLabel.text = hourWeather?.dateAndTimeStamp!.shortHourTimeString()
         
+//        if sunriseHour {
+//            cell.showSunriseSunsetDetails()
+//        }
+
         let degreesSymbol = GlobalConstants.degreesSymbol + hourWeather!.temperatureUnits!
         cell.temperatureLabel.text = String(Int(round(hourWeather!.temperature!))) + degreesSymbol
         
@@ -1059,7 +1119,11 @@ extension TodayTabVC : UITableViewDataSource {
         
         // Alternate the shading of each table view cell
         if dayOrNightColourSetting == "ON" {
-            if (indexPath.row % 2 == 0) {
+            
+            if (sunriseHour || sunSetHour) {
+                cell.backgroundColor = GlobalConstants.TwighlightShading
+            }
+            else if (indexPath.row % 2 == 0) {
                 // Lighter Shade
                 
                 if isDayTime(dateTime: hourTimeStamp!) {
@@ -1098,7 +1162,7 @@ extension TodayTabVC : UITableViewDataSource {
                 }
             }
         }
-
+        
         return cell
     }
 }

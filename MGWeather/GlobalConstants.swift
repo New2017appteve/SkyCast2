@@ -70,6 +70,8 @@ class GlobalConstants: NSObject {
     static var DarkerBlack = UIColor(red: 30/255, green: 30/255, blue: 30/255, alpha: 0.85)
     static var LighterBlack = UIColor(red: 70/255, green: 70/255, blue: 65/255, alpha: 0.85)
 
+    static var TwighlightShading = UIColor(red: 193/255, green: 217/255, blue: 206/255, alpha: 0.85)
+    //static var TwighlightShading = UIColor(red: 199/255, green: 160/255, blue: 54/255, alpha: 0.80)
     
     // Tableview shading
     struct TableViewAlternateShading {

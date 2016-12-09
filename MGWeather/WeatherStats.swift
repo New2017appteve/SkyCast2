@@ -10,7 +10,7 @@ import UIKit
 class WeatherStats: NSObject {
     
     // NOTE:  Times are in Unix timestamps (e.g. 1467154800 = 06/28/2016 @ 11:00pm (UTC) )
-    var dateAndTime : Double? // NOTE:  We may need bigger than an Int for future robustness
+    var dateAndTime : Double?
     var dateAndTimeStamp : NSDate?
     var summary : String?
     var icon : String?
@@ -29,10 +29,14 @@ class WeatherStats: NSObject {
     var precipType  : String?
     var temperature : Float?
     var temperatureUnits : String?
+    
     var temperatureMin : Float?
-    var temperatureMinTime : String?
+    var temperatureMinTime : Double?
+    var temperatureMinTimeStamp : NSDate?
     var temperatureMax : Float?
-    var temperatureMaxTime : String?
+    var temperatureMaxTime : Double?
+    var temperatureMaxTimeStamp : NSDate?
+    
     var apparentTemperature : Float?
     var apparentTemperatureMin : Float?
     var apparentTemperatureMinTime : String?
@@ -106,6 +110,7 @@ class WeatherStats: NSObject {
             nearestStormDistanceUnits = returnUnits
         }
         
+        // NOTE:  nearestStormBearing may not be returned if not necessary
         if let lNearestStormBearing  = weatherDict["nearestStormBearing"] as? Int {
             nearestStormBearing = lNearestStormBearing
         }
@@ -127,6 +132,8 @@ class WeatherStats: NSObject {
         }
         
         if let lPrecipType  = weatherDict["precipType"] as? String {
+            
+            // Rain, Sleet or Snow
             precipType = lPrecipType
         }
         
@@ -153,16 +160,29 @@ class WeatherStats: NSObject {
             temperatureMin = lTemperatureMin
         }
         
-        if let lTemperatureMinTime  = weatherDict["temperatureMinTime"] as? String {
+        //        if let lDateAndTime  = weatherDict["time"] as? Double {
+        //
+        //            dateAndTime = lDateAndTime
+        //            dateAndTimeStamp = NSDate(timeIntervalSince1970: dateAndTime!)
+        //            dateAndTimeStamp = Utility.getTimeInWeatherTimezone(dateAndTime: dateAndTimeStamp!)
+        //            
+        //        }
+        
+        if let lTemperatureMinTime  = weatherDict["temperatureMinTime"] as? Double {
             temperatureMinTime = lTemperatureMinTime
+            temperatureMinTimeStamp = NSDate(timeIntervalSince1970: lTemperatureMinTime)
+            temperatureMinTimeStamp = Utility.getTimeInWeatherTimezone(dateAndTime: temperatureMinTimeStamp!)
         }
         
         if let lTemperatureMax  = weatherDict["temperatureMax"] as? Float {
             temperatureMax = lTemperatureMax
         }
         
-        if let lTemperatureMaxTime  = weatherDict["temperatureMaxTime"] as? String {
+        if let lTemperatureMaxTime  = weatherDict["temperatureMaxTime"] as? Double {
+            
             temperatureMaxTime = lTemperatureMaxTime
+            temperatureMaxTimeStamp = NSDate(timeIntervalSince1970: lTemperatureMaxTime)
+            temperatureMaxTimeStamp = Utility.getTimeInWeatherTimezone(dateAndTime: temperatureMaxTimeStamp!)
         }
         
         if let lApparentTemperature  = weatherDict["apparentTemperature"] as? Float {

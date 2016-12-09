@@ -13,6 +13,8 @@
 		C00A7B181DE25F0300C8F996 /* ColourScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00A7B171DE25F0300C8F996 /* ColourScheme.swift */; };
 		C00F9ABA1DE65E3500E373EB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C00F9AB91DE65E3500E373EB /* GoogleService-Info.plist */; };
 		C018BA061DA2FE64009706F9 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = C018BA051DA2FE64009706F9 /* Toast.swift */; };
+		C019DB211DF99ACA00B381F2 /* SunriseSunsetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C019DB201DF99ACA00B381F2 /* SunriseSunsetViewController.swift */; };
+		C019DB231DF9A08300B381F2 /* SunriseSunsetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C019DB221DF9A08300B381F2 /* SunriseSunsetCell.swift */; };
 		C0617F881DD33BB60003B844 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0617F871DD33BB60003B844 /* AppSettings.swift */; };
 		C0EFA2CD1DCF9DA100D873E9 /* Reach.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EFA2CC1DCF9DA100D873E9 /* Reach.swift */; };
 		C7175A9C1D31683700788F09 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7175A9B1D31683700788F09 /* AppDelegate.swift */; };
@@ -55,6 +57,8 @@
 		C00F9AB91DE65E3500E373EB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C00F9ABB1DE666B400E373EB /* SkyCast.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SkyCast.entitlements; sourceTree = "<group>"; };
 		C018BA051DA2FE64009706F9 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		C019DB201DF99ACA00B381F2 /* SunriseSunsetViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SunriseSunsetViewController.swift; sourceTree = "<group>"; };
+		C019DB221DF9A08300B381F2 /* SunriseSunsetCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SunriseSunsetCell.swift; sourceTree = "<group>"; };
 		C0617F871DD33BB60003B844 /* AppSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		C0EFA2CC1DCF9DA100D873E9 /* Reach.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reach.swift; sourceTree = "<group>"; };
 		C7175A981D31683700788F09 /* SkyCast.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkyCast.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -189,6 +193,7 @@
 				C74B946A1D40131100BECDA3 /* InfoPopupViewController.swift */,
 				C74B946E1D40284700BECDA3 /* SettingsViewController.swift */,
 				C74B946C1D4023B100BECDA3 /* AboutViewController.swift */,
+				C019DB201DF99ACA00B381F2 /* SunriseSunsetViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -232,6 +237,7 @@
 			children = (
 				C7175AC31D316A3D00788F09 /* DailyWeatherCell.swift */,
 				C7BE8B5C1D73948F00491F58 /* HourlyWeatherCell.swift */,
+				C019DB221DF9A08300B381F2 /* SunriseSunsetCell.swift */,
 			);
 			name = TableViewCell;
 			sourceTree = "<group>";
@@ -415,6 +421,7 @@
 				C7175AB71D31698700788F09 /* HourBreakdown.swift in Sources */,
 				C0EFA2CD1DCF9DA100D873E9 /* Reach.swift in Sources */,
 				C770BD9F1D351E11007AD275 /* WeatherAlerts.swift in Sources */,
+				C019DB211DF99ACA00B381F2 /* SunriseSunsetViewController.swift in Sources */,
 				C0617F881DD33BB60003B844 /* AppSettings.swift in Sources */,
 				C7175AC41D316A3D00788F09 /* DailyWeatherCell.swift in Sources */,
 				C7FC062C1D75C82F00B6280B /* WeatherSegmentedControl.swift in Sources */,
@@ -432,6 +439,7 @@
 				C74B946F1D40284700BECDA3 /* SettingsViewController.swift in Sources */,
 				C7175AAF1D31690900788F09 /* WeatherTabBarVC.swift in Sources */,
 				C74B946B1D40131100BECDA3 /* InfoPopupViewController.swift in Sources */,
+				C019DB231DF9A08300B381F2 /* SunriseSunsetCell.swift in Sources */,
 				C74B946D1D4023B100BECDA3 /* AboutViewController.swift in Sources */,
 				C00A7B181DE25F0300C8F996 /* ColourScheme.swift in Sources */,
 				C018BA061DA2FE64009706F9 /* Toast.swift in Sources */,
@@ -552,7 +560,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = SkyCast.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = SCV8CWA773;
 				INFOPLIST_FILE = MGWeather/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MGSoft.SkyCast;
@@ -573,7 +581,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = SkyCast.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = SCV8CWA773;
 				INFOPLIST_FILE = MGWeather/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MGSoft.SkyCast;

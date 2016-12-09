@@ -8,7 +8,7 @@
 import UIKit
 import CoreLocation
 
-class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsViewControllerDelegate, TodayTabVCDelegate, DailyTabVCDelegate  {
+class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsViewControllerDelegate, SunriseSunsetViewControllerDelegate, TodayTabVCDelegate, DailyTabVCDelegate  {
 
     // https://ahmedabdurrahman.com/2015/08/31/how-to-switch-view-controllers-using-segmented-control-swift/
     
@@ -26,6 +26,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
 
     enum Menu: String {
         case Weather = "Weather"
+        case SunriseSunset = "Sunrise Data"
         case ShowSettings = "App Settings"
         case ShowAbout = "About"
     }
@@ -116,8 +117,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         }
 
     }
-    
 
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if let currentViewController = currentViewController {
@@ -131,6 +132,50 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             
             let vc:SettingsViewController = segue.destination as! SettingsViewController
             vc.delegate = self
+        }
+        
+        if (segue.identifier == "sunriseSunsetSegue") {
+            
+            // Get todays sunrise and sunset data to pass to view controller
+            
+            var sunriseTimeStamp : NSDate!
+            var sunsetTimeStamp : NSDate!
+            var tempMin : Float!
+            var tempMax : Float!
+            var tempMinTimeStamp : NSDate!
+            var tempMaxTimeStamp : NSDate!
+            var degreesSymbol : String!
+            var moonPhase : Float!
+            
+            let todayArray = weather?.currentBreakdown
+            let dayArray = weather?.dailyBreakdown.dailyStats
+            
+            for days in dayArray! {
+                
+                let sameDay = Utility.areDatesSameDay(date1: (todayArray?.dateAndTimeStamp!)!, date2: days.dateAndTimeStamp!)
+                
+                if sameDay {
+                    sunriseTimeStamp = days.sunriseTimeStamp as NSDate?
+                    sunsetTimeStamp = days.sunsetTimeStamp as NSDate?
+                    tempMinTimeStamp = days.temperatureMinTimeStamp
+                    tempMaxTimeStamp = days.temperatureMaxTimeStamp
+                    tempMin = days.temperatureMin
+                    tempMax = days.temperatureMax
+                    degreesSymbol = GlobalConstants.degreesSymbol + (todayArray?.temperatureUnits!)!
+                    moonPhase = days.moonPhase
+                }
+            }
+    
+            let vc:SunriseSunsetViewController = segue.destination as! SunriseSunsetViewController
+            vc.delegate = self
+            vc.sunriseDateTime = sunriseTimeStamp
+            vc.sunsetDateTime = sunsetTimeStamp
+            vc.tempMinDateTime = tempMinTimeStamp
+            vc.tempMaxDateTime = tempMaxTimeStamp
+            vc.tempMin = tempMin
+            vc.tempMax = tempMax
+            vc.degreesSymbol = degreesSymbol
+            vc.moonPhase = moonPhase
         }
         
         if (segue.identifier == "aboutScreenSegue") {
@@ -275,7 +320,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         // Obtain the correct latitude and logitude.  This should be in our weatherLocation object
         let urlWithLocation = GlobalConstants.BaseWeatherURL + String(weatherLocation.currentLatitude!) + "," + String(weatherLocation.currentLongitude!)
         
-        var urlUnits = GlobalConstants.urlUnitsChosen  // This should be set by now or set to default
+        let urlUnits = GlobalConstants.urlUnitsChosen  // This should be set by now or set to default
         returnURL = urlWithLocation + "?units=" + urlUnits
         
 //        // Find out if user preference is celsuis or fahrenheit.  Pass relevant parameter on url
@@ -612,6 +657,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         }
         
         actionMenu.addAction(weatherAction)
+        actionMenu.addAction(sunriseSunsetAction)
         actionMenu.addAction(showSettingsAction)
         actionMenu.addAction(showAboutAction)
         
@@ -626,6 +672,15 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
 
             // We just want to dismiss the popover to return to the weather view
             self.dismiss(animated: true, completion: nil)
+        })
+    }
+
+    var sunriseSunsetAction: UIAlertAction {
+        return UIAlertAction(title: Menu.SunriseSunset.rawValue, style: .default, handler: { (alert) -> Void in
+            
+            //    DispatchQueue.main.async {
+            self.performSegue(withIdentifier: "sunriseSunsetSegue", sender: self)
+            //    }
         })
     }
 
