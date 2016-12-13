@@ -19,17 +19,22 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     
     @IBOutlet weak var segmentedControl: WeatherSegmentedControl!
     @IBOutlet weak var titleBar: UINavigationBar!
-    @IBOutlet weak var barButtonAction: UIBarButtonItem!
+    @IBOutlet weak var titleBarNavItem: UINavigationItem!
+//    @IBOutlet weak var barButtonAction: UIBarButtonItem!
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var weatherImage : UIImageView!
-    @IBOutlet weak var refreshButton : UIButton!
+//    @IBOutlet weak var refreshButton : UIButton!
+    @IBOutlet weak var iconRefreshButton : UIButton!
 
     enum Menu: String {
         case Weather = "Weather"
-        case SunriseSunset = "Sunrise Data"
+        case SunriseSunset = "Daily Timeline"
         case ShowSettings = "App Settings"
         case ShowAbout = "About"
     }
+    
+    // Custom outlets
+    let customBarButtonAction = UIButton(type: .custom)
     
     var locationManager = CLLocationManager() //: CLLocationManager!
     var locationFound: Bool!
@@ -62,7 +67,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         getURLUnits()
         setupScreen()
         segmentedControl.isEnabled = false
-        barButtonAction.isEnabled = false
+        // barButtonAction.isEnabled = false
+        customBarButtonAction.isEnabled = false
         
         setViewControllerTitle()
         
@@ -93,29 +99,34 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         UIView.animate(withDuration: 0.8, delay: 0.1, options: UIViewAnimationOptions.curveEaseIn, animations: {
             self.contentView.alpha = 1
         }, completion: nil)
-  
         
-        if connectedToInternet
-        {
-            if (loadingMode == "STARTUP") {
-                // Make a toast to say data is refreshing
-                self.view.makeToast("Getting Location", duration: 2.0, position: .bottom)
-                self.view.makeToastActivity(.center)
+        // Only get weather services if user has allowed location services on device and we have
+        // an internet connection of some sort
+        
+        if allowedToUseLocation() {
+            
+            if connectedToInternet
+            {
+                if (loadingMode == "STARTUP") {
+                    // Make a toast to say data is refreshing
+                    self.view.makeToast("Getting Location", duration: 2.0, position: .bottom)
+                    self.view.makeToastActivity(.center)
+                }
+                
+                iconRefreshButton.isEnabled = false
+                self.getAndSetLocation()
+                
+                // NOTE:  Weather data will be retrieved once the Location data has loaded and notified
             }
-            
-            refreshButton.isEnabled = false
-            self.getAndSetLocation()
-            
-            // NOTE:  Weather data will be retrieved once the Location data has loaded and notified
-        }
-        else
-        {
-            // Internet Connection not Available!
-            Utility.showMessage(titleString: "Error", messageString: "You are not connected to the internet.  Please check your cellular or wi-fi settings" )
-            self.view.hideToastActivity()
-            refreshButton.isEnabled = true
-        }
+            else
+            {
+                // Internet Connection not Available!
+                Utility.showMessage(titleString: "Error", messageString: "You are not connected to the internet.  Please check your cellular or wi-fi settings" )
+                self.view.hideToastActivity()
+                iconRefreshButton.isEnabled = true
+            }
 
+        }
     }
 
     
@@ -168,6 +179,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     
             let vc:SunriseSunsetViewController = segue.destination as! SunriseSunsetViewController
             vc.delegate = self
+            
+            vc.dailyWeather = weather
             vc.sunriseDateTime = sunriseTimeStamp
             vc.sunsetDateTime = sunsetTimeStamp
             vc.tempMinDateTime = tempMinTimeStamp
@@ -198,11 +211,23 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             self.weatherImage.alpha = 1
             }, completion: nil)
         
-        refreshButton.layer.cornerRadius = 5.0
-        refreshButton.clipsToBounds = true
+        iconRefreshButton.layer.cornerRadius = 5.0
+        iconRefreshButton.clipsToBounds = true
+        iconRefreshButton.alpha = 0.85
 
+        setRightBarButtonImage()
     }
     
+    func setRightBarButtonImage () {
+        
+        customBarButtonAction.setImage(UIImage(named: "Menu"), for: UIControlState.normal)
+        customBarButtonAction.addTarget(self, action: #selector(ParentWeatherVC.barBtnActionPressed(_:)), for: UIControlEvents.touchUpInside)
+        //button.frame = CGRectMake(0, 0, 53, 31)
+        customBarButtonAction.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+        
+        let barButton = UIBarButtonItem(customView: customBarButtonAction)
+        titleBarNavItem.rightBarButtonItem = barButton
+    }
     
     func setupTabs () {
 
@@ -371,7 +396,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                         
                         // Reenable controls
                         self.segmentedControl.isEnabled = true
-                        self.barButtonAction.isEnabled = true
+                       // self.barButtonAction.isEnabled = true
+                        self.customBarButtonAction.isEnabled = true
                         
                         if self.loadingMode == "STARTUP" {
                             self.setupTabs()
@@ -379,7 +405,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                         
                         // Hide animation on the main thread, once finished background task
                         self.view.hideToastActivity()
-                        self.refreshButton.isEnabled = true
+                        self.iconRefreshButton.isEnabled = true
                     }
                     
                 } catch let error as NSError {
@@ -452,11 +478,32 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         // Make a toast to say data is refreshing
         self.view.makeToast("Refreshing data", duration: 1.0, position: .bottom)
         self.view.makeToastActivity(.center)
-        refreshButton.isEnabled = false
+        iconRefreshButton.isEnabled = false
         
         getWeatherDataFromService()
         
         // NOTE:  The setup of the screen in the tabs will be done after getWeatherDataFromService() has finished
+    }
+    
+    func allowedToUseLocation () -> Bool {
+    
+        // If user has not allowed location services, display standard Apple message to allow
+        // user to turn on location services
+        
+        var allowed = false
+        
+        if (CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedWhenInUse ||
+            CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedAlways) {
+            
+            allowed = true
+        }
+        else {
+
+            self.locationManager.requestAlwaysAuthorization();
+            allowed = false
+        }
+
+        return allowed
     }
     
     func getAndSetLocation() {
@@ -507,7 +554,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             locationManager.stopUpdatingLocation()
             locationManager.stopMonitoringSignificantLocationChanges()
             self.view.hideToastActivity()
-            refreshButton.isEnabled = true
+            iconRefreshButton.isEnabled = true
             
             // NOTE:  We dont want to post a finished notification here since its likely that the
             // iPhone is asking the user to allow location to be used.  Or location service is off.
@@ -542,7 +589,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 print("Reverse geocoder failed with error" + (error?.localizedDescription)!)
                 Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
                 self.view.hideToastActivity()
-                self.refreshButton.isEnabled = true
+                self.iconRefreshButton.isEnabled = true
                 
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name: GlobalConstants.locationRefreshFinishedKey, object: nil)
@@ -606,7 +653,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 print("Problem with the data received from geocoder")
                 Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
                 self.view.hideToastActivity()
-                self.refreshButton.isEnabled = true
+                self.iconRefreshButton.isEnabled = true
                 NotificationCenter.default.post(name: GlobalConstants.locationRefreshFinishedKey, object: nil)
 
             }
@@ -615,39 +662,53 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         
     }
     
+    // MARK:- Button methods
+    
     
     @IBAction func refreshButtonPressed(_ sender: AnyObject) {
         
-        Reach().monitorReachabilityChanges()
+        // If user has not allowed location services, warn them to turn it on
+        // Otherwise get weather details
         
-        var connected = false
-        let status = Reach().connectionStatus()
-        switch status {
-        case .unknown, .offline:
-            print("Not connected")
-        case .online(.wwan):
-            print("Connected via WWAN")
-            connected = true
-        case .online(.wiFi):
-            print("Connected via WiFi")
-            connected = true
-        }
+        if allowedToUseLocation() {
+            Reach().monitorReachabilityChanges()
+            
+            var connected = false
+            let status = Reach().connectionStatus()
+            switch status {
+            case .unknown, .offline:
+                print("Not connected")
+            case .online(.wwan):
+                print("Connected via WWAN")
+                connected = true
+            case .online(.wiFi):
+                print("Connected via WiFi")
+                connected = true
+            }
 
-        if connected
-        {
-            retrieveWeatherAndLocationData()
+            if connected
+            {
+                retrieveWeatherAndLocationData()
+            }
+            else
+            {
+                // Internet Connection not Available!
+                Utility.showMessage(titleString: "Error", messageString: "You are not connected to the internet.  Please check your cellular or wi-fi settings" )
+            }
         }
-        else
-        {
-            // Internet Connection not Available!
-            Utility.showMessage(titleString: "Error", messageString: "You are not connected to the internet.  Please check your cellular or wi-fi settings" )
+        else {
+            
+            Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location.  Please ensure that Skycast is allowed to access your location on this device. \n\nGo to Settings -> SkyCast and turn Location to Always" )
+
+            iconRefreshButton.isEnabled = true
+
         }
     }
     
     
     @IBAction func barBtnActionPressed(_ sender: AnyObject) {
         
-        let actionMenu = UIAlertController(title: "Actions", message: "", preferredStyle: UIAlertControllerStyle.actionSheet)
+        let actionMenu = UIAlertController(title: "Menu", message: "", preferredStyle: UIAlertControllerStyle.actionSheet)
         
         if let popover = actionMenu.popoverPresentationController{
             
@@ -656,49 +717,51 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             popover.popoverLayoutMargins = UIEdgeInsets(top: 10, left: 4, bottom: 10, right: 4)
         }
         
-        actionMenu.addAction(weatherAction)
+//        actionMenu.addAction(weatherAction)
         actionMenu.addAction(sunriseSunsetAction)
         actionMenu.addAction(showSettingsAction)
         actionMenu.addAction(showAboutAction)
-        
+        // Adding Cancel allows user to click outside of menu to dismiss alert
+        actionMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+
         self.present(actionMenu, animated: true, completion: nil)
         
     }
     
     // MARK:- Menu action methods
     
-    var weatherAction: UIAlertAction {
-        return UIAlertAction(title: Menu.Weather.rawValue, style: .default, handler: { (alert) -> Void in
-
-            // We just want to dismiss the popover to return to the weather view
-            self.dismiss(animated: true, completion: nil)
-        })
-    }
+//    var weatherAction: UIAlertAction {
+//        return UIAlertAction(title: Menu.Weather.rawValue, style: .default, handler: { (alert) -> Void in
+//
+//            // We just want to dismiss the popover to return to the weather view
+//            self.dismiss(animated: true, completion: nil)
+//        })
+//    }
 
     var sunriseSunsetAction: UIAlertAction {
         return UIAlertAction(title: Menu.SunriseSunset.rawValue, style: .default, handler: { (alert) -> Void in
             
-            //    DispatchQueue.main.async {
-            self.performSegue(withIdentifier: "sunriseSunsetSegue", sender: self)
-            //    }
+            DispatchQueue.main.async {
+                self.performSegue(withIdentifier: "sunriseSunsetSegue", sender: self)
+            }
         })
     }
 
    var showSettingsAction: UIAlertAction {
         return UIAlertAction(title: Menu.ShowSettings.rawValue, style: .default, handler: { (alert) -> Void in
             
-        //    DispatchQueue.main.async {
+            DispatchQueue.main.async {
                 self.performSegue(withIdentifier: "settingsScreenSegue", sender: self)
-        //    }
+            }
         })
     }
     
     var showAboutAction: UIAlertAction {
         return UIAlertAction(title: Menu.ShowAbout.rawValue, style: .default, handler: { (alert) -> Void in
             
-          //  DispatchQueue.main.async {
+            DispatchQueue.main.async {
                 self.performSegue(withIdentifier: "aboutScreenSegue", sender: self)
-          //  }
+            }
         })
     }
     

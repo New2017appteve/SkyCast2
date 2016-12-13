@@ -132,9 +132,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         bannerOuterView.isHidden = true
 
         setupColourScheme()
-
     }
     
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     
@@ -559,6 +559,12 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             case UISwipeGestureRecognizerDirection.down:
                 print("Swiped Down")
                 
+                // Shift the whole view down slightly to indicate a refresh is going on
+                UIView.animate(withDuration: 0.3, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+                    self.outerScreenView.frame = self.view.frame.offsetBy(dx: 0.0, dy: 30.0);
+                    
+                }, completion: nil)
+            
                 Reach().monitorReachabilityChanges()
                 
                 var connected = false

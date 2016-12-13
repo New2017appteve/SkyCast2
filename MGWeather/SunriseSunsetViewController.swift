@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import GoogleMobileAds
 
 protocol SunriseSunsetViewControllerDelegate
 {
@@ -19,6 +19,8 @@ class SunriseSunsetViewController: UIViewController {
     var delegate:SunriseSunsetViewControllerDelegate?
     
     // Variables from calling viewcontroller
+    
+    var dailyWeather : Weather!  // This is passed in from ParentWeatherVC
     
     var sunriseDateTime : NSDate!
     var sunsetDateTime : NSDate!
@@ -41,9 +43,8 @@ class SunriseSunsetViewController: UIViewController {
     
     @IBOutlet weak var timelineTableView : UITableView!
     
-    
-    /// The banner view.
-//    @IBOutlet weak var bannerView: GADBannerView!
+    // The banner view.
+    @IBOutlet weak var bannerView: GADBannerView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,8 +74,26 @@ class SunriseSunsetViewController: UIViewController {
         let today = NSDate()
         
         summaryText.text = "Timeline for " + today.shortDayMonthYear()!
+        
+        if AppSettings.ShowBannerAds {
+            loadBannerAd()
+        }
     }
     
+    func loadBannerAd() {
+        
+        print("Google Mobile Ads SDK version: \(GADRequest.sdkVersion())")
+        bannerView.adUnitID = AppSettings.AdMobBannerID
+        bannerView.rootViewController = self
+        
+        let request = GADRequest()
+        if AppSettings.BannerAdsTestMode {
+            // Display test banner ads in the simulator
+            request.testDevices = [AppSettings.AdTestDeviceID]
+        }
+        
+        bannerView.load(request)
+    }
     
     // MARK:  Button Methods
     
@@ -211,7 +230,7 @@ extension SunriseSunsetViewController : UITableViewDataSource {
             
             let temp = String(Int(round(tempMin!))) + degreesSymbol
             
-            cell.daylightHoursLabel.text = "Coolest " + tempMinDateTime.shortTimeString()
+            cell.daylightHoursLabel.text = "Coolest Hour"
             cell.daylightHoursLabel.textColor = GlobalConstants.TableViewAlternateShadingNight.Lighter
             cell.graphColourLabel.text = temp
         }
@@ -219,7 +238,7 @@ extension SunriseSunsetViewController : UITableViewDataSource {
             
             let temp = String(Int(round(tempMax!))) + degreesSymbol
             
-            cell.daylightHoursLabel.text = "Warmest " + tempMaxDateTime.shortTimeString()
+            cell.daylightHoursLabel.text = "Warmest Hour"
             cell.daylightHoursLabel.textColor = GlobalConstants.TableViewAlternateShadingDay.Lighter
             cell.graphColourLabel.text = temp
         }

@@ -15,6 +15,7 @@
 		C018BA061DA2FE64009706F9 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = C018BA051DA2FE64009706F9 /* Toast.swift */; };
 		C019DB211DF99ACA00B381F2 /* SunriseSunsetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C019DB201DF99ACA00B381F2 /* SunriseSunsetViewController.swift */; };
 		C019DB231DF9A08300B381F2 /* SunriseSunsetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C019DB221DF9A08300B381F2 /* SunriseSunsetCell.swift */; };
+		C019DB251DFE9C7600B381F2 /* LaunchScreenVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C019DB241DFE9C7600B381F2 /* LaunchScreenVC.swift */; };
 		C0617F881DD33BB60003B844 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0617F871DD33BB60003B844 /* AppSettings.swift */; };
 		C0EFA2CD1DCF9DA100D873E9 /* Reach.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EFA2CC1DCF9DA100D873E9 /* Reach.swift */; };
 		C7175A9C1D31683700788F09 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7175A9B1D31683700788F09 /* AppDelegate.swift */; };
@@ -59,6 +60,7 @@
 		C018BA051DA2FE64009706F9 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		C019DB201DF99ACA00B381F2 /* SunriseSunsetViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SunriseSunsetViewController.swift; sourceTree = "<group>"; };
 		C019DB221DF9A08300B381F2 /* SunriseSunsetCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SunriseSunsetCell.swift; sourceTree = "<group>"; };
+		C019DB241DFE9C7600B381F2 /* LaunchScreenVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LaunchScreenVC.swift; sourceTree = "<group>"; };
 		C0617F871DD33BB60003B844 /* AppSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		C0EFA2CC1DCF9DA100D873E9 /* Reach.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reach.swift; sourceTree = "<group>"; };
 		C7175A981D31683700788F09 /* SkyCast.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkyCast.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -185,6 +187,7 @@
 		C7175AAD1D3168CE00788F09 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				C019DB241DFE9C7600B381F2 /* LaunchScreenVC.swift */,
 				C7FC06291D75C76200B6280B /* ParentWeatherVC.swift */,
 				C7FC062B1D75C82F00B6280B /* WeatherSegmentedControl.swift */,
 				C7175ACD1D316CCC00788F09 /* TodayTabVC.swift */,
@@ -416,6 +419,7 @@
 				C7BE8B5D1D73948F00491F58 /* HourlyWeatherCell.swift in Sources */,
 				C7FC062A1D75C76200B6280B /* ParentWeatherVC.swift in Sources */,
 				C7175AC11D316A0600788F09 /* GetWeatherData.swift in Sources */,
+				C019DB251DFE9C7600B381F2 /* LaunchScreenVC.swift in Sources */,
 				C7175A9C1D31683700788F09 /* AppDelegate.swift in Sources */,
 				C7175AB81D31698700788F09 /* MinuteBreakdown.swift in Sources */,
 				C7175AB71D31698700788F09 /* HourBreakdown.swift in Sources */,
