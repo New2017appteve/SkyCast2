@@ -14,7 +14,7 @@ protocol DailyTabVCDelegate
     func returnRefreshedWeatherDetails() -> Weather
 }
 
-class DailyTabVC: UIViewController {
+class DailyTabVC: UIViewController, GADBannerViewDelegate  {
 
     var dailyWeather : Weather!  // This is passed in from ParentWeatherVC
     var weatherLocation : Location!  // This is passed in from ParentWeatherVC
@@ -81,7 +81,7 @@ class DailyTabVC: UIViewController {
             
             bannerOuterView.isHidden = true
             let rand = Int(arc4random_uniform(4))
-            if (rand % 3 == 0) {
+            if (rand % GlobalConstants.BannerAdDisplayFrequency == 0) {
                 loadBannerAd()
                 bannerOuterView.isHidden = false
             }
@@ -95,6 +95,8 @@ class DailyTabVC: UIViewController {
 
     
     func setupScreen () {
+        
+        closeBannerButton.isHidden = true  // Will only show once banner ad loaded
         
         nextDaysSummary.layer.cornerRadius = 5.0
         nextDaysSummary.clipsToBounds = true
@@ -126,6 +128,8 @@ class DailyTabVC: UIViewController {
     
     func loadBannerAd() {
     
+        bannerView.delegate = self
+        
         print("Google Mobile Ads SDK version: \(GADRequest.sdkVersion())")
         bannerView.adUnitID = AppSettings.AdMobBannerID
         bannerView.rootViewController = self
@@ -133,7 +137,10 @@ class DailyTabVC: UIViewController {
         let request = GADRequest()
         if AppSettings.BannerAdsTestMode {
             // Display test banner ads in the simulator
-            request.testDevices = [AppSettings.AdTestDeviceID]
+           // request.testDevices = [AppSettings.AdTestDeviceID]
+            request.testDevices = [GlobalConstants.BannerAdTestIDs.Simulator,
+                                   GlobalConstants.BannerAdTestIDs.IPhone6]
+
         }
 
         // Make ads more location specific
@@ -199,7 +206,7 @@ class DailyTabVC: UIViewController {
                 backgroundImageName = Utility.getWeatherImage(serviceIcon: (enumVal?.rawValue)!, dayOrNight: isItDayOrNight)
             }
             
-            if String(backgroundImageName).isEmpty != nil {
+            if !(String(backgroundImageName).isEmpty) {
                 weatherImage.image = UIImage(named: backgroundImageName)!
             }
             
@@ -310,6 +317,16 @@ class DailyTabVC: UIViewController {
             self.dailyWeatherTableView.contentOffset = CGPoint(x: 0, y: 0 - self.dailyWeatherTableView.contentInset.top)
 
         }
+    }
+    
+    // MARK:  GADBannerViewDelegate methods
+    
+    // Tells the delegate an ad request loaded an ad.
+    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+        print("Ad has been received")
+        
+        // show the delete ad button
+        closeBannerButton.isHidden = false
     }
 }
 

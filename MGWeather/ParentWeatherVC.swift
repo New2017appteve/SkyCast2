@@ -157,6 +157,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             var tempMaxTimeStamp : NSDate!
             var degreesSymbol : String!
             var moonPhase : Float!
+            var tomorrowMoonPhase: Float?
             
             let todayArray = weather?.currentBreakdown
             let dayArray = weather?.dailyBreakdown.dailyStats
@@ -165,6 +166,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 
                 let sameDay = Utility.areDatesSameDay(date1: (todayArray?.dateAndTimeStamp!)!, date2: days.dateAndTimeStamp!)
                 
+                let tomorrow = Utility.isTomorrow(date1: days.dateAndTimeStamp!)
+
                 if sameDay {
                     sunriseTimeStamp = days.sunriseTimeStamp as NSDate?
                     sunsetTimeStamp = days.sunsetTimeStamp as NSDate?
@@ -175,6 +178,11 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                     degreesSymbol = GlobalConstants.degreesSymbol + (todayArray?.temperatureUnits!)!
                     moonPhase = days.moonPhase
                 }
+                
+                if tomorrow {
+                    tomorrowMoonPhase = days.moonPhase
+                }
+
             }
     
             let vc:SunriseSunsetViewController = segue.destination as! SunriseSunsetViewController
@@ -189,6 +197,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             vc.tempMax = tempMax
             vc.degreesSymbol = degreesSymbol
             vc.moonPhase = moonPhase
+            vc.tomorrowMoonPhase = tomorrowMoonPhase
         }
         
         if (segue.identifier == "aboutScreenSegue") {
@@ -211,7 +220,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             self.weatherImage.alpha = 1
             }, completion: nil)
         
-        iconRefreshButton.layer.cornerRadius = 5.0
+        iconRefreshButton.layer.cornerRadius = 10.0
         iconRefreshButton.clipsToBounds = true
         iconRefreshButton.alpha = 0.85
 
@@ -342,27 +351,14 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         
         var returnURL = ""
         
+        //TODO:  Add in the UNIX time of last year if we want to implement 'this time last year'
+        
         // Obtain the correct latitude and logitude.  This should be in our weatherLocation object
         let urlWithLocation = GlobalConstants.BaseWeatherURL + String(weatherLocation.currentLatitude!) + "," + String(weatherLocation.currentLongitude!)
         
         let urlUnits = GlobalConstants.urlUnitsChosen  // This should be set by now or set to default
         returnURL = urlWithLocation + "?units=" + urlUnits
         
-//        // Find out if user preference is celsuis or fahrenheit.  Pass relevant parameter on url
-//        let userDefaults = UserDefaults.standard
-//        var celsuisOrFahrenheit = userDefaults.string(forKey: GlobalConstants.Defaults.SavedTemperatureUnits)
-//        
-//        if (celsuisOrFahrenheit == nil) {
-//            celsuisOrFahrenheit = GlobalConstants.DefaultTemperatureUnit  // Celsius
-//        }
-//        
-//        if celsuisOrFahrenheit == GlobalConstants.TemperatureUnits.Celsuis {
-//            returnURL = urlWithLocation + GlobalConstants.celsiusURLParameter
-//        }
-//        else {
-//            returnURL = urlWithLocation
-//        }
-//        
         return returnURL
     }
 
@@ -375,67 +371,87 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         
         let scdService = GetWeatherData()
         
-        scdService.getData(urlAndParameters: url as String) {
-            [unowned self] (response, error, headers, statusCode) -> Void in
-            
-            if statusCode >= 200 && statusCode < 300 {
+        // TODO;  If timed out, we dont seem to be getting a proper error code
+        if (scdService == nil) {
+            let message = "Weather details cannot be retrieved at this time.  Please try again"
+            Utility.showMessage(titleString: "Error", messageString: message )
+            self.view.hideToastActivity()
+            iconRefreshButton.isEnabled = true
+        }
+        else {
+            scdService.getData(urlAndParameters: url as String) {
+                [unowned self] (response, error, headers, statusCode) -> Void in
                 
-                let data = response?.data(using: String.Encoding.utf8)
-                
-                do {
-                    let getResponse = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! NSDictionary
-
-                    print("Weather search complete")
-
-                    self.tmpWeather = Weather(fromDictionary: getResponse )
-                    self.weather = self.tmpWeather
-
-                    NotificationCenter.default.post(name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
+                if statusCode >= 200 && statusCode < 300 {
                     
-                    DispatchQueue.main.async {
+                    let data = response?.data(using: String.Encoding.utf8)
+                    
+                    do {
+                        let getResponse = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! NSDictionary
+
+                        print("Weather search complete")
+
+                        self.tmpWeather = Weather(fromDictionary: getResponse )
+                        self.weather = self.tmpWeather
+
+                        NotificationCenter.default.post(name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
                         
-                        // Reenable controls
-                        self.segmentedControl.isEnabled = true
-                       // self.barButtonAction.isEnabled = true
-                        self.customBarButtonAction.isEnabled = true
-                        
-                        if self.loadingMode == "STARTUP" {
-                            self.setupTabs()
+                        DispatchQueue.main.async {
+                            
+                            // Reenable controls
+                            self.segmentedControl.isEnabled = true
+                           // self.barButtonAction.isEnabled = true
+                            self.customBarButtonAction.isEnabled = true
+                            
+                            if self.loadingMode == "STARTUP" {
+                                self.setupTabs()
+                            }
+                            
+                            // Hide animation on the main thread, once finished background task
+                            self.view.hideToastActivity()
+                            self.iconRefreshButton.isEnabled = true
                         }
                         
-                        // Hide animation on the main thread, once finished background task
+                    } catch let error as NSError {
+                        print("json error: \(error.localizedDescription)")
+                        
+                        DispatchQueue.main.async {
+                            let message = "Weather details cannot be retrieved at this time.  Please try again"
+                            Utility.showMessage(titleString: "Error", messageString: message )
+                            self.view.hideToastActivity()
+                            self.iconRefreshButton.isEnabled = true
+                        }
+                    }
+                    
+                } else if statusCode == 404 {
+                    // Create default message, may be overridden later if we have found something in response
+                    let message = "Weather details cannot be retrieved at this time.  Please try again"
+                    
+                    DispatchQueue.main.async {
+                        Utility.showMessage(titleString: "Error", messageString: message )
                         self.view.hideToastActivity()
                         self.iconRefreshButton.isEnabled = true
                     }
                     
-                } catch let error as NSError {
-                    print("json error: \(error.localizedDescription)")
+                } else if statusCode == 2000 {
+                    // Custom code for a timeout
+                    let message = "Weather details cannot be retrieved at this time from Dark Sky.  Please try again"
                     
-                    let message = "Weather details cannot be retrieved at this time.  Please try again"
-                    Utility.showMessage(titleString: "Error", messageString: message )
-                    self.view.hideToastActivity()
-                }
-                
-            } else if statusCode == 404 {
-                // Create default message, may be overridden later if we have found something in response
-                var message = "Weather details cannot be retrieved at this time.  Please try again"
-                
-                // Check to see why we got a 404.
-                if let errorString = error?.localizedDescription , !errorString.isEmpty {
-
-                    if errorString.lowercased().range(of: "custaa_cpva_9003") != nil {
-                        message = "Weather details cannot be retrieved at this time.  Please try again"
+                    DispatchQueue.main.async {
                         Utility.showMessage(titleString: "Error", messageString: message )
                         self.view.hideToastActivity()
+                        self.iconRefreshButton.isEnabled = true
+                    }
+                    
+                } else {
+                    DispatchQueue.main.async {
+                        let message = "Weather details cannot be retrieved at this time.  Please try again"
+                        Utility.showMessage(titleString: "Error", messageString: message )
+                        self.iconRefreshButton.isEnabled = true
                     }
                 }
-                
-                //             self.serviceCallFailure(alertTitle: "Error", withMessage: message)
-            } else {
-                let message = "Weather details cannot be retrieved at this time.  Please try again"
-                Utility.showMessage(titleString: "Error", messageString: message )
             }
-        }
+        }  // End IF
     }
     
     
@@ -476,8 +492,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     func retrieveWeatherData () {
   
         // Make a toast to say data is refreshing
-        self.view.makeToast("Refreshing data", duration: 1.0, position: .bottom)
-        self.view.makeToastActivity(.center)
+//        self.view.makeToast("Refreshing data", duration: 1.0, position: .bottom)
+//        self.view.makeToastActivity(.center)
         iconRefreshButton.isEnabled = false
         
         getWeatherDataFromService()
@@ -519,6 +535,10 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
 
         var lFound = false
 
+        self.view.makeToast("Refreshing data", duration: 2.0, position: .bottom)
+        self.view.makeToastActivity(.center)
+        iconRefreshButton.isEnabled = false
+
         locationManager.delegate = self;
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestAlwaysAuthorization()
@@ -544,11 +564,16 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 weatherLocation.currentLatitude = currentLocation.coordinate.latitude
                 weatherLocation.currentLongitude = currentLocation.coordinate.longitude
                 weatherLocation.currentLocation = currentLocation
+                
+                // Note:  Toast will be hidden in setLocationDetails
                 setLocationDetails()
 
             }
             
         } else {
+            
+            // Location settings not enabled on the phone, prompt user t do it manually
+            
             Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location.  Please ensure that Skycast is allowed to access your location on this device. \n\nGo to Settings -> SkyCast and turn Location to Always" )
             
             locationManager.stopUpdatingLocation()
@@ -586,12 +611,13 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         geoCoder.reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
             
             if error != nil {
-                print("Reverse geocoder failed with error" + (error?.localizedDescription)!)
-                Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
-                self.view.hideToastActivity()
-                self.iconRefreshButton.isEnabled = true
                 
                 DispatchQueue.main.async {
+                    print("Reverse geocoder failed with error" + (error?.localizedDescription)!)
+                    Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
+                    self.view.hideToastActivity()
+                    self.iconRefreshButton.isEnabled = true
+                
                     NotificationCenter.default.post(name: GlobalConstants.locationRefreshFinishedKey, object: nil)
                 }
                 return
@@ -651,13 +677,14 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 
             else {
                 print("Problem with the data received from geocoder")
-                Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
-                self.view.hideToastActivity()
-                self.iconRefreshButton.isEnabled = true
-                NotificationCenter.default.post(name: GlobalConstants.locationRefreshFinishedKey, object: nil)
-
+                
+                DispatchQueue.main.async {
+                    Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location, please try again" )
+                    self.view.hideToastActivity()
+                    self.iconRefreshButton.isEnabled = true
+                    NotificationCenter.default.post(name: GlobalConstants.locationRefreshFinishedKey, object: nil)
+                }
             }
-            
         })
         
     }
@@ -717,8 +744,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             popover.popoverLayoutMargins = UIEdgeInsets(top: 10, left: 4, bottom: 10, right: 4)
         }
         
-//        actionMenu.addAction(weatherAction)
-        actionMenu.addAction(sunriseSunsetAction)
+        //actionMenu.addAction(sunriseSunsetAction)
         actionMenu.addAction(showSettingsAction)
         actionMenu.addAction(showAboutAction)
         // Adding Cancel allows user to click outside of menu to dismiss alert
@@ -775,8 +801,9 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         // NOTE:  This will be called on a background thread
         
         print("Location Data Refreshed - Parent")
-        self.view.hideToastActivity()
+//        self.view.hideToastActivity()
         
+        // Toast will be hidden after the data has been retrieved
         retrieveWeatherData()
         
     }

@@ -95,16 +95,16 @@ class WeatherStats: NSObject {
         if let lNearestStormDistance  = weatherDict["nearestStormDistance"] as? Int {
             nearestStormDistance = lNearestStormDistance
             
-            // NOTE:  Cant call method in an init sohave to do the calculation of units here
+            // NOTE:  Cant call method in an init so have to do the calculation of units here
             
             var returnUnits = ""
             switch (urlUnits) {
             case "us", "uk2":
-                returnUnits = "m"
+                returnUnits = "mi"
             case "si", "ca":
                 returnUnits = "km"
             default:
-                returnUnits = "m"
+                returnUnits = "mi"
             }
             
             nearestStormDistanceUnits = returnUnits

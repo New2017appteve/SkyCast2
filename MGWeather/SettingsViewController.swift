@@ -241,7 +241,8 @@ class SettingsViewController: UIViewController {
         let request = GADRequest()
         if AppSettings.BannerAdsTestMode {
             // Display test banner ads in the simulator
-            request.testDevices = [AppSettings.AdTestDeviceID]
+            request.testDevices = [GlobalConstants.BannerAdTestIDs.Simulator,
+                                   GlobalConstants.BannerAdTestIDs.IPhone6]
         }
 
         bannerView.load(request)

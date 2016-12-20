@@ -102,7 +102,7 @@ class GlobalConstants: NSObject {
     static let DisplayViewAlpha = 0.85
     
     // Tableview 
-    static let NumberOfHoursToShowFromNow = 12
+    static let NumberOfHoursToShowFromNow = 12  // Max 48
     
     // Weather Screen View Shading
     struct ViewShading {
@@ -221,9 +221,9 @@ class GlobalConstants: NSObject {
             case partlyCloudyNight = "partial-cloud-night-30376-pexels"
             
             // Future
-            case hail = "hail" // TO FIND
+            case hail = "hail-pexels-photo"
             case thunderstorm = "lightning-day-sky-53459-pexels.jpeg"
-            case tornado = "tornado"  // TO FIND
+            case tornado = "tornado-pexels-26517"
             
             // Custom (variations on the standard)
             case rainNight = "rain_night-pexels"
@@ -351,7 +351,16 @@ class GlobalConstants: NSObject {
     static let TestAdMobAppID = "ca-app-pub-3940256099942544~1458002511"
     static let TestAdMobBannerID = "ca-app-pub-3940256099942544/2934735716"
     
+    //  How often banner ads are shown on some screens (e.g 3 means display ads once every 3 times)
+    static let BannerAdDisplayFrequency = 3
+    
     // Test Latitude and Longitude
     // Baird Close - latitude = 51.5082001314047 longitude = -0.62429395504354
 
+    // TODO:
+    // Use http://burningsoul.cloud/apis/moon for moon info
+    //
+    // This Time Last Year
+    //  NSDate().timeIntervalSince1970
+    
 }

@@ -19,7 +19,7 @@ protocol TodayTabVCDelegate
     func returnRefreshedWeatherDetails() -> Weather
 }
 
-class TodayTabVC: UIViewController, UITextViewDelegate {
+class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     
     var dailyWeather : Weather!  // This is passed in from ParentWeatherVC
     var weatherLocation : Location!  // This is passed in from ParentWeatherVC
@@ -152,7 +152,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             // occasional annoyance
             bannerOuterView.isHidden = true
             let rand = Int(arc4random_uniform(4))
-            if (rand % 3 == 0) {
+            if (rand % GlobalConstants.BannerAdDisplayFrequency == 0) {
                 loadBannerAd()
                 bannerOuterView.isHidden = false
             }
@@ -196,6 +196,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
     func setupScreen () {
         
         bannerOuterView.isHidden = true
+        closeBannerButton.isHidden = true  // Will only show once banner ad loaded
 
         let userDefaults = UserDefaults.standard
         dayOrNightColourSetting = userDefaults.string(forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
@@ -300,6 +301,8 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
 
     func loadBannerAd() {
         
+        bannerView.delegate = self
+        
         print("Google Mobile Ads SDK version: \(GADRequest.sdkVersion())")
         bannerView.adUnitID = AppSettings.AdMobBannerID
         bannerView.rootViewController = self
@@ -307,7 +310,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         let request = GADRequest()
         if AppSettings.BannerAdsTestMode {
             // Display test banner ads in the simulator
-            request.testDevices = [AppSettings.AdTestDeviceID]
+          //  request.testDevices = [AppSettings.AdTestDeviceID]
+            request.testDevices = [GlobalConstants.BannerAdTestIDs.Simulator,
+                                   GlobalConstants.BannerAdTestIDs.IPhone6]
         }
         
         // Make ads more location specific
@@ -319,7 +324,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         bannerView.load(request)
     }
 
-    
+
     func updateLocationDetailsOnScreen() {
         
         // Ensure that weatherLocation has a value before setting
@@ -596,7 +601,16 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             }
         }
     }
-    
+//    
+//    func moveViewUpAfterRefreshSwipe() {
+//        
+//        // Shift the whole view down slightly to indicate a refresh is going on
+//        UIView.animate(withDuration: 0.3, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+//            self.outerScreenView.frame = self.view.frame.offsetBy(dx: 0.0, dy: 30.0);
+//            
+//        }, completion: nil)
+//
+//    }
  
     func removeSwipeGestures() {
         
@@ -736,7 +750,8 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             
             // TODO: Tidy up string concat
             
-            if (windDirection != nil || windDirection != "") {
+            //if (windDirection != nil || windDirection != "") {
+            if ( !(windDirection.isEmpty) || windDirection != "") {
                 currentWindspeed.text = "Wind: " + String(Int(todayArray.windSpeed!))
                 currentWindspeed.text = currentWindspeed.text! + " " + windSpeedUnits + " " + windDirection
             }
@@ -754,7 +769,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                 
                 // TODO: Tidy up string concat
                 
-                if (rainDirection != nil || rainDirection != "") {
+                if ( !(rainDirection.isEmpty) || rainDirection != "") {
                     nearestRainDistance.text = "Rain " + String(todayArray.nearestStormDistance!) + " "
                     nearestRainDistance.text = nearestRainDistance.text! + rainUnits! + " " + rainDirection
                 }
@@ -842,7 +857,8 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
                 backgroundImageName = Utility.getWeatherImage(serviceIcon: (enumVal?.rawValue)!, dayOrNight: isItDayOrNight)
             }
             
-            if String(backgroundImageName).isEmpty != nil {
+            //if String(backgroundImageName).isEmpty != nil {
+            if !(String(backgroundImageName).isEmpty) {
                 weatherImage.image = UIImage(named: backgroundImageName)!
                 Utility.setLastLoadedBackground(backgroundName: backgroundImageName)
             }
@@ -851,7 +867,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
             
             let weatherIconEnumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
             let weatherIconName = Utility.getWeatherIcon(serviceIcon: (weatherIconEnumVal?.rawValue)!, dayOrNight: isItDayOrNight)
-            if String(weatherIconName).isEmpty != nil {
+            
+            //if String(weatherIconName).isEmpty != nil {
+            if !(String(weatherIconName).isEmpty) {
                 currentWeatherIcon.image = UIImage(named: weatherIconName)!
             }
             
@@ -1010,6 +1028,16 @@ class TodayTabVC: UIViewController, UITextViewDelegate {
         // NOTE:  We want to keep listening for notifications incase a change is made in
         // the Settings screen so they have not been removed
 
+    }
+    
+    // MARK:  GADBannerViewDelegate methods
+    
+    // Tells the delegate an ad request loaded an ad.
+    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+        print("Ad has been received")
+        
+        // show the delete ad button
+        closeBannerButton.isHidden = false
     }
 }
 
@@ -1171,8 +1199,16 @@ extension TodayTabVC : UITableViewDataSource {
         
         return cell
     }
+    
 }
 
+//extension TodayTabVC : GADBannerViewDelegate {
+//    
+//    /// Tells the delegate an ad request loaded an ad.
+//    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+//        print("adViewDidReceiveAd")
+//    }
+//}
 
 // MARK: UITableViewDelegate
 extension TodayTabVC : UITableViewDelegate {

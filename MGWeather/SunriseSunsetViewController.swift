@@ -30,6 +30,7 @@ class SunriseSunsetViewController: UIViewController {
     var tempMax : Float!
     var degreesSymbol : String!
     var moonPhase : Float!
+    var tomorrowMoonPhase: Float?
     
     var hoursForToday = Utility.getHoursForToday()
     
@@ -89,7 +90,8 @@ class SunriseSunsetViewController: UIViewController {
         let request = GADRequest()
         if AppSettings.BannerAdsTestMode {
             // Display test banner ads in the simulator
-            request.testDevices = [AppSettings.AdTestDeviceID]
+            request.testDevices = [GlobalConstants.BannerAdTestIDs.Simulator,
+                                   GlobalConstants.BannerAdTestIDs.IPhone6]
         }
         
         bannerView.load(request)
@@ -202,13 +204,21 @@ extension SunriseSunsetViewController : UITableViewDataSource {
             cell.hourLabelTwo.text = hourStamp
         }
         
+        var waxingOrWaining = ""
+        if ( CGFloat(moonPhase) < CGFloat(tomorrowMoonPhase!) ) {
+//            waxingOrWaining = "waxing"
+        }
+        else {
+//            waxingOrWaining = "waining"
+        }
+        
         if (sunriseInHour) {
             cell.descriptionLabel.text = "Sunrise " + sunriseDateTime.shortTimeString()
             cell.daylightHoursLabel.text = amountOfDaylightToday + " daylight"
         }        
         else if (sunsetInHour) {
             cell.descriptionLabel.text = "Sunset " + sunsetDateTime.shortTimeString()
-            cell.daylightHoursLabel.text = "Moon " + String((moonPhase * 100)) + "%"
+            cell.daylightHoursLabel.text = "Moon " + String((moonPhase * 100)) + "% " + waxingOrWaining
         }
         else {
             cell.descriptionLabel.text = ""

@@ -77,13 +77,13 @@ class GetWeatherData: NSObject {
         let dataTask = session.dataTask(with: request as URLRequest) {
             data, response, error in
 
-      //  let dataTask = session.dataTaskWithRequest(request as URLRequest) {
-      //      ( data: NSData?, response: URLResponse?, error: NSError?) -> Void in
             
             // 1: Check HTTP Response for successful GET request
             guard let httpResponse = response as? HTTPURLResponse, let receivedData = data
                 else {
-                    print("error: not a valid http response")
+                    print("Skycast: error not a valid http response or timed out: \(error)")
+                    block("", nil,nil,2000)
+                    
                     return
             }
             
@@ -105,7 +105,8 @@ class GetWeatherData: NSObject {
 
                     
                 } catch {
-                    print("error serializing JSON: \(error)")
+                    print("Skycast: error serializing JSON: \(error)")
+                    block(response, nil,nil,httpResponse.statusCode)
                 }
                 
                 break
@@ -114,6 +115,7 @@ class GetWeatherData: NSObject {
                 break
             default:
                 print("GET request got response \(httpResponse.statusCode)")
+
             }
         }
         dataTask.resume()

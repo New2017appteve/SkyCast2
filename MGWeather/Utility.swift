@@ -264,6 +264,17 @@ class Utility: NSObject {
     {
         let alertView = UIAlertView(title: titleString, message: messageString, delegate: nil, cancelButtonTitle: "OK")
         alertView.show()
+        
+        
+//        let alertController = UIAlertController(title: titleString, message:  messageString, preferredStyle: UIAlertControllerStyle.alert)
+//        
+//        let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { (result : UIAlertAction) -> Void in
+//            print("OK")
+//        }
+//
+//        alertController.addAction(okAction)
+//        self.present(alertController, animated: true, completion: nil)
+        
     }
     
     // Methods to obtain ast loaded background image
