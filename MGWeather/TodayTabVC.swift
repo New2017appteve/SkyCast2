@@ -419,6 +419,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         
     }
 
+    // Display screen functions
     func setupDisplayTimer() {
     
         infoLabelTimerCount = 0

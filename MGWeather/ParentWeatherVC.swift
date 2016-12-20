@@ -8,7 +8,7 @@
 import UIKit
 import CoreLocation
 
-class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsViewControllerDelegate, SunriseSunsetViewControllerDelegate, TodayTabVCDelegate, DailyTabVCDelegate  {
+class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsViewControllerDelegate, SunriseSunsetViewControllerDelegate, TodayTabVCDelegate, DailyTabVCDelegate, ThisTimeLastYearVCDelegate  {
 
     // https://ahmedabdurrahman.com/2015/08/31/how-to-switch-view-controllers-using-segmented-control-swift/
     
@@ -28,6 +28,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
 
     enum Menu: String {
         case Weather = "Weather"
+        case ThisTimeLastYear = "This Time Last Year"
         case SunriseSunset = "Daily Timeline"
         case ShowSettings = "App Settings"
         case ShowAbout = "About"
@@ -200,8 +201,12 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             vc.tomorrowMoonPhase = tomorrowMoonPhase
         }
         
-        if (segue.identifier == "aboutScreenSegue") {
-            // Nothing yet
+        if (segue.identifier == "ThisTimeLastYearSegue") {
+            // Send over weather object for the moment whilst we design screen
+            
+            let vc:ThisTimeLastYearVC = segue.destination as! ThisTimeLastYearVC
+            vc.delegate = self
+            vc.dailyWeather = weather
         }
         
     }
@@ -745,6 +750,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         }
         
         //actionMenu.addAction(sunriseSunsetAction)
+        //actionMenu.addAction(thisTimeLastYearAction)
         actionMenu.addAction(showSettingsAction)
         actionMenu.addAction(showAboutAction)
         // Adding Cancel allows user to click outside of menu to dismiss alert
@@ -755,15 +761,16 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     }
     
     // MARK:- Menu action methods
-    
-//    var weatherAction: UIAlertAction {
-//        return UIAlertAction(title: Menu.Weather.rawValue, style: .default, handler: { (alert) -> Void in
-//
-//            // We just want to dismiss the popover to return to the weather view
-//            self.dismiss(animated: true, completion: nil)
-//        })
-//    }
 
+    var thisTimeLastYearAction: UIAlertAction {
+        return UIAlertAction(title: Menu.ThisTimeLastYear.rawValue, style: .default, handler: { (alert) -> Void in
+            
+            DispatchQueue.main.async {
+                self.performSegue(withIdentifier: "ThisTimeLastYearSegue", sender: self)
+            }
+        })
+    }
+    
     var sunriseSunsetAction: UIAlertAction {
         return UIAlertAction(title: Menu.SunriseSunset.rawValue, style: .default, handler: { (alert) -> Void in
             
