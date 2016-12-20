@@ -204,6 +204,7 @@ extension SunriseSunsetViewController : UITableViewDataSource {
             cell.hourLabelTwo.text = hourStamp
         }
         
+        // Below is future use
         var waxingOrWaining = ""
         if ( CGFloat(moonPhase) < CGFloat(tomorrowMoonPhase!) ) {
 //            waxingOrWaining = "waxing"
