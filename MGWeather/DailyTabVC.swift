@@ -24,7 +24,7 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
     var sunsetTimeStamp: NSDate?
     var tomorrowSunriseTimeStamp: NSDate?
     var tomorrowSunsetTimeStamp: NSDate?
-    var degreesSymbol = ""
+ //   var degreesSymbol = ""
 
     
     // Outlets
@@ -349,17 +349,18 @@ extension DailyTabVC : UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let lWeather = dailyWeather
+//        let lWeather = dailyWeather
         
-        if lWeather?.flags.units == "si" {
-            degreesSymbol = GlobalConstants.degreesSymbol + "C"
-        }
-        else {
-            degreesSymbol = GlobalConstants.degreesSymbol + "F"
-        }
-        
+//        if lWeather?.flags.units == "si" {
+//            degreesSymbol = GlobalConstants.degreesSymbol + "C"
+//        }
+//        else {
+//            degreesSymbol = GlobalConstants.degreesSymbol + "F"
+//        }
+
         // We dont want 'today' in this list so +1
         let dayWeather = dailyWeather.dailyBreakdown.dailyStats[indexPath.row + 1]
+        let degreesSymbol = GlobalConstants.degreesSymbol + dayWeather.temperatureUnits!
         
         let cell:DailyWeatherCell = self.dailyWeatherTableView.dequeueReusableCell(withIdentifier: "DailyWeatherCellID") as! DailyWeatherCell
         

@@ -140,7 +140,7 @@ class WeatherStats: NSObject {
         if let lTemperature  = weatherDict["temperature"] as? Float {
             temperature = lTemperature
             
-            // NOTE:  Cant call method in an init sohave to do the calculation of units here
+            // NOTE:  Cant call method in an init so have to do the calculation of units here
             
             var returnUnits = ""
             
@@ -158,15 +158,28 @@ class WeatherStats: NSObject {
         
         if let lTemperatureMin  = weatherDict["temperatureMin"] as? Float {
             temperatureMin = lTemperatureMin
+            
+            if (temperatureUnits == nil) {
+                
+                // For DailySummary, the temperature is nil, therefore the units is not set there.
+                // Double check here and set if not present.
+                
+                // NOTE:  Cant call method in an init so have to do the calculation of units here
+                
+                var returnUnits = ""
+                
+                switch (urlUnits) {
+                case "us":
+                    returnUnits = "F"
+                case "si", "uk2", "ca":
+                    returnUnits = "C"
+                default:
+                    returnUnits = "C"
+                }
+                
+                temperatureUnits = returnUnits
+            }
         }
-        
-        //        if let lDateAndTime  = weatherDict["time"] as? Double {
-        //
-        //            dateAndTime = lDateAndTime
-        //            dateAndTimeStamp = NSDate(timeIntervalSince1970: dateAndTime!)
-        //            dateAndTimeStamp = Utility.getTimeInWeatherTimezone(dateAndTime: dateAndTimeStamp!)
-        //            
-        //        }
         
         if let lTemperatureMinTime  = weatherDict["temperatureMinTime"] as? Double {
             temperatureMinTime = lTemperatureMinTime

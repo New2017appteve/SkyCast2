@@ -264,6 +264,10 @@ class GlobalConstants: NSObject {
     // WEATHER ICONS
     //
     
+    // Check country may icons https://thenounproject.com/tomwalshdesign/collection/maps-of-the-world-europe/?oq=uk&cidx=2&i=675308
+    
+    // Cloud App Icon by http://www.flaticon.com/free-icon/clouds_136722
+    
     struct WeatherIcon {
         
         static var clearDay = "Sun-50"

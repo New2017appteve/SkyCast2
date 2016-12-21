@@ -7,5 +7,5 @@ target 'SkyCast' do
   pod 'Google/Analytics'
   pod 'Google/SignIn'
   pod 'Firebase/Core'
-  pod 'Firebase/AdMob'
+  pod 'Firebase/AdMob' 
 end
