@@ -749,8 +749,11 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             popover.popoverLayoutMargins = UIEdgeInsets(top: 10, left: 4, bottom: 10, right: 4)
         }
         
-        //actionMenu.addAction(sunriseSunsetAction)
-        //actionMenu.addAction(thisTimeLastYearAction)
+        if (AppSettings.showTimelineAndLastYear) {
+            actionMenu.addAction(sunriseSunsetAction)
+            actionMenu.addAction(thisTimeLastYearAction)
+        }
+        
         actionMenu.addAction(showSettingsAction)
         actionMenu.addAction(showAboutAction)
         // Adding Cancel allows user to click outside of menu to dismiss alert

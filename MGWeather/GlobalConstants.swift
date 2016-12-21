@@ -144,7 +144,9 @@ class GlobalConstants: NSObject {
     static let MetersPerSecondToMph = Float(2.23694)
     static let RainIconReportThresholdPercent = 4
     static let RainDistanceReportThreshold = 1
-    
+
+    static let WindStrengthThreshold = 9  // KPH or MPH
+
     // Keys to read from NSUserDefaults
     struct Defaults {
         static let URLDefaultUnits = "urlDefaultUnits"
@@ -291,6 +293,7 @@ class GlobalConstants: NSObject {
         static var umbrella = "Umbrella"
         static var sunrise = "Sunrise-50"
         static var sunset = "Sunset-50"
+        static var windy = "Windsock"
         
         //
         // WHITE
@@ -317,6 +320,7 @@ class GlobalConstants: NSObject {
         static var umbrella_White = "Umbrella-White"
         static var sunrise_White = "Sunrise-White"
         static var sunset_White = "Sunset-White"
+        static var windy_White = "Windsock-White"
 
     }
     

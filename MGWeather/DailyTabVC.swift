@@ -372,6 +372,22 @@ extension DailyTabVC : UITableViewDataSource {
         cell.minTempLabel.text = String(Int(round(dayWeather.temperatureMin!))) + degreesSymbol
         cell.maxTempLabel.text = String(Int(round(dayWeather.temperatureMax!))) + degreesSymbol
 
+        if (Int(dayWeather.windSpeed!) > GlobalConstants.WindStrengthThreshold) {
+            let windSpeedUnits = dayWeather.windSpeedUnits!
+            var currentWindspeed = ""
+
+            currentWindspeed = String(Int(dayWeather.windSpeed!)) + " " + windSpeedUnits
+            
+            cell.windyLabel.isHidden = false
+            cell.windyIcon.isHidden = false
+            
+            cell.windyLabel.text = currentWindspeed
+        }
+        else {
+            cell.windyLabel.isHidden = true
+            cell.windyIcon.isHidden = true
+        }
+
         let rainProbabilityForDay = Int(round(dayWeather.precipProbability!*100))
         
         if (rainProbabilityForDay > GlobalConstants.RainIconReportThresholdPercent) {
@@ -408,11 +424,16 @@ extension DailyTabVC : UITableViewDataSource {
         cell.summaryLabel.textColor = textColourScheme
         cell.minTempTitle.textColor = textColourScheme
         cell.maxTempTitle.textColor = textColourScheme
+        cell.windyLabel.textColor = textColourScheme
         cell.rainProbabilityLabel.textColor = textColourScheme
         
         // Populate with the correct rain icon scheme
         let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
         cell.rainIcon.image = UIImage(named: rainIconImage)!
+
+        // Populate with the correct windy icon scheme
+        let windyIconImage = Utility.getWeatherIcon(serviceIcon: "WINDY", dayOrNight: "")
+        cell.windyIcon.image = UIImage(named: windyIconImage)!
 
         // Populate with the correct sunrise/sunset icon scheme
         let sunriseIconImage = Utility.getWeatherIcon(serviceIcon: "SUNRISE", dayOrNight: "")

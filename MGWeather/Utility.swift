@@ -64,6 +64,8 @@ class Utility: NSObject {
                 iconName = GlobalConstants.WeatherIcon.sunrise
             case "SUNSET":
                 iconName = GlobalConstants.WeatherIcon.sunset
+            case "WINDY":
+                iconName = GlobalConstants.WeatherIcon.windy
             default:
                 iconName = ""
             }
@@ -103,7 +105,9 @@ class Utility: NSObject {
                 iconName = GlobalConstants.WeatherIcon.sunrise_White
             case "SUNSET":
                 iconName = GlobalConstants.WeatherIcon.sunset_White
-                
+            case "WINDY":
+                iconName = GlobalConstants.WeatherIcon.windy_White
+               
             default:
                 iconName = ""
             }
