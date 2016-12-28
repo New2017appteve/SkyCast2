@@ -18,7 +18,7 @@ class AppSettings: NSObject {
     static let AdMobAppID = GlobalConstants.AdMobAppID
     static let AdMobBannerID = GlobalConstants.AdMobBannerID
     
-    static let showTimelineAndLastYear = true
+    static let showTimelineAndLastYear = false
     
     // Change this depending on if using simulator or test device
 //    static var AdTestDeviceID = GlobalConstants.BannerAdTestIDs.Simulator
