@@ -207,10 +207,10 @@ extension SunriseSunsetViewController : UITableViewDataSource {
         // Below is future use
         var waxingOrWaining = ""
         if ( CGFloat(moonPhase) < CGFloat(tomorrowMoonPhase!) ) {
-//            waxingOrWaining = "waxing"
+            waxingOrWaining = "waxing"
         }
         else {
-//            waxingOrWaining = "waining"
+            waxingOrWaining = "waining"
         }
         
         if (sunriseInHour) {
@@ -241,7 +241,12 @@ extension SunriseSunsetViewController : UITableViewDataSource {
             
             let temp = String(Int(round(tempMin!))) + degreesSymbol
             
-            cell.daylightHoursLabel.text = "Coolest Hour"
+            if (cell.daylightHoursLabel.text == "") {
+                cell.daylightHoursLabel.text = "Coolest Hour"
+            }
+            else {
+                cell.daylightHoursLabel.text = cell.daylightHoursLabel.text! + "\nCoolest Hour"
+            }
             cell.daylightHoursLabel.textColor = GlobalConstants.TableViewAlternateShadingNight.Lighter
             cell.graphColourLabel.text = temp
         }
@@ -249,7 +254,12 @@ extension SunriseSunsetViewController : UITableViewDataSource {
             
             let temp = String(Int(round(tempMax!))) + degreesSymbol
             
-            cell.daylightHoursLabel.text = "Warmest Hour"
+            if (cell.daylightHoursLabel.text == "") {
+                cell.daylightHoursLabel.text = "Warmest Hour"
+            }
+            else {
+                cell.daylightHoursLabel.text = cell.daylightHoursLabel.text! + "\nWarmest Hour"
+            }
             cell.daylightHoursLabel.textColor = GlobalConstants.TableViewAlternateShadingDay.Lighter
             cell.graphColourLabel.text = temp
         }

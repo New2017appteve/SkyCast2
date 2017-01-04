@@ -14,12 +14,15 @@ class AppSettings: NSObject {
     static let ShowBannerAds = true
     static let SpecialThemedBackgroundsForEvents = true
     
-    static let BannerAdsTestMode = false    // Set this to TRUE to show test ads
+    static let BannerAdsTestMode = true    // Set this to TRUE to show test ads
     static let AdMobAppID = GlobalConstants.AdMobAppID
     static let AdMobBannerID = GlobalConstants.AdMobBannerID
     
-    static let showTimelineAndLastYear = false
+    // The following intended for version 1.1
+    static let showTimelineAndLastYear = true
+    static let showHourWeatherOnSelect = true
     
+
     // Change this depending on if using simulator or test device
 //    static var AdTestDeviceID = GlobalConstants.BannerAdTestIDs.Simulator
     

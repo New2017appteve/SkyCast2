@@ -99,6 +99,9 @@ class GlobalConstants: NSObject {
         static var Lighter = LighterBlack
     }
 
+    // Selected hour
+    static var TableViewSelectedHourShading = UIColor(red: 18/255, green: 64/255, blue: 201/255, alpha: 0.85)
+
     static let DisplayViewAlpha = 0.85
     
     // Tableview 

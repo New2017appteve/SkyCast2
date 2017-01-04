@@ -36,9 +36,13 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
 
     var infoLabelTimerCount = 0
     var weatherDetailsTimerCount = 0
+    var lastSelectedHourIndexRow = -1  // Dummy value to indicate no selection
+    var lastSelectedHourIndexPath: IndexPath?
     
     var podColourScheme: UIColor?
     var writingColourScheme: UIColor?
+    
+    var currentSelectedHourCellColour: UIColor?
     
     // MARK: Outlets
     
@@ -96,7 +100,23 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     @IBOutlet weak var weatherAlertButton : UIButton!
     @IBOutlet weak var bigWeatherAlertButton : UIButton!
     @IBOutlet weak var poweredByDarkSkyButton : UIButton!
+
+    @IBOutlet weak var hourlyDetailView : UIView!
+    @IBOutlet weak var hourlyDetailCloseButton : UIButton!
+    @IBOutlet weak var hourlyDetailStackView : UIStackView!
+    @IBOutlet weak var hourSummaryTitle : UILabel!
+
+    @IBOutlet weak var hourTempTitle : UILabel!
+    @IBOutlet weak var hourWindspeedTitle : UILabel!
+    @IBOutlet weak var hourCloudCoverTitle : UILabel!
+    @IBOutlet weak var hourRainProbabilityTitle : UILabel!
     
+    @IBOutlet weak var hourSummary : UILabel!
+    @IBOutlet weak var hourTemp : UILabel!
+    @IBOutlet weak var hourWindspeed : UILabel!
+    @IBOutlet weak var hourCloudCover : UILabel!
+    @IBOutlet weak var hourRainProbability : UILabel!
+
     private let cellId = "cellId"
     
     @IBOutlet weak var hourlyWeatherTableView : UITableView!
@@ -218,6 +238,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         weatherDetailOuterView.layer.cornerRadius = 10.0
         weatherDetailOuterView.clipsToBounds = true
         
+        // Selected Hour
+       // hourlyDetailView.backgroundColor = GlobalConstants.TableViewSelectedHourShading
+        
         poweredByDarkSkyButton.titleEdgeInsets.right = 10 // Add right padding of text
         
         nowDetailOneView.backgroundColor = UIColor.clear
@@ -228,6 +251,22 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         // Hide weather details initially until timer starts
         self.weatherDetailStackView.alpha = 0
         
+        if AppSettings.showHourWeatherOnSelect {
+            
+            weatherDetailView.isHidden = false
+            hourlyDetailView.isHidden = true
+            
+            hourlyDetailView.layer.cornerRadius = 10.0
+            hourlyDetailView.clipsToBounds = true
+           // hourlyDetailView.layer.borderWidth = 2
+           // hourlyDetailView.layer.borderColor = UIColor.white.cgColor
+            
+            hourlyWeatherTableView.allowsSelection = true
+        }
+        else {
+            hourlyDetailView.isHidden = true
+            hourlyWeatherTableView.allowsSelection = false
+        }
     }
     
     func setupColourScheme() {
@@ -268,6 +307,18 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         rainProbabilityTitle.textColor = textColourScheme
         weatherAlertTitle.textColor = textColourScheme
         
+        hourSummaryTitle.textColor = textColourScheme
+        hourTempTitle.textColor = textColourScheme
+        hourWindspeedTitle.textColor = textColourScheme
+        hourCloudCoverTitle.textColor = textColourScheme
+        hourRainProbabilityTitle.textColor = textColourScheme
+        
+        hourTemp.textColor = textColourScheme
+        hourSummary.textColor = textColourScheme
+        hourWindspeed.textColor = textColourScheme
+        hourCloudCover.textColor = textColourScheme
+        hourRainProbability.textColor = textColourScheme
+        
         // Pods
         
         infoView.backgroundColor = podColourScheme
@@ -280,10 +331,14 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         weatherDetailOuterView.backgroundColor = UIColor.clear //podColourScheme
         weatherDetailView.backgroundColor = podColourScheme
         
+        hourlyDetailView.backgroundColor = podColourScheme
+        
         // Buttons and Title Labels
         nowLabel.backgroundColor = titleViewColourScheme
         todayLabel.backgroundColor = titleViewColourScheme
         poweredByDarkSkyButton.backgroundColor = titleViewColourScheme
+        
+        hourSummaryTitle.backgroundColor = titleViewColourScheme
         
         // Ease in the two pods
         self.currentTempView.alpha = 0.0
@@ -643,6 +698,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     
     func refreshDataAfterPullToRefresh() {
 
+        weatherDetailView.isHidden = false
+        hourlyDetailView.isHidden = true
+        lastSelectedHourIndexRow = -1
+        
         disableScreen()
 
         // NOTE: Notifications for Weather and Location should be active already
@@ -975,6 +1034,18 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         UIApplication.shared.openURL(URL(string: GlobalConstants.DarkSkyURL)!)
     }
     
+    @IBAction func hourDetailCloseButtonPressed(_ sender: AnyObject) {
+        
+        weatherDetailView.isHidden = false
+        hourlyDetailView.isHidden = true
+        
+        lastSelectedHourIndexRow = -1
+        
+        if lastSelectedHourIndexPath != nil {
+            hourlyWeatherTableView.deselectRow(at: lastSelectedHourIndexPath!, animated: false)
+        }
+
+    }
     
     // MARK:  Reach methods
     func networkStatusChanged(_ notification: Notification) {
@@ -1196,12 +1267,111 @@ extension TodayTabVC : UITableViewDataSource {
                     cell.backgroundColor = GlobalConstants.TableViewAlternateShading.Lighter
                 }
             }
-        }
+        }  // dayOrNightColourSetting
         
         return cell
     }
     
-}
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
+        weatherDetailView.isHidden = true
+        hourlyDetailView.isHidden = false
+        
+        let colourScheme = Utility.setupColourScheme()
+        
+        if (lastSelectedHourIndexRow != indexPath.row) {
+            
+            // New row selected
+            
+            // We dont want the current hour in this list so +1
+            let hourWeather = dailyWeather?.hourBreakdown.hourStats[indexPath.row + 1]
+     
+            let hour = hourWeather?.dateAndTimeStamp!.shortHourTimeString()
+            hourSummaryTitle.text = "  Hour Summary - " + hour!
+            hourSummary.text = hourWeather?.summary
+            
+            let degreesSymbol = GlobalConstants.degreesSymbol + hourWeather!.temperatureUnits!
+            hourTemp.text = String(Int(round(hourWeather!.temperature!))) + degreesSymbol
+            
+            let windspeedUnits = hourWeather?.windSpeedUnits
+            hourWindspeed.text = String(Int((hourWeather?.windSpeed!)!)) + " " + windspeedUnits!
+            
+            hourCloudCover.text = String(Int(round((hourWeather?.cloudCover!)!*100))) + "%"
+            hourRainProbability.text = String(Int(round(hourWeather!.precipProbability!*100))) + "%"
+        
+            hourlyDetailView.layer.borderWidth = 2
+            hourlyDetailView.layer.borderColor = UIColor.white.cgColor
+
+            if let cell = (tableView.cellForRow(at: indexPath) as? HourlyWeatherCell) {
+                
+                if (colourScheme.type == GlobalConstants.ColourScheme.Dark) {
+                    cell.contentView.backgroundColor = UIColor.gray
+                    
+//                    cell.hourLabel.textColor = UIColor.white
+//                    cell.temperatureLabel.textColor = UIColor.white
+//                    cell.rainProbabilityLabel.textColor = UIColor.white
+                }
+                else {
+                    cell.contentView.backgroundColor = UIColor.white
+                    
+//                    cell.hourLabel.textColor = UIColor.black
+//                    cell.temperatureLabel.textColor = UIColor.black
+//                    cell.rainProbabilityLabel.textColor = UIColor.black
+                }
+                
+//                cell.hourLabel.textColor = textColourScheme
+//                cell.temperatureLabel.textColor = textColourScheme
+//                cell.rainProbabilityLabel.textColor = textColourScheme
+            }
+            
+            lastSelectedHourIndexPath = indexPath
+            lastSelectedHourIndexRow = indexPath.row
+            
+        }
+        else {
+            
+            // A selected cell has been clicked on again.  So hide the detail view and show the 
+            // summary view
+            
+            weatherDetailView.isHidden = false
+            hourlyDetailView.isHidden = true
+            lastSelectedHourIndexRow = -1
+            
+            hourlyDetailView.layer.borderWidth = 0
+            hourlyDetailView.layer.borderColor = UIColor.clear.cgColor
+
+            hourlyWeatherTableView.deselectRow(at: indexPath, animated: false)
+            
+            if let cell = (tableView.cellForRow(at: indexPath) as? HourlyWeatherCell) {
+//                cell.hourLabel.textColor = UIColor.black
+//                cell.temperatureLabel.textColor = UIColor.black
+//                cell.rainProbabilityLabel.textColor = UIColor.black
+            }
+
+        }
+        
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        weatherDetailView.isHidden = false
+        hourlyDetailView.isHidden = true
+
+    }
+    
+//    func setupHourDisplayTimer() {
+//        
+//        _ = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(hideHourSelection), userInfo: nil, repeats: true)
+//    }
+//    
+//    func hideHourSelection () {
+//        
+//        weatherDetailView.isHidden = false
+//        hourlyDetailView.isHidden = true
+//    }
+    
+}  // Extension
+
 
 //extension TodayTabVC : GADBannerViewDelegate {
 //    
