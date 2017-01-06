@@ -14,6 +14,9 @@ protocol ThisTimeLastYearVCDelegate {
 }
 class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
 
+    var weather: Weather?
+    var tmpWeather : Weather?
+    
     var dailyWeather : Weather!  // This is passed in from ParentWeatherVC
     var delegate:ThisTimeLastYearVCDelegate?
     
@@ -565,4 +568,96 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
         closeBannerButton.isHidden = false
     }
     
+    // MARK:  Service Call methods
+    
+    func getURL () -> String {
+        
+        var returnURL = ""
+        
+        //TODO:  Add in the UNIX time of last year if we want to implement 'this time last year'
+
+        
+        return returnURL
+    }
+
+    
+    func getWeatherDataFromService(){
+        
+        // NOTE:  This function is called from a background thread
+        let url = getURL()
+        
+        print("URL= " + url)
+        
+        let scdService = GetWeatherData()
+        
+        if (scdService == nil) {
+            let message = "Weather details cannot be retrieved at this time.  Please try again"
+            Utility.showMessage(titleString: "Error", messageString: message )
+            self.view.hideToastActivity()
+        }
+        else {
+            scdService.getData(urlAndParameters: url as String) {
+                [unowned self] (response, error, headers, statusCode) -> Void in
+                
+                if statusCode >= 200 && statusCode < 300 {
+                    
+                    let data = response?.data(using: String.Encoding.utf8)
+                    
+                    do {
+                        let getResponse = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! NSDictionary
+                        
+                        print("Weather search complete")
+                        
+                        self.tmpWeather = Weather(fromDictionary: getResponse )
+                        self.weather = self.tmpWeather
+                        
+                        DispatchQueue.main.async {
+                    
+                            // Hide animation on the main thread, once finished background task
+                            self.view.hideToastActivity()
+
+                        }
+                        
+                    } catch let error as NSError {
+                        print("json error: \(error.localizedDescription)")
+                        
+                        DispatchQueue.main.async {
+                            let message = "Weather details cannot be retrieved at this time.  Please try again"
+                            Utility.showMessage(titleString: "Error", messageString: message )
+                            self.view.hideToastActivity()
+
+                        }
+                    }
+                    
+                } else if statusCode == 404 {
+                    // Create default message, may be overridden later if we have found something in response
+                    let message = "Weather details cannot be retrieved at this time.  Please try again"
+                    
+                    DispatchQueue.main.async {
+                        Utility.showMessage(titleString: "Error", messageString: message )
+                        self.view.hideToastActivity()
+
+                    }
+                    
+                } else if statusCode == 2000 {
+                    // Custom code for a timeout
+                    let message = "Weather details cannot be retrieved at this time from Dark Sky.  Please try again"
+                    
+                    DispatchQueue.main.async {
+                        Utility.showMessage(titleString: "Error", messageString: message )
+                        self.view.hideToastActivity()
+
+                    }
+                    
+                } else {
+                    DispatchQueue.main.async {
+                        let message = "Weather details cannot be retrieved at this time.  Please try again"
+                        Utility.showMessage(titleString: "Error", messageString: message )
+
+                    }
+                }
+            }
+        }  // End IF
+    }
+
 }

@@ -204,6 +204,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         if (segue.identifier == "ThisTimeLastYearSegue") {
             // Send over weather object for the moment whilst we design screen
             
+            let url = getURL(period: "LAST_YEAR")
             let vc:ThisTimeLastYearVC = segue.destination as! ThisTimeLastYearVC
             vc.delegate = self
             vc.dailyWeather = weather
@@ -352,14 +353,26 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         
     }
     
-    func getURL () -> String {
+    func getURL(period: String) -> String {
         
         var returnURL = ""
         
-        //TODO:  Add in the UNIX time of last year if we want to implement 'this time last year'
-        
         // Obtain the correct latitude and logitude.  This should be in our weatherLocation object
-        let urlWithLocation = GlobalConstants.BaseWeatherURL + String(weatherLocation.currentLatitude!) + "," + String(weatherLocation.currentLongitude!)
+        
+        var urlWithLocation = ""
+        urlWithLocation = GlobalConstants.BaseWeatherURL + String(weatherLocation.currentLatitude!) + "," + String(weatherLocation.currentLongitude!)
+        
+        if (period == "LAST_YEAR") {
+
+            // Add in the UNIX time of last year if we want to implement 'this time last year'
+            // Place afer the latitude
+            
+            let today = Date()
+            let lastYear = Calendar.current.date(byAdding: .year, value: -1, to: today)
+            var thisTimeLastYear = lastYear?.timeIntervalSince1970
+            
+            urlWithLocation = urlWithLocation + "," + (thisTimeLastYear?.description)!
+        }
         
         let urlUnits = GlobalConstants.urlUnitsChosen  // This should be set by now or set to default
         returnURL = urlWithLocation + "?units=" + urlUnits
@@ -370,7 +383,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     func getWeatherDataFromService(){
 
         // NOTE:  This function is called from a background thread
-        let url = getURL()
+        let url = getURL(period: "NOW")
         
         print("URL= " + url)
         
