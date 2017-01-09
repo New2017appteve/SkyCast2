@@ -208,6 +208,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             let vc:ThisTimeLastYearVC = segue.destination as! ThisTimeLastYearVC
             vc.delegate = self
             vc.dailyWeather = weather
+            vc.url = url
         }
         
     }
@@ -371,7 +372,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             let lastYear = Calendar.current.date(byAdding: .year, value: -1, to: today)
             var thisTimeLastYear = lastYear?.timeIntervalSince1970
             
-            urlWithLocation = urlWithLocation + "," + (thisTimeLastYear?.description)!
+           // Note:  lround removes the .0 from the rounded Double
+            urlWithLocation = urlWithLocation + "," + String(lround(Double((thisTimeLastYear!.description))!))
         }
         
         let urlUnits = GlobalConstants.urlUnitsChosen  // This should be set by now or set to default

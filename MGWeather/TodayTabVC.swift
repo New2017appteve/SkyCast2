@@ -1175,6 +1175,8 @@ extension TodayTabVC : UITableViewDataSource {
         let degreesSymbol = GlobalConstants.degreesSymbol + hourWeather!.temperatureUnits!
         cell.temperatureLabel.text = String(Int(round(hourWeather!.temperature!))) + degreesSymbol
         
+        // Rain and Wind thresholds
+        
         if (Int(round(hourWeather!.precipProbability!*100)) > GlobalConstants.RainIconReportThresholdPercent) {
             
             // Populate with the correct rain icon scheme
@@ -1187,6 +1189,18 @@ extension TodayTabVC : UITableViewDataSource {
         else {
             cell.rainIcon.isHidden = true
             cell.rainProbabilityLabel.text = ""
+        }
+        
+        if (Int((hourWeather?.windSpeed!)!) > GlobalConstants.WindStrengthThreshold) {
+            
+            // Populate with the correct wind icon scheme
+            let windyIconImage = Utility.getWeatherIcon(serviceIcon: "WINDY", dayOrNight: "")
+            cell.windyIcon.image = UIImage(named: windyIconImage)!
+            
+            cell.windyIcon.isHidden = false
+        }
+        else {
+            cell.windyIcon.isHidden = true
         }
         
         let icon = hourWeather?.icon
@@ -1208,19 +1222,23 @@ extension TodayTabVC : UITableViewDataSource {
             cell.temperatureLabel.textColor = UIColor.black
             cell.rainProbabilityLabel.textColor = UIColor.black
             
-            // Force rain umbrella and weather icon black
+            // Force rain umbrella, windy and weather icon black
             let lRainIconImage = GlobalConstants.WeatherIcon.umbrella
             cell.rainIcon.image = UIImage(named: lRainIconImage)!
             
             let lWeatherIcon = Utility.getWeatherIcon(serviceIcon: icon!, scheme: GlobalConstants.ColourScheme.Light, dayOrNight: dayOrNight)
             cell.summaryIcon.image = UIImage(named: lWeatherIcon)!
+            
+            // Populate with the correct wind icon scheme
+            let lWindyIconImage = Utility.getWeatherIcon(serviceIcon: "WINDY", scheme: GlobalConstants.ColourScheme.Light, dayOrNight: dayOrNight)
+            cell.windyIcon.image = UIImage(named: lWindyIconImage)!
 
         }
         else {
             cell.hourLabel.textColor = textColourScheme
             cell.temperatureLabel.textColor = textColourScheme
             cell.rainProbabilityLabel.textColor = textColourScheme
-            // Umbrella already set
+            // Umbrella and windsock already set
         }
         
         // Alternate the shading of each table view cell
@@ -1292,7 +1310,15 @@ extension TodayTabVC : UITableViewDataSource {
             hourSummary.text = hourWeather?.summary
             
             let degreesSymbol = GlobalConstants.degreesSymbol + hourWeather!.temperatureUnits!
-            hourTemp.text = String(Int(round(hourWeather!.temperature!))) + degreesSymbol
+            var hourTempText = String(Int(round(hourWeather!.temperature!))) + degreesSymbol
+            
+            if (hourWeather?.temperature != hourWeather?.apparentTemperature) {
+                
+                let feelsLikeTempText = String(Int(round(hourWeather!.apparentTemperature!))) + degreesSymbol
+                hourTempText = hourTempText + " ( " + feelsLikeTempText + " )"
+                hourTempTitle.text = "Temp / Feels Like:"
+            }
+            hourTemp.text = hourTempText
             
             let windspeedUnits = hourWeather?.windSpeedUnits
             hourWindspeed.text = String(Int((hourWeather?.windSpeed!)!)) + " " + windspeedUnits!

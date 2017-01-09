@@ -16,6 +16,7 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
 
     var weather: Weather?
     var tmpWeather : Weather?
+    var url : String?
     
     var dailyWeather : Weather!  // This is passed in from ParentWeatherVC
     var delegate:ThisTimeLastYearVCDelegate?
@@ -95,6 +96,8 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+  //      getWeatherDataFromService()
+        
         // Do any additional setup after loading the view.
         setupDisplayTimer()
         setupScreen()
@@ -570,23 +573,11 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
     
     // MARK:  Service Call methods
     
-    func getURL () -> String {
-        
-        var returnURL = ""
-        
-        //TODO:  Add in the UNIX time of last year if we want to implement 'this time last year'
-
-        
-        return returnURL
-    }
-
-    
     func getWeatherDataFromService(){
         
         // NOTE:  This function is called from a background thread
-        let url = getURL()
         
-        print("URL= " + url)
+        print("URL= " + url!)
         
         let scdService = GetWeatherData()
         
@@ -596,7 +587,7 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
             self.view.hideToastActivity()
         }
         else {
-            scdService.getData(urlAndParameters: url as String) {
+            scdService.getData(urlAndParameters: url! as String) {
                 [unowned self] (response, error, headers, statusCode) -> Void in
                 
                 if statusCode >= 200 && statusCode < 300 {
