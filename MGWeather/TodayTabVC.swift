@@ -105,7 +105,8 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     @IBOutlet weak var hourlyDetailCloseButton : UIButton!
     @IBOutlet weak var hourlyDetailStackView : UIStackView!
     @IBOutlet weak var hourSummaryTitle : UILabel!
-
+    @IBOutlet weak var hourWeatherIcon : UIImageView!
+    
     @IBOutlet weak var hourTempTitle : UILabel!
     @IBOutlet weak var hourWindspeedTitle : UILabel!
     @IBOutlet weak var hourCloudCoverTitle : UILabel!
@@ -763,7 +764,20 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         if let todayArray = dailyWeather?.currentBreakdown {
             
             lastUpdatedTime  = getLastUpdatedTime()
-
+            
+            // Find out if we want to report rain, sleet or snow
+            
+            var precipType = "Rain"  // Default
+            if (todayArray.precipType == "rain") {
+                precipType = "Rain"
+            }
+            else if (todayArray.precipType == "sleet") {
+                precipType = "Sleet"
+            }
+            else if (todayArray.precipType == "snow") {
+                precipType = "Snow"
+            }
+            
             //
             // Now Pod
             //
@@ -782,9 +796,29 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             let rainProbabilityNow = Int(round((minuteStats?[0].precipProbability!)!*100))
             
             // Populate with the correct rain icon scheme
-            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
-            rainNowIcon.image = UIImage(named: rainIconImage)!
+//            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
+//            rainNowIcon.image = UIImage(named: rainIconImage)!
+            
+            if (todayArray.precipType == GlobalConstants.PrecipitationType.Rain) {
+                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
+                rainNowIcon.image = UIImage(named: rainIconImage)!
+            }
+            else if (todayArray.precipType == GlobalConstants.PrecipitationType.Sleet) {
+                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "")
+                rainNowIcon.image = UIImage(named: rainIconImage)!
+            }
+            else if (todayArray.precipType == GlobalConstants.PrecipitationType.Snow) {
+                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "")
+                rainNowIcon.image = UIImage(named: rainIconImage)!
+            }
+            else {
+                // Default
+                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
+                rainNowIcon.image = UIImage(named: rainIconImage)!
+            }
 
+            rainProbabilityTitle.text = precipType + " Probability:"
+            
             if (rainProbabilityNow > GlobalConstants.RainIconReportThresholdPercent) {
                 rainNowIcon.isHidden = false
                 rainNowProbability.text = String(rainProbabilityNow) + "%"
@@ -819,10 +853,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             let nearestRain = todayArray.nearestStormDistance!
         
             if (nearestRain == 0) {
-                nearestRainDistance.text = "Rain nearby" //"Raining"
+                nearestRainDistance.text = precipType + " nearby" //"Raining"
             }
             else if (nearestRain > 0 && nearestRain <= GlobalConstants.RainDistanceReportThreshold) {
-                nearestRainDistance.text = "Rain nearby"
+                nearestRainDistance.text = precipType + " nearby"
             }
             else if (nearestRain > GlobalConstants.RainDistanceReportThreshold) {
                 let rainUnits = todayArray.nearestStormDistanceUnits
@@ -830,7 +864,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                 // TODO: Tidy up string concat
                 
                 if ( !(rainDirection.isEmpty) || rainDirection != "") {
-                    nearestRainDistance.text = "Rain " + String(todayArray.nearestStormDistance!) + " "
+                    nearestRainDistance.text = precipType + " " + String(todayArray.nearestStormDistance!) + " "
                     nearestRainDistance.text = nearestRainDistance.text! + rainUnits! + " " + rainDirection
                 }
             }
@@ -1180,8 +1214,26 @@ extension TodayTabVC : UITableViewDataSource {
         if (Int(round(hourWeather!.precipProbability!*100)) > GlobalConstants.RainIconReportThresholdPercent) {
             
             // Populate with the correct rain icon scheme
-            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
-            cell.rainIcon.image = UIImage(named: rainIconImage)!
+ //           let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
+ //           cell.rainIcon.image = UIImage(named: rainIconImage)!
+            
+            if (hourWeather?.precipType == GlobalConstants.PrecipitationType.Rain) {
+                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
+                cell.rainIcon.image = UIImage(named: rainIconImage)!
+            }
+            else if (hourWeather?.precipType == GlobalConstants.PrecipitationType.Sleet) {
+                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "")
+                cell.rainIcon.image = UIImage(named: rainIconImage)!
+            }
+            else if (hourWeather?.precipType == GlobalConstants.PrecipitationType.Snow) {
+                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "")
+                cell.rainIcon.image = UIImage(named: rainIconImage)!
+            }
+            else {
+                // Default
+                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
+                cell.rainIcon.image = UIImage(named: rainIconImage)!
+            }
 
             cell.rainIcon.isHidden = false
             cell.rainProbabilityLabel.text = String(Int(round(hourWeather!.precipProbability!*100))) + "%"
@@ -1223,8 +1275,27 @@ extension TodayTabVC : UITableViewDataSource {
             cell.rainProbabilityLabel.textColor = UIColor.black
             
             // Force rain umbrella, windy and weather icon black
-            let lRainIconImage = GlobalConstants.WeatherIcon.umbrella
-            cell.rainIcon.image = UIImage(named: lRainIconImage)!
+//            let lRainIconImage = GlobalConstants.WeatherIcon.umbrella
+//            cell.rainIcon.image = UIImage(named: lRainIconImage)!
+            
+            if (hourWeather?.precipType == GlobalConstants.PrecipitationType.Rain) {
+                let lRainIconImage = GlobalConstants.WeatherIcon.umbrella
+                cell.rainIcon.image = UIImage(named: lRainIconImage)!
+            }
+            else if (hourWeather?.precipType == GlobalConstants.PrecipitationType.Sleet) {
+                let lRainIconImage = GlobalConstants.WeatherIcon.snowflake
+                cell.rainIcon.image = UIImage(named: lRainIconImage)!
+            }
+            else if (hourWeather?.precipType == GlobalConstants.PrecipitationType.Snow) {
+                let lRainIconImage = GlobalConstants.WeatherIcon.snowflake
+                cell.rainIcon.image = UIImage(named: lRainIconImage)!
+            }
+            else {
+                // Default
+                let lRainIconImage = GlobalConstants.WeatherIcon.umbrella
+                cell.rainIcon.image = UIImage(named: lRainIconImage)!
+            }
+
             
             let lWeatherIcon = Utility.getWeatherIcon(serviceIcon: icon!, scheme: GlobalConstants.ColourScheme.Light, dayOrNight: dayOrNight)
             cell.summaryIcon.image = UIImage(named: lWeatherIcon)!
@@ -1333,23 +1404,23 @@ extension TodayTabVC : UITableViewDataSource {
                 
                 if (colourScheme.type == GlobalConstants.ColourScheme.Dark) {
                     cell.contentView.backgroundColor = UIColor.gray
-                    
-//                    cell.hourLabel.textColor = UIColor.white
-//                    cell.temperatureLabel.textColor = UIColor.white
-//                    cell.rainProbabilityLabel.textColor = UIColor.white
                 }
                 else {
                     cell.contentView.backgroundColor = UIColor.white
-                    
-//                    cell.hourLabel.textColor = UIColor.black
-//                    cell.temperatureLabel.textColor = UIColor.black
-//                    cell.rainProbabilityLabel.textColor = UIColor.black
                 }
-                
-//                cell.hourLabel.textColor = textColourScheme
-//                cell.temperatureLabel.textColor = textColourScheme
-//                cell.rainProbabilityLabel.textColor = textColourScheme
+        
             }
+       
+            let hourTimeStamp = hourWeather?.dateAndTimeStamp
+            let dayOrNight = (isDayTime(dateTime: hourTimeStamp!) ? "DAY" : "NIGHT")
+
+            let icon = hourWeather?.icon
+            let iconName = Utility.getWeatherIcon(serviceIcon: icon!, dayOrNight: dayOrNight)
+            
+            if iconName != "" {
+                hourWeatherIcon.image = UIImage(named: iconName)!
+            }
+
             
             lastSelectedHourIndexPath = indexPath
             lastSelectedHourIndexRow = indexPath.row

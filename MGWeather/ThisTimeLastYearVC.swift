@@ -17,6 +17,7 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
     var weather: Weather?
     var tmpWeather : Weather?
     var url : String?
+    var inDayOrNight : String?  // Change Name?
     
     var dailyWeather : Weather!  // This is passed in from ParentWeatherVC
     var delegate:ThisTimeLastYearVCDelegate?
@@ -54,10 +55,6 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
     @IBOutlet weak var currentWeatherIcon : UIImageView!
     
     @IBOutlet weak var nowDetailTwoView : UIView!
-    @IBOutlet weak var rainNowInfoStackView : UIStackView!
-    @IBOutlet weak var rainNowIcon : UIImageView!
-    @IBOutlet weak var rainNowProbability : UILabel!
-    @IBOutlet weak var nearestRainDistance : UILabel!
     
     @IBOutlet weak var currentSummary : UILabel!
     
@@ -70,13 +67,11 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
     @IBOutlet weak var todayHighLowTemp : UILabel!
     @IBOutlet weak var currentWindspeed : UILabel!
     @IBOutlet weak var cloudCover : UILabel!
-    @IBOutlet weak var rainProbability : UILabel!
     
     @IBOutlet weak var todayHighLowTempTitle : UILabel!
     @IBOutlet weak var windspeedTitle : UILabel!
     @IBOutlet weak var cloudCoverTitle : UILabel!
     @IBOutlet weak var humidityTitle : UILabel!
-    @IBOutlet weak var rainProbabilityTitle : UILabel!
     
     @IBOutlet weak var sunriseStackView : UIStackView!
     @IBOutlet weak var sunriseIcon : UIImageView!
@@ -96,13 +91,19 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-  //      getWeatherDataFromService()
+        inDayOrNight = "DAY"
+        currentTempView.alpha = 0
+        weatherDetailOuterView.alpha = 0
+        
+        
+        setupScreenBeforeDataLoad()
+        getWeatherDataFromService()
         
         // Do any additional setup after loading the view.
-        setupDisplayTimer()
-        setupScreen()
-        setupColourScheme()
-        populateTodayWeatherDetails()
+//        setupDisplayTimer()
+//        setupScreen()
+//        setupColourScheme()
+//        populateTodayWeatherDetails()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -110,11 +111,11 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
         
         //setupColourScheme()
         
-        // Ease in the weather background for effect
-        self.weatherImage.alpha = 0.2
-        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-            self.weatherImage.alpha = 1
-        }, completion: nil)
+//        // Ease in the weather background for effect
+//        self.weatherImage.alpha = 0.2
+//        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+//            self.weatherImage.alpha = 1
+//        }, completion: nil)
         
         if AppSettings.ShowBannerAds {
             loadBannerAd()
@@ -129,10 +130,33 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
     }
     
 
+    func setupScreenBeforeDataLoad() {
+    
+        let lastLoadedBackground = Utility.getLastLoadedBackground()
+        
+        // Ease in the image view
+        self.weatherImage.alpha = 0.2
+        weatherImage.image = UIImage(named: lastLoadedBackground)!
+        
+        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.weatherImage.alpha = 1
+        }, completion: nil)
+        
+    }
+    
+    func setupScreenAfterDataLoad() {
+        
+        // NOTE:  This will be called from a background thread
+        
+        setupDisplayTimer()
+        setupScreen()
+        setupColourScheme()
+        populateTodayWeatherDetails()
+    }
     
     func setupScreen () {
         
-        bannerOuterView.isHidden = true
+       // bannerOuterView.isHidden = true
         closeBannerButton.isHidden = true  // Will only show once banner ad loaded
         
         let userDefaults = UserDefaults.standard
@@ -184,15 +208,12 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
         currentTemp.textColor = textColourScheme
         windspeed.textColor = textColourScheme
         feelsLikeTemp.textColor = textColourScheme
-        rainNowProbability.textColor = textColourScheme
-        nearestRainDistance.textColor = textColourScheme
         currentWindspeed.textColor = textColourScheme
         currentSummary.textColor = textColourScheme
         todayLabel.textColor = textColourScheme
         todaySummary.textColor = textColourScheme
         todayHighLowTemp.textColor = textColourScheme
         cloudCover.textColor = textColourScheme
-        rainProbability.textColor = textColourScheme
         sunrise.textColor = textColourScheme
         sunset.textColor = textColourScheme
         humidity.textColor = textColourScheme
@@ -201,7 +222,6 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
         windspeedTitle.textColor = textColourScheme
         cloudCoverTitle.textColor = textColourScheme
         humidityTitle.textColor = textColourScheme
-        rainProbabilityTitle.textColor = textColourScheme
         
         // Pods
         
@@ -267,31 +287,19 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
             // Now Pod
             //
             
+            currentSummary.text = todayArray.summary
+            
+            let thisTimeLastYearTime = todayArray.dateAndTimeStamp
+            nowLabel.text = "  " + getTimeLastYear(lastYearDate: thisTimeLastYearTime!)
+            
             let degreesSymbol = GlobalConstants.degreesSymbol + todayArray.temperatureUnits!
             currentTemp.text = String(Int(round(todayArray.temperature! as Float))) + degreesSymbol
             
             // Inner Pod 1
             feelsLikeTemp.text = "Feels Like: " + String(Int(round(todayArray.apparentTemperature! as Float))) + degreesSymbol
             
-            // Inner Pod 2
-            let minuteBreakdown = dailyWeather?.minuteBreakdown
-            currentSummary.text = minuteBreakdown?.summary
-            
-            let minuteStats = minuteBreakdown?.minuteStats
-            let rainProbabilityNow = Int(round((minuteStats?[0].precipProbability!)!*100))
-            
-            // Populate with the correct rain icon scheme
-            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
-            rainNowIcon.image = UIImage(named: rainIconImage)!
-            
-            if (rainProbabilityNow > GlobalConstants.RainIconReportThresholdPercent) {
-                rainNowIcon.isHidden = false
-                rainNowProbability.text = String(rainProbabilityNow) + "%"
-            }
-            else {
-                rainNowIcon.isHidden = true
-                rainNowProbability.text = ""
-            }
+//            // Inner Pod 2
+
             
             var windDirection = ""
             if (todayArray.windBearing != nil) {
@@ -315,24 +323,24 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
                 currentWindspeed.text = currentWindspeed.text! + " " + windSpeedUnits + " " + windDirection
             }
             
-            let nearestRain = todayArray.nearestStormDistance!
+// NOT NEEDED            let nearestRain = todayArray.nearestStormDistance!
             
-            if (nearestRain == 0) {
-                nearestRainDistance.text = "Rain nearby" //"Raining"
-            }
-            else if (nearestRain > 0 && nearestRain <= GlobalConstants.RainDistanceReportThreshold) {
-                nearestRainDistance.text = "Rain nearby"
-            }
-            else if (nearestRain > GlobalConstants.RainDistanceReportThreshold) {
-                let rainUnits = todayArray.nearestStormDistanceUnits
-                
-                // TODO: Tidy up string concat
-                
-                if ( !(rainDirection.isEmpty) || rainDirection != "") {
-                    nearestRainDistance.text = "Rain " + String(todayArray.nearestStormDistance!) + " "
-                    nearestRainDistance.text = nearestRainDistance.text! + rainUnits! + " " + rainDirection
-                }
-            }
+//            if (nearestRain == 0) {
+//                nearestRainDistance.text = "Rain nearby" //"Raining"
+//            }
+//            else if (nearestRain > 0 && nearestRain <= GlobalConstants.RainDistanceReportThreshold) {
+//                nearestRainDistance.text = "Rain nearby"
+//            }
+//            else if (nearestRain > GlobalConstants.RainDistanceReportThreshold) {
+//                let rainUnits = todayArray.nearestStormDistanceUnits
+//                
+//                // TODO: Tidy up string concat
+//                
+//                if ( !(rainDirection.isEmpty) || rainDirection != "") {
+//                    nearestRainDistance.text = "Rain " + String(todayArray.nearestStormDistance!) + " "
+//                    nearestRainDistance.text = nearestRainDistance.text! + rainUnits! + " " + rainDirection
+//                }
+//            }
             
             
             // Min Temp, Max Temp, Sunrise and Sunset we can get from the 'daily' figures
@@ -359,7 +367,6 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
                     
                     cloudCover.text = String(Int(round(days.cloudCover!*100))) + "%"
                     humidity.text = String(Int(round(days.humidity!*100))) + "%"
-                    rainProbability.text = String(Int(round(days.precipProbability!*100))) + "%"
                     
                     sunrise.text = String(days.sunriseTimeStamp!.shortTimeString())
                     sunset.text = String(days.sunsetTimeStamp!.shortTimeString())
@@ -388,18 +395,6 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
             let hourlyBreakdown = dailyWeather?.hourBreakdown
             todaySummary.text = hourlyBreakdown?.summary
             
-            // We have the sunset and sunrise times for today and tomorrow, so work out if
-            // the current time is day or night
-            
-            var isItDayOrNight = "NIGHT"
-            
-            var timeNow = NSDate()
-            timeNow = Utility.getTimeInWeatherTimezone(dateAndTime: timeNow)
-            
-            if isDayTime(dateTime: timeNow) {
-                isItDayOrNight = "DAY"
-            }
-            
             // Populate the weather image
             let icon = todayArray.icon
             let enumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
@@ -407,11 +402,11 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
             var backgroundImageName = ""
             if AppSettings.SpecialThemedBackgroundsForEvents {
                 // Get a special background if its a 'themed day (e.g Chrisrmas etc)
-                backgroundImageName = Utility.getSpecialDayWeatherImage(dayOrNight: isItDayOrNight)
+                backgroundImageName = Utility.getSpecialDayWeatherImage(dayOrNight: inDayOrNight!)
             }
             
             if backgroundImageName == "" {
-                backgroundImageName = Utility.getWeatherImage(serviceIcon: (enumVal?.rawValue)!, dayOrNight: isItDayOrNight)
+                backgroundImageName = Utility.getWeatherImage(serviceIcon: (enumVal?.rawValue)!, dayOrNight: inDayOrNight!)
             }
             
             if !(String(backgroundImageName).isEmpty) {
@@ -422,7 +417,7 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
             // Populate the weather icons
             
             let weatherIconEnumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
-            let weatherIconName = Utility.getWeatherIcon(serviceIcon: (weatherIconEnumVal?.rawValue)!, dayOrNight: isItDayOrNight)
+            let weatherIconName = Utility.getWeatherIcon(serviceIcon: (weatherIconEnumVal?.rawValue)!, dayOrNight: inDayOrNight!)
             
             if !(String(weatherIconName).isEmpty) {
                 currentWeatherIcon.image = UIImage(named: weatherIconName)!
@@ -541,6 +536,20 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
         return retVal
     }
 
+    func getTimeLastYear(lastYearDate: NSDate) -> String {
+        
+        var today = NSDate()
+        today = Utility.getTimeInWeatherTimezone(dateAndTime: today)
+        
+        var returnTime = lastYearDate.shortTimeString()
+        
+        if !Utility.areDatesSameDay(date1: today, date2: lastYearDate) {
+            returnTime = (lastYearDate.shortDayMonthYear())! + " @ " + (lastYearDate.shortTimeString())
+        }
+        
+        return returnTime
+        
+    }
 
     // MARK:  Button Methods
     @IBAction func backButtonPressed(_ sender: AnyObject) {
@@ -600,13 +609,13 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
                         print("Weather search complete")
                         
                         self.tmpWeather = Weather(fromDictionary: getResponse )
-                        self.weather = self.tmpWeather
-                        
+                        //self.weather = self.tmpWeather
+                        self.dailyWeather = self.tmpWeather
                         DispatchQueue.main.async {
                     
                             // Hide animation on the main thread, once finished background task
                             self.view.hideToastActivity()
-
+                            self.setupScreenAfterDataLoad()
                         }
                         
                     } catch let error as NSError {

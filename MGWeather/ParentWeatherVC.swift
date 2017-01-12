@@ -20,10 +20,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     @IBOutlet weak var segmentedControl: WeatherSegmentedControl!
     @IBOutlet weak var titleBar: UINavigationBar!
     @IBOutlet weak var titleBarNavItem: UINavigationItem!
-//    @IBOutlet weak var barButtonAction: UIBarButtonItem!
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var weatherImage : UIImageView!
-//    @IBOutlet weak var refreshButton : UIButton!
     @IBOutlet weak var iconRefreshButton : UIButton!
 
     enum Menu: String {
@@ -49,6 +47,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     var currentViewController: UIViewController?
     
     var loadingMode = ""  // Can either be 'STARTUP' or 'REFRESHING"
+    var parentDayOrNight = ""  // DAY or NIGHT. Will be set from DailyTabVC and usd in ThisTimeLastYear
     
     lazy var firstChildTabVC: UIViewController? = {
         let firstChildTabVC = self.storyboard?.instantiateViewController(withIdentifier: "TodayTabVC") as! TodayTabVC
@@ -128,6 +127,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             }
 
         }
+        
+ //       getLatLngForZip(zipCode: "SL19HL")
     }
 
     
@@ -209,6 +210,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             vc.delegate = self
             vc.dailyWeather = weather
             vc.url = url
+            vc.inDayOrNight = parentDayOrNight
         }
         
     }
@@ -330,6 +332,32 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         return vc
     }    
     
+    // Google Map API
+    
+    func getLatLngForZip(zipCode: String) {
+        
+// http://mhorga.org/2015/08/14/geocoding-in-ios.html
+        
+        // NOTE:  Google Maps Geocoding API has to be ENABLES against project in Google
+        
+        let baseUrl = "https://maps.googleapis.com/maps/api/geocode/json?"
+        let apikey = GlobalConstants.GoogleMapAPIKey
+        
+        let url = NSURL(string: "\(baseUrl)address=\(zipCode)&key=\(apikey)")
+        let data = NSData(contentsOf: url! as URL)
+        let json = try! JSONSerialization.jsonObject(with: data! as Data, options: JSONSerialization.ReadingOptions.allowFragments) as! NSDictionary
+        if let result = json["results"] as? NSArray {
+            
+            let x = result[0]
+//            if let geometry = result[0]["geometry"] as? NSDictionary {
+//                if let location = geometry["location"] as? NSDictionary {
+//                    let latitude = location["lat"] as! Float
+//                    let longitude = location["lng"] as! Float
+//                    print("\n\(latitude), \(longitude)")
+  //              }
+//            }
+        }
+    }
     
     // MARK:  Weather Data Loading functions
     

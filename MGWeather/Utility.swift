@@ -66,6 +66,9 @@ class Utility: NSObject {
                 iconName = GlobalConstants.WeatherIcon.sunset
             case "WINDY":
                 iconName = GlobalConstants.WeatherIcon.windy
+            case "SNOWFLAKE":
+                iconName = GlobalConstants.WeatherIcon.snowflake
+                
             default:
                 iconName = ""
             }
@@ -107,6 +110,8 @@ class Utility: NSObject {
                 iconName = GlobalConstants.WeatherIcon.sunset_White
             case "WINDY":
                 iconName = GlobalConstants.WeatherIcon.windy_White
+            case "SNOWFLAKE":
+                iconName = GlobalConstants.WeatherIcon.snowflake_White
                
             default:
                 iconName = ""
@@ -171,9 +176,19 @@ class Utility: NSObject {
                 imageName  = GlobalConstants.ImageFile.FileName.rainNight.rawValue
             }
         case "snow":
-            imageName  = GlobalConstants.ImageFile.FileName.snow.rawValue
+            if dayOrNight == "DAY" {
+                imageName  = GlobalConstants.ImageFile.FileName.snow.rawValue
+            }
+            else {
+                imageName  = GlobalConstants.ImageFile.FileName.snowNight.rawValue
+            }
         case "sleet":
-            imageName  = GlobalConstants.ImageFile.FileName.sleet.rawValue
+            if dayOrNight == "DAY" {
+                imageName  = GlobalConstants.ImageFile.FileName.sleet.rawValue
+            }
+            else {
+                imageName  = GlobalConstants.ImageFile.FileName.sleetNight.rawValue
+            }
         case "wind":
             imageName  = GlobalConstants.ImageFile.FileName.wind.rawValue
         case "fog":
@@ -184,7 +199,12 @@ class Utility: NSObject {
                 imageName  = GlobalConstants.ImageFile.FileName.fogNight.rawValue
             }
         case "cloudy":
-            imageName  = GlobalConstants.ImageFile.FileName.cloudy.rawValue
+            if dayOrNight == "DAY" {
+                imageName  = GlobalConstants.ImageFile.FileName.cloudy.rawValue
+            }
+            else {
+                imageName  = GlobalConstants.ImageFile.FileName.cloudyNight.rawValue
+            }
         case "partly-cloudy-day":
             // TODO:  Random choosing of some alternate pcs
             imageName  = GlobalConstants.ImageFile.FileName.partlyCloudyDay.rawValue

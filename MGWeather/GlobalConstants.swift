@@ -170,6 +170,15 @@ class GlobalConstants: NSObject {
         static let Fahrenheit = "fahrenheit"
     }
     
+    // Percipitation Types
+    
+    struct PrecipitationType {
+        static let Rain = "rain"
+        static let Sleet = "sleet"
+        static let Snow = "snow"
+    }
+
+    
     // Defaults
     
     static let DefaultURLUnit = "uk2"
@@ -232,7 +241,10 @@ class GlobalConstants: NSObject {
             
             // Custom (variations on the standard)
             case rainNight = "rain_night-pexels"
+            case sleetNight = "sleet-night-pexels-29756.jpg"
+            case snowNight = "snow-night-pexels-23976.jpg"
             case fogNight = "fog_night_foggy-mist-forest-trees-42263-pexels"
+            case cloudyNight = "overcast-night-pexels-111263.jpeg"
             case partlyCloudyDayAlternate = "partial_cloud_day_water-163900-pexels"
             case partlyCloudyNightAlternate = "partial_cloudy_night-70439-pexels.jpeg"
             
@@ -297,6 +309,7 @@ class GlobalConstants: NSObject {
         static var sunrise = "Sunrise-50"
         static var sunset = "Sunset-50"
         static var windy = "Windsock"
+        static var snowflake = "Snowflake"
         
         //
         // WHITE
@@ -324,6 +337,7 @@ class GlobalConstants: NSObject {
         static var sunrise_White = "Sunrise-White"
         static var sunset_White = "Sunset-White"
         static var windy_White = "Windsock-White"
+        static var snowflake_White = "Snowflake-White"
 
     }
     
@@ -373,5 +387,10 @@ class GlobalConstants: NSObject {
     //
     // This Time Last Year
     //  NSDate().timeIntervalSince1970
+ 
+    // Google Maps API
     
+    static let GoogleMapAPIKey = "AIzaSyA3YCR-a3OTW--dEVFKBkxbT_Kwn2EYkIQ"
+    static var GoogleMapAPIBrowserKey = "AIzaSyCUezEihEvHKOdKfS2vyTaQHlKZ26gNETQ"
+    static let GoogleMapOAuth2ClietID = "941132294503-93iclt25guqovnc4ejipnbmedusimkud.apps.googleusercontent.com"
 }

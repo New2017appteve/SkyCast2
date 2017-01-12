@@ -190,6 +190,9 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
                 isItDayOrNight = "DAY"
             }
 
+            // Set the variable at the parent view controller level
+//            parentDayOrNight = isItDayOrNight
+            
             // Populate the weather image
             let icon = tmpDailyWeather.currentBreakdown.icon
             let enumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
@@ -428,8 +431,24 @@ extension DailyTabVC : UITableViewDataSource {
         cell.rainProbabilityLabel.textColor = textColourScheme
         
         // Populate with the correct rain icon scheme
-        let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
-        cell.rainIcon.image = UIImage(named: rainIconImage)!
+        
+        if (dayWeather.precipType == GlobalConstants.PrecipitationType.Rain) {
+            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
+            cell.rainIcon.image = UIImage(named: rainIconImage)!
+        }
+        else if (dayWeather.precipType == GlobalConstants.PrecipitationType.Sleet) {
+            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "")
+            cell.rainIcon.image = UIImage(named: rainIconImage)!
+        }
+        else if (dayWeather.precipType == GlobalConstants.PrecipitationType.Snow) {
+            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "")
+            cell.rainIcon.image = UIImage(named: rainIconImage)!
+        }
+        else {
+            // Default
+            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
+            cell.rainIcon.image = UIImage(named: rainIconImage)!
+        }
 
         // Populate with the correct windy icon scheme
         let windyIconImage = Utility.getWeatherIcon(serviceIcon: "WINDY", dayOrNight: "")
