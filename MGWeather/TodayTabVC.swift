@@ -105,6 +105,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     @IBOutlet weak var hourlyDetailCloseButton : UIButton!
     @IBOutlet weak var hourlyDetailStackView : UIStackView!
     @IBOutlet weak var hourSummaryTitle : UILabel!
+    @IBOutlet weak var hourTemperature : UILabel!
     @IBOutlet weak var hourWeatherIcon : UIImageView!
     
     @IBOutlet weak var hourTempTitle : UILabel!
@@ -118,6 +119,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     @IBOutlet weak var hourCloudCover : UILabel!
     @IBOutlet weak var hourRainProbability : UILabel!
 
+    @IBOutlet weak var hourSunriseSunsetIcon : UIImageView!
+    @IBOutlet weak var hourSunriseSunsetLabel : UILabel!
+    
     private let cellId = "cellId"
     
     @IBOutlet weak var hourlyWeatherTableView : UITableView!
@@ -310,15 +314,18 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         
         hourSummaryTitle.textColor = textColourScheme
         hourTempTitle.textColor = textColourScheme
+        hourTemperature.textColor = textColourScheme
         hourWindspeedTitle.textColor = textColourScheme
         hourCloudCoverTitle.textColor = textColourScheme
         hourRainProbabilityTitle.textColor = textColourScheme
+        hourSunriseSunsetLabel.textColor = textColourScheme
         
         hourTemp.textColor = textColourScheme
         hourSummary.textColor = textColourScheme
         hourWindspeed.textColor = textColourScheme
         hourCloudCover.textColor = textColourScheme
         hourRainProbability.textColor = textColourScheme
+ //       hourSunriseSunsetIcon.backgroundColor = textColourScheme
         
         // Pods
         
@@ -1382,12 +1389,13 @@ extension TodayTabVC : UITableViewDataSource {
             
             let degreesSymbol = GlobalConstants.degreesSymbol + hourWeather!.temperatureUnits!
             var hourTempText = String(Int(round(hourWeather!.temperature!))) + degreesSymbol
+            hourTemperature.text = hourTempText
             
             if (hourWeather?.temperature != hourWeather?.apparentTemperature) {
                 
                 let feelsLikeTempText = String(Int(round(hourWeather!.apparentTemperature!))) + degreesSymbol
-                hourTempText = hourTempText + " ( " + feelsLikeTempText + " )"
-                hourTempTitle.text = "Temp / Feels Like:"
+                hourTempText = feelsLikeTempText
+                hourTempTitle.text = "Feels Like: "
             }
             hourTemp.text = hourTempText
             
@@ -1421,7 +1429,34 @@ extension TodayTabVC : UITableViewDataSource {
                 hourWeatherIcon.image = UIImage(named: iconName)!
             }
 
+            // Sunrise or sunset, if applicable
             
+            let sunriseHour = isSunriseHour(dateTime: hourTimeStamp!)
+            let sunsetHour = isSunsetHour(dateTime: hourTimeStamp!)
+
+            if sunriseHour {
+                hourSunriseSunsetIcon.isHidden = false
+                hourSunriseSunsetLabel.isHidden = false
+
+                let sunriseIconImage = Utility.getWeatherIcon(serviceIcon: "SUNRISE", dayOrNight: "")
+                hourSunriseSunsetIcon.image = UIImage(named: sunriseIconImage)!
+                hourSunriseSunsetLabel.text = String(sunriseTimeStamp!.shortTimeString())
+            }
+            else if sunsetHour {
+                hourSunriseSunsetIcon.isHidden = false
+                hourSunriseSunsetLabel.isHidden = false
+
+                let sunsetIconImage = Utility.getWeatherIcon(serviceIcon: "SUNSET", dayOrNight: "")
+                hourSunriseSunsetIcon.image = UIImage(named: sunsetIconImage)!
+                hourSunriseSunsetLabel.text = String(sunsetTimeStamp!.shortTimeString())
+            }
+            else {
+                hourSunriseSunsetIcon.isHidden = true
+                hourSunriseSunsetLabel.isHidden = true
+            }
+            
+            // Save lastSelected hour for use later (TODO:  check usage)
+
             lastSelectedHourIndexPath = indexPath
             lastSelectedHourIndexRow = indexPath.row
             
