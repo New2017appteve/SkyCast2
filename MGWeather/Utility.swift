@@ -14,7 +14,27 @@ class Utility: NSObject {
       return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
         
     }
+ 
+    class func getWeatherIcon(serviceIcon : String) -> String {
+        
+        var iconName : String!
+        
+        // Load the saved colour scheme that user selected.  If not set, use default
+        let userDefaults = UserDefaults.standard
+        var scheme = userDefaults.string(forKey: GlobalConstants.Defaults.SavedColourScheme)
+        
+        if (scheme == nil) {
+            scheme = GlobalConstants.DefaultColourScheme  // Dark
+        }
+        
+        iconName = getWeatherIcon(serviceIcon: serviceIcon, scheme: scheme!, dayOrNight: "" )
+        
+        return iconName
+    }
     
+    // Overloaded function, pass in if time is Day or Night so we can get correct icons
+    // where necessary.
+
     class func getWeatherIcon(serviceIcon : String, scheme : String, dayOrNight : String) -> String {
 
         var iconName : String!
@@ -122,22 +142,6 @@ class Utility: NSObject {
         return iconName
     }
     
-    class func getWeatherIcon(serviceIcon : String) -> String {
-        
-        var iconName : String!
-        
-        // Load the saved colour scheme that user selected.  If not set, use default
-        let userDefaults = UserDefaults.standard
-        var scheme = userDefaults.string(forKey: GlobalConstants.Defaults.SavedColourScheme)
-        
-        if (scheme == nil) {
-            scheme = GlobalConstants.DefaultColourScheme  // Dark
-        }
-        
-        iconName = getWeatherIcon(serviceIcon: serviceIcon, scheme: scheme!, dayOrNight: "" )
-        
-        return iconName
-    }
     
     // Overloaded function, pass in if time is Day or Night so we can get correct icons
     // where necessary.

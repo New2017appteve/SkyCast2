@@ -33,6 +33,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     var tomorrowSunsetTimeStamp: NSDate?
     var lastUpdatedTimeStamp: NSDate?
     var lastUpdatedTime = ""
+    
+    var weatherAlertStartTime: NSDate?
+    var weatherAlertEndTime: NSDate?
 
     var infoLabelTimerCount = 0
     var weatherDetailsTimerCount = 0
@@ -43,6 +46,8 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     var writingColourScheme: UIColor?
     
     var currentSelectedHourCellColour: UIColor?
+    
+    weak var hideDisplayTimer = Timer()
     
     // MARK: Outlets
     
@@ -986,6 +991,8 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                 weatherAlertButton.setTitle(nil, for: .normal)
                 weatherAlertTitle.text = "Weather Alert"
                 weatherAlertButton.setImage(UIImage(named: "Alert"), for: UIControlState.normal)
+                
+                getWeatherAlertStartAndEndTimes()
             }
             else {
                 weatherAlertButton.isHidden = true
@@ -996,6 +1003,21 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         
     }
     
+    func getWeatherAlertStartAndEndTimes() {
+        
+        // Cater for more than 1 alert description
+        
+        let alertCount = dailyWeather.weatherAlerts.count
+        
+        if alertCount > 0 {
+            for i in 0...alertCount - 1 {
+                
+                weatherAlertStartTime = dailyWeather.weatherAlerts[i].alertDateAndTimeStamp
+                weatherAlertEndTime = dailyWeather.weatherAlerts[i].alertExpiryDateAndTimeStamp
+
+            }
+        }
+    }
     
     func isDayTime (dateTime : NSDate) -> Bool {
         
@@ -1055,6 +1077,32 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         return retVal
     }
 
+    // Hour Detail Display methods
+    
+    func openHourDetailDisplay() {
+        
+        weatherDetailView.isHidden = true
+        hourlyDetailView.isHidden = false
+        
+        setupHourWeatherDisplayHideTimer()  // Close the hour view screen after 10 seconds
+
+    }
+    
+    func closeHourDetailDisplay() {
+        
+        // Close the hour detail view and deselect the last selected cell
+        
+        weatherDetailView.isHidden = false
+        hourlyDetailView.isHidden = true
+        
+        lastSelectedHourIndexRow = -1
+        
+        if lastSelectedHourIndexPath != nil {
+            hourlyWeatherTableView.deselectRow(at: lastSelectedHourIndexPath!, animated: false)
+        }
+        
+    }
+
 
     // MARK:  Button Press Methods
 
@@ -1076,17 +1124,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     }
     
     @IBAction func hourDetailCloseButtonPressed(_ sender: AnyObject) {
-        
-        weatherDetailView.isHidden = false
-        hourlyDetailView.isHidden = true
-        
-        lastSelectedHourIndexRow = -1
-        
-        if lastSelectedHourIndexPath != nil {
-            hourlyWeatherTableView.deselectRow(at: lastSelectedHourIndexPath!, animated: false)
-        }
-
+        closeHourDetailDisplay()
     }
+    
     
     // MARK:  Reach methods
     func networkStatusChanged(_ notification: Notification) {
@@ -1094,6 +1134,24 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         print("Network Status Changed")
     }
     
+    
+    // MARK: Timer methods
+    
+    func setupHourWeatherDisplayHideTimer() {
+        
+        // Only show the hour display for about 10 seconds
+        
+        if hideDisplayTimer != nil {
+            hideDisplayTimer?.invalidate()
+        }
+        
+        hideDisplayTimer = Timer.scheduledTimer(timeInterval: 10.0, target: self, selector: #selector(hideHourWeatherDisplay), userInfo: nil, repeats: false)
+    }
+    
+    func hideHourWeatherDisplay () {
+        
+        closeHourDetailDisplay()
+    }
     
     // MARK:  Notification complete methods
     
@@ -1152,6 +1210,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         // show the delete ad button
         closeBannerButton.isHidden = false
     }
+    
 }
 
 
@@ -1250,6 +1309,21 @@ extension TodayTabVC : UITableViewDataSource {
             cell.rainProbabilityLabel.text = ""
         }
         
+        // Weather alert icon.
+        // Only show if in alert time range
+        
+        if (dailyWeather?.weatherAlert == true) {
+            
+            if (hourTimeStamp?.isBetweeen(date: weatherAlertEndTime!, andDate: weatherAlertStartTime!))! {
+                cell.weatherAlertIcon.isHidden = false
+            }
+        }
+        else {
+            cell.weatherAlertIcon.isHidden = true
+        }
+        
+        // Windy icon
+        // Only show if above wind reporting threashold
         if (Int((hourWeather?.windSpeed!)!) > GlobalConstants.WindStrengthThreshold) {
             
             // Populate with the correct wind icon scheme
@@ -1371,8 +1445,7 @@ extension TodayTabVC : UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
-        weatherDetailView.isHidden = true
-        hourlyDetailView.isHidden = false
+        openHourDetailDisplay()
         
         let colourScheme = Utility.setupColourScheme()
         
@@ -1488,30 +1561,11 @@ extension TodayTabVC : UITableViewDataSource {
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         weatherDetailView.isHidden = false
         hourlyDetailView.isHidden = true
-
     }
     
-//    func setupHourDisplayTimer() {
-//        
-//        _ = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(hideHourSelection), userInfo: nil, repeats: true)
-//    }
-//    
-//    func hideHourSelection () {
-//        
-//        weatherDetailView.isHidden = false
-//        hourlyDetailView.isHidden = true
-//    }
     
 }  // Extension
 
-
-//extension TodayTabVC : GADBannerViewDelegate {
-//    
-//    /// Tells the delegate an ad request loaded an ad.
-//    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
-//        print("adViewDidReceiveAd")
-//    }
-//}
 
 // MARK: UITableViewDelegate
 extension TodayTabVC : UITableViewDelegate {

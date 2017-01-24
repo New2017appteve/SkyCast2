@@ -16,6 +16,7 @@ class HourlyWeatherCell: UITableViewCell {
     @IBOutlet weak var rainProbabilityLabel : UILabel!
     @IBOutlet weak var summaryIcon : UIImageView!
     @IBOutlet weak var windyIcon : UIImageView!
+    @IBOutlet weak var weatherAlertIcon : UIImageView!
     
     var count = 0
     

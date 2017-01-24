@@ -27,6 +27,16 @@ extension NSDate {
         return dateFormatter.string(from: self as Date)
     }
 
+    func longDateString() -> String
+    {
+        //Get Long Date String
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        let timeString = formatter.string(from: self as Date)
+        
+        //Return Long String
+        return timeString
+    }
     
     func shortTimeString() -> String
     {

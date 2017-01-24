@@ -145,9 +145,22 @@ class GlobalConstants: NSObject {
     static let degreesSymbol = "\u{00B0}"
     
     static let MetersPerSecondToMph = Float(2.23694)
+    
+    // Rain related
+    
     static let RainIconReportThresholdPercent = 4
     static let RainDistanceReportThreshold = 1
 
+/*
+    // http://www.leancrew.com/all-this/2012/10/matplotlib-and-the-dark-sky-api/
+     Numerical	Descriptive
+     < 15	sporadic
+     15-30	light
+     30-45	moderate
+     > 45	heavy
+
+*/
+    // Wind related
     static let WindStrengthThreshold = 9  // KPH or MPH
 
     // Keys to read from NSUserDefaults
@@ -311,6 +324,9 @@ class GlobalConstants: NSObject {
         static var windy = "Windsock"
         static var snowflake = "Snowflake"
         
+        static var lightRain = "Light Rain-50"
+        static var heavyRain = "Heavy Rain-50"
+
         //
         // WHITE
         //
@@ -338,6 +354,9 @@ class GlobalConstants: NSObject {
         static var sunset_White = "Sunset-White"
         static var windy_White = "Windsock-White"
         static var snowflake_White = "Snowflake-White"
+
+        static var lightRain_White = "Light Rain-White"
+        static var heavyRain_White = "Heavy Rain-White"
 
     }
     

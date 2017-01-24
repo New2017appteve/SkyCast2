@@ -54,8 +54,6 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
     @IBOutlet weak var feelsLikeTemp : UILabel!
     @IBOutlet weak var currentWeatherIcon : UIImageView!
     
-    @IBOutlet weak var nowDetailTwoView : UIView!
-    
     @IBOutlet weak var currentSummary : UILabel!
     
     @IBOutlet weak var weatherDetailOuterView : UIView!
@@ -95,7 +93,6 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
         currentTempView.alpha = 0
         weatherDetailOuterView.alpha = 0
         
-        
         setupScreenBeforeDataLoad()
         getWeatherDataFromService()
         
@@ -108,14 +105,6 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        //setupColourScheme()
-        
-//        // Ease in the weather background for effect
-//        self.weatherImage.alpha = 0.2
-//        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-//            self.weatherImage.alpha = 1
-//        }, completion: nil)
         
         if AppSettings.ShowBannerAds {
             loadBannerAd()
@@ -182,9 +171,7 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
         poweredByDarkSkyButton.titleEdgeInsets.right = 10 // Add right padding of text
         
         nowDetailOneView.backgroundColor = UIColor.clear
-        nowDetailTwoView.backgroundColor = UIColor.clear
-        nowDetailOneView.alpha = 0
-        nowDetailTwoView.alpha = 1
+        nowDetailOneView.alpha = 1
         
         // Hide weather details initially until timer starts
         self.weatherDetailStackView.alpha = 0
@@ -449,10 +436,8 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
         switch (detailsMod) {
         case 0:
             hideWeatherDetailsView()
-            hideNowDetailsOneView ()
         case 1:
             showWeatherDetailsView()
-            hideNowDetailsTwoView ()
         case 2:
         return // Do nothing, this wlll have the effect of showing the weather details longer
         default:
@@ -490,32 +475,16 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
         }, completion: nil)
     }
     
-    func hideNowDetailsOneView () {
-        
-        self.todayLabel.text = "  Day Summary"
-        self.nowDetailTwoView.alpha = 0
-        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-            self.nowDetailTwoView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-        }, completion: nil)
-        
-        self.nowDetailOneView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-            self.nowDetailOneView.alpha = 0
-        }, completion: nil)
-    }
-    
-    func hideNowDetailsTwoView () {
-        
-        self.nowDetailOneView.alpha = 0
-        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-            self.nowDetailOneView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-        }, completion: nil)
-        
-        self.nowDetailTwoView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-            self.nowDetailTwoView.alpha = 0
-        }, completion: nil)
-    }
+//    func hideNowDetailsOneView () {
+//        
+//        self.todayLabel.text = "  Day Summary"
+//        
+//        self.nowDetailOneView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+//        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+//            self.nowDetailOneView.alpha = 0
+//        }, completion: nil)
+//    }
+
     
     
     func isDayTime (dateTime : NSDate) -> Bool {
@@ -541,10 +510,12 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
         var today = NSDate()
         today = Utility.getTimeInWeatherTimezone(dateAndTime: today)
         
-        var returnTime = lastYearDate.shortTimeString()
+     //   var returnTime = lastYearDate.shortTimeString()
+        var returnTime = lastYearDate.longDateString()
         
         if !Utility.areDatesSameDay(date1: today, date2: lastYearDate) {
-            returnTime = (lastYearDate.shortDayMonthYear())! + " @ " + (lastYearDate.shortTimeString())
+//            returnTime = (lastYearDate.shortDayMonthYear())! + " @ " + (lastYearDate.shortTimeString())
+            returnTime = (lastYearDate.longDateString()) + "  @ " + (lastYearDate.shortTimeString())
         }
         
         return returnTime
