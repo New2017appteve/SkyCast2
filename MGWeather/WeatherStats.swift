@@ -23,6 +23,7 @@ class WeatherStats: NSObject {
     var nearestStormDistanceUnits : String?
     var nearestStormBearing : Int?
     var precipIntensity : Float?
+    var percipDecodedIntensity : String?
     var precipIntensityMax : Float?
     var precipIntensityMaxTime : String?
     var precipProbability : Float?
@@ -117,7 +118,19 @@ class WeatherStats: NSObject {
         
         if let lPrecipIntensity  = weatherDict["precipIntensity"] as? Float {
             precipIntensity = lPrecipIntensity
-        }
+            
+            // Attempt to find out how heavy the perciptation is
+            
+            if (lPrecipIntensity > 0.00 && lPrecipIntensity <= 0.26) {
+                percipDecodedIntensity = "LIGHT"
+            }
+            else if (lPrecipIntensity > 0.27 && lPrecipIntensity < 0.70) {
+                percipDecodedIntensity = "MEDIUM"
+            }
+            else {
+                percipDecodedIntensity = "HEAVY"
+            }
+       }
         
         if let lPrecipIntensityMax  = weatherDict["precipIntensityMax"] as? Float {
             precipIntensityMax = lPrecipIntensityMax

@@ -105,7 +105,7 @@ class GlobalConstants: NSObject {
     static let DisplayViewAlpha = 0.85
     
     // Tableview 
-    static let NumberOfHoursToShowFromNow = 12  // Max 48
+    static let NumberOfHoursToShowFromNow = 14  // Max 48
     
     // Weather Screen View Shading
     struct ViewShading {
@@ -237,7 +237,7 @@ class GlobalConstants: NSObject {
             
             // Relates to standard from Dark Sky API
             case clearDay = "clear_day_sunshine-186980-pexels.jpeg"
-            case clearNight = "clear_night_moon-pexels-26341.jpg"
+            case clearNight = "clear-night-city-pexels-294560.jpeg" //"clear_night_moon-pexels-26341.jpg"
             case rain = "rain_day-125510-pexels.jpeg"
             case snow = "snow_day-forest-trees_pexels.jpeg"
             case sleet = "sleet_pexels-12875.jpeg"

@@ -24,8 +24,8 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
     var sunsetTimeStamp: NSDate?
     var tomorrowSunriseTimeStamp: NSDate?
     var tomorrowSunsetTimeStamp: NSDate?
- //   var degreesSymbol = ""
-
+    var weatherAlertStartTime: NSDate?
+    var weatherAlertEndTime: NSDate?
     
     // Outlets
     @IBOutlet weak var dailyWeatherTableView : UITableView!
@@ -181,6 +181,12 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
                     tomorrowSunsetTimeStamp = days.sunsetTimeStamp as NSDate?
                 }
             }
+            
+            // If weather alert, get the alert start and end times
+            if (dailyWeather?.weatherAlert == true) {
+
+                getWeatherAlertStartAndEndTimes()
+            }
 
             var isItDayOrNight = "NIGHT"
             var timeNow = NSDate()
@@ -239,6 +245,22 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
         return retVal
     }
 
+    func getWeatherAlertStartAndEndTimes() {
+        
+        // Cater for more than 1 alert description
+        
+        let alertCount = dailyWeather.weatherAlerts.count
+        
+        if alertCount > 0 {
+            for i in 0...alertCount - 1 {
+                
+                weatherAlertStartTime = dailyWeather.weatherAlerts[i].alertDateAndTimeStamp
+                weatherAlertEndTime = dailyWeather.weatherAlerts[i].alertExpiryDateAndTimeStamp
+                
+            }
+        }
+    }
+    
     /// Force the text in a UITextView to always center itself.
     func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutableRawPointer) {
         let textView = object as! UITextView
@@ -361,11 +383,16 @@ extension DailyTabVC : UITableViewDataSource {
 //            degreesSymbol = GlobalConstants.degreesSymbol + "F"
 //        }
 
+
         // We dont want 'today' in this list so +1
         let dayWeather = dailyWeather.dailyBreakdown.dailyStats[indexPath.row + 1]
         let degreesSymbol = GlobalConstants.degreesSymbol + dayWeather.temperatureUnits!
         
         let cell:DailyWeatherCell = self.dailyWeatherTableView.dequeueReusableCell(withIdentifier: "DailyWeatherCellID") as! DailyWeatherCell
+        
+        cell.weatherAlertIcon.isHidden = true
+        cell.windyLabel.isHidden = true
+        cell.windyIcon.isHidden = true
         
         cell.dateLabel.text = (dayWeather.dateAndTimeStamp?.shortDayOfTheWeek())! + " " + (dayWeather.dateAndTimeStamp?.getDateSuffix())!
 
@@ -374,7 +401,24 @@ extension DailyTabVC : UITableViewDataSource {
         cell.summaryLabel.text = dayWeather.summary
         cell.minTempLabel.text = String(Int(round(dayWeather.temperatureMin!))) + degreesSymbol
         cell.maxTempLabel.text = String(Int(round(dayWeather.temperatureMax!))) + degreesSymbol
-
+        
+        // Weather alert icon.
+        // Only show if in alert time range
+        
+        if (dailyWeather?.weatherAlert == true) {
+            
+            if (dayWeather.dateAndTimeStamp?.isBetweeen(date: weatherAlertEndTime!, andDate: weatherAlertStartTime!))! {
+                cell.weatherAlertIcon.isHidden = false
+            }
+            else {
+                cell.weatherAlertIcon.isHidden = true
+            }
+        }
+        else {
+            cell.weatherAlertIcon.isHidden = true
+        }
+        
+        // Windy icon
         if (Int(dayWeather.windSpeed!) > GlobalConstants.WindStrengthThreshold) {
             let windSpeedUnits = dayWeather.windSpeedUnits!
             var currentWindspeed = ""

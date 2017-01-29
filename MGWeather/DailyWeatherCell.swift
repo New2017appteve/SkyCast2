@@ -27,5 +27,6 @@ class DailyWeatherCell: UITableViewCell {
     @IBOutlet weak var rainProbabilityLabel : UILabel!
     @IBOutlet weak var windyIcon : UIImageView!
     @IBOutlet weak var windyLabel : UILabel!
+    @IBOutlet weak var weatherAlertIcon : UIImageView!
     
 }

@@ -201,26 +201,26 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     }
 
     
-    func createHorizontalTableView() {
-        
-        let frame = CGRect(x: 0, y: view.bounds.height/8, width: view.bounds.width/6, height: view.bounds.height/8)
-        
-        tableView = UITableView(frame: frame)
-        tableView.delegate = self
-        tableView.dataSource = self
-        
-        if tableView.responds(to: (#selector(getter: UITableViewCell.separatorInset))) {
-            tableView.separatorInset = UIEdgeInsets.zero;
-        }
-        
-        if tableView.responds(to:(#selector(getter: UIView.layoutMargins))) {
-            tableView.layoutMargins = UIEdgeInsets.zero;
-        }
-        
-        tableView.transform = CGAffineTransform(rotationAngle: -CGFloat(M_PI_2))
-
-        view.addSubview(tableView)
-}
+//    func createHorizontalTableView() {
+//        
+//        let frame = CGRect(x: 0, y: view.bounds.height/8, width: view.bounds.width/6, height: view.bounds.height/8)
+//        
+//        tableView = UITableView(frame: frame)
+//        tableView.delegate = self
+//        tableView.dataSource = self
+//        
+//        if tableView.responds(to: (#selector(getter: UITableViewCell.separatorInset))) {
+//            tableView.separatorInset = UIEdgeInsets.zero;
+//        }
+//        
+//        if tableView.responds(to:(#selector(getter: UIView.layoutMargins))) {
+//            tableView.layoutMargins = UIEdgeInsets.zero;
+//        }
+//        
+//        tableView.transform = CGAffineTransform(rotationAngle: -CGFloat(M_PI_2))
+//
+//        view.addSubview(tableView)
+//}
     
     
     func setupScreen () {
@@ -446,8 +446,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             var weatherAlertURL = ""
             
             // If weather alert, enable the button so user can bring up alert text view
-            
-            //weatherAlertDescription = "A storm is approaching the south west of the country.  Amber alert has been raised"
             
             // Cater for more than 1 alert description
             
@@ -744,13 +742,12 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
 
     func reformatLastUpdatedTimeIfNeeded(lastUpdatedDate: NSDate) -> String {
         
-        // If the last updated time is yesterday, add on the datestamp before the timestamp
-        
         var today = NSDate()
         today = Utility.getTimeInWeatherTimezone(dateAndTime: today)
         
         var returnTime = lastUpdatedDate.shortTimeString()
         
+        // If the last updated time is yesterday, add on the datestamp before the timestamp
         if !Utility.areDatesSameDay(date1: today, date2: lastUpdatedDate) {
             returnTime = (lastUpdatedDate.shortDayMonthYear())! + " @ " + (lastUpdatedDate.shortTimeString())
         }
@@ -760,34 +757,22 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     }
 
     func populateTodayWeatherDetails() {
-//
-//        var degreesSymbol = ""
-//        
-//        // Rather than force unwrapping, use conditional let to check weather array
-//        if let lWeather = dailyWeather {
-//            if lWeather.flags.units == "si" {
-//                degreesSymbol = GlobalConstants.degreesSymbol + "C"
-//            }
-//            else {
-//                degreesSymbol = GlobalConstants.degreesSymbol + "F"
-//            }
-//        }
-//        
+   
         if let todayArray = dailyWeather?.currentBreakdown {
             
             lastUpdatedTime  = getLastUpdatedTime()
             
             // Find out if we want to report rain, sleet or snow
             
-            var precipType = "Rain"  // Default
-            if (todayArray.precipType == "rain") {
-                precipType = "Rain"
+            var displayPrecipType = "Rain"  // Default
+            if (todayArray.precipType == GlobalConstants.PrecipitationType.Rain) {
+                displayPrecipType = "Rain"
             }
-            else if (todayArray.precipType == "sleet") {
-                precipType = "Sleet"
+            else if (todayArray.precipType == GlobalConstants.PrecipitationType.Sleet) {
+                displayPrecipType = "Sleet"
             }
-            else if (todayArray.precipType == "snow") {
-                precipType = "Snow"
+            else if (todayArray.precipType == GlobalConstants.PrecipitationType.Snow) {
+                displayPrecipType = "Snow"
             }
             
             //
@@ -829,7 +814,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                 rainNowIcon.image = UIImage(named: rainIconImage)!
             }
 
-            rainProbabilityTitle.text = precipType + " Probability:"
+            rainProbabilityTitle.text = displayPrecipType + " Probability:"
             
             if (rainProbabilityNow > GlobalConstants.RainIconReportThresholdPercent) {
                 rainNowIcon.isHidden = false
@@ -865,10 +850,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             let nearestRain = todayArray.nearestStormDistance!
         
             if (nearestRain == 0) {
-                nearestRainDistance.text = precipType + " nearby" //"Raining"
+                nearestRainDistance.text = displayPrecipType + " nearby" //"Raining"
             }
             else if (nearestRain > 0 && nearestRain <= GlobalConstants.RainDistanceReportThreshold) {
-                nearestRainDistance.text = precipType + " nearby"
+                nearestRainDistance.text = displayPrecipType + " nearby"
             }
             else if (nearestRain > GlobalConstants.RainDistanceReportThreshold) {
                 let rainUnits = todayArray.nearestStormDistanceUnits
@@ -876,7 +861,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                 // TODO: Tidy up string concat
                 
                 if ( !(rainDirection.isEmpty) || rainDirection != "") {
-                    nearestRainDistance.text = precipType + " " + String(todayArray.nearestStormDistance!) + " "
+                    nearestRainDistance.text = displayPrecipType + " " + String(todayArray.nearestStormDistance!) + " "
                     nearestRainDistance.text = nearestRainDistance.text! + rainUnits! + " " + rainDirection
                 }
             }
@@ -963,7 +948,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                 backgroundImageName = Utility.getWeatherImage(serviceIcon: (enumVal?.rawValue)!, dayOrNight: isItDayOrNight)
             }
             
-            //if String(backgroundImageName).isEmpty != nil {
+            // Load previous background just in case
             if !(String(backgroundImageName).isEmpty) {
                 weatherImage.image = UIImage(named: backgroundImageName)!
                 Utility.setLastLoadedBackground(backgroundName: backgroundImageName)
@@ -1280,9 +1265,6 @@ extension TodayTabVC : UITableViewDataSource {
         if (Int(round(hourWeather!.precipProbability!*100)) > GlobalConstants.RainIconReportThresholdPercent) {
             
             // Populate with the correct rain icon scheme
- //           let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
- //           cell.rainIcon.image = UIImage(named: rainIconImage)!
-            
             if (hourWeather?.precipType == GlobalConstants.PrecipitationType.Rain) {
                 let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
                 cell.rainIcon.image = UIImage(named: rainIconImage)!
@@ -1316,6 +1298,9 @@ extension TodayTabVC : UITableViewDataSource {
             
             if (hourTimeStamp?.isBetweeen(date: weatherAlertEndTime!, andDate: weatherAlertStartTime!))! {
                 cell.weatherAlertIcon.isHidden = false
+            }
+            else {
+                cell.weatherAlertIcon.isHidden = true
             }
         }
         else {
