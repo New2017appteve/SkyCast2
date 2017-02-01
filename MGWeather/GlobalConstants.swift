@@ -60,7 +60,7 @@ class GlobalConstants: NSObject {
     static var LighterGray = UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 0.95)
     static var LightestGray = UIColor(red: 250/255, green: 245/255, blue: 245/255, alpha: 1)
     
-        // Day/Night colours for lighter theme
+    // Day/Night colours for lighter theme
     static var DarkerYellow = UIColor(red: 250/255, green: 239/255, blue: 117/255, alpha: 0.95)
     static var LighterYellow = UIColor(red: 252/255, green: 218/255, blue: 116/255, alpha: 0.95)
     static var DarkerBlue = UIColor(red: 154/255, green: 181/255, blue: 224/255, alpha: 0.95)
@@ -97,6 +97,12 @@ class GlobalConstants: NSObject {
     struct TableViewAlternateShadingNightDarkTheme {
         static var Darker = DarkerBlack
         static var Lighter = LighterBlack
+    }
+    
+    struct WeatherWarning {
+        static var Advisory = UIColor(red: 252/255, green: 248/255, blue: 5/255, alpha: 1.0)
+        static var Watch = UIColor(red: 252/255, green: 186/255, blue: 206/255, alpha: 1.0)
+        static var Warning = UIColor(red: 252/255, green: 63/255, blue: 206/255, alpha: 1.0)
     }
 
     // Selected hour
@@ -191,6 +197,11 @@ class GlobalConstants: NSObject {
         static let Snow = "snow"
     }
 
+    struct PrecipitationIntensity {
+        static let Light = "LIGHT"
+        static let Medium = "MEDIUM"
+        static let Heavy = "HEAVY"
+    }
     
     // Defaults
     
@@ -355,8 +366,8 @@ class GlobalConstants: NSObject {
         static var windy_White = "Windsock-White"
         static var snowflake_White = "Snowflake-White"
 
-        static var lightRain_White = "Light Rain-White"
-        static var heavyRain_White = "Heavy Rain-White"
+        static var lightRain_White = "Light-Rain-White"
+        static var heavyRain_White = "Heavy-Rain-White"
 
     }
     

@@ -443,6 +443,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         if (segue.identifier == "infoScreenSegue") {
             
             var weatherAlertDescription = ""
+            var alertSeverity = ""
             var weatherAlertURL = ""
             
             // If weather alert, enable the button so user can bring up alert text view
@@ -468,6 +469,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                     
                     weatherAlertURL = dailyWeather.weatherAlerts[i].uri!
                     weatherAlertDescription = alertTimeDescription + "\r\n\n" + dailyWeather.weatherAlerts[i].alertDescription! + "\r\n\n"
+                    alertSeverity = dailyWeather.weatherAlerts[i].alertSeverity!
                 }
             }
             else {
@@ -480,6 +482,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             let vc:InfoPopupViewController = segue.destination as! InfoPopupViewController
             vc.informationString = weatherAlertDescription
             vc.weatherAlertSourceURL = weatherAlertURL
+            vc.informationSeverity = alertSeverity
             
         }
         
@@ -793,24 +796,22 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             let rainProbabilityNow = Int(round((minuteStats?[0].precipProbability!)!*100))
             
             // Populate with the correct rain icon scheme
-//            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
-//            rainNowIcon.image = UIImage(named: rainIconImage)!
             
             if (todayArray.precipType == GlobalConstants.PrecipitationType.Rain) {
-                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
+                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "", weatherStats: todayArray)
                 rainNowIcon.image = UIImage(named: rainIconImage)!
             }
             else if (todayArray.precipType == GlobalConstants.PrecipitationType.Sleet) {
-                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "")
+                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "", weatherStats: todayArray)
                 rainNowIcon.image = UIImage(named: rainIconImage)!
             }
             else if (todayArray.precipType == GlobalConstants.PrecipitationType.Snow) {
-                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "")
+                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "", weatherStats: todayArray)
                 rainNowIcon.image = UIImage(named: rainIconImage)!
             }
             else {
                 // Default
-                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
+                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "", weatherStats: todayArray)
                 rainNowIcon.image = UIImage(named: rainIconImage)!
             }
 
@@ -901,10 +902,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                     sunsetTimeStamp = days.sunsetTimeStamp as NSDate?
                     
                     // Populate with the correct sunrise/sunset icon scheme
-                    let sunriseIconImage = Utility.getWeatherIcon(serviceIcon: "SUNRISE", dayOrNight: "")
+                    let sunriseIconImage = Utility.getWeatherIcon(serviceIcon: "SUNRISE", dayOrNight: "", weatherStats: todayArray)
                     sunriseIcon.image = UIImage(named: sunriseIconImage)!
                     
-                    let sunsetIconImage = Utility.getWeatherIcon(serviceIcon: "SUNSET", dayOrNight: "")
+                    let sunsetIconImage = Utility.getWeatherIcon(serviceIcon: "SUNSET", dayOrNight: "", weatherStats: todayArray)
                     sunsetIcon.image = UIImage(named: sunsetIconImage)!
 
                 }
@@ -934,6 +935,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                 isItDayOrNight = "DAY"
             }
 
+            // Set the variable at the parent view controller level
+//            parentDayOrNight = isItDayOrNight
+
             // Populate the weather image
             let icon = todayArray.icon
             let enumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
@@ -957,7 +961,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             // Populate the weather icons
             
             let weatherIconEnumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
-            let weatherIconName = Utility.getWeatherIcon(serviceIcon: (weatherIconEnumVal?.rawValue)!, dayOrNight: isItDayOrNight)
+            let weatherIconName = Utility.getWeatherIcon(serviceIcon: (weatherIconEnumVal?.rawValue)!, dayOrNight: isItDayOrNight, weatherStats: todayArray)
             
             //if String(weatherIconName).isEmpty != nil {
             if !(String(weatherIconName).isEmpty) {
@@ -1266,20 +1270,20 @@ extension TodayTabVC : UITableViewDataSource {
             
             // Populate with the correct rain icon scheme
             if (hourWeather?.precipType == GlobalConstants.PrecipitationType.Rain) {
-                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
+                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "", weatherStats: hourWeather!)
                 cell.rainIcon.image = UIImage(named: rainIconImage)!
             }
             else if (hourWeather?.precipType == GlobalConstants.PrecipitationType.Sleet) {
-                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "")
+                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "", weatherStats: hourWeather!)
                 cell.rainIcon.image = UIImage(named: rainIconImage)!
             }
             else if (hourWeather?.precipType == GlobalConstants.PrecipitationType.Snow) {
-                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "")
+                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "", weatherStats: hourWeather!)
                 cell.rainIcon.image = UIImage(named: rainIconImage)!
             }
             else {
                 // Default
-                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
+                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "", weatherStats: hourWeather!)
                 cell.rainIcon.image = UIImage(named: rainIconImage)!
             }
 
@@ -1312,7 +1316,7 @@ extension TodayTabVC : UITableViewDataSource {
         if (Int((hourWeather?.windSpeed!)!) > GlobalConstants.WindStrengthThreshold) {
             
             // Populate with the correct wind icon scheme
-            let windyIconImage = Utility.getWeatherIcon(serviceIcon: "WINDY", dayOrNight: "")
+            let windyIconImage = Utility.getWeatherIcon(serviceIcon: "WINDY", dayOrNight: "", weatherStats: hourWeather!)
             cell.windyIcon.image = UIImage(named: windyIconImage)!
             
             cell.windyIcon.isHidden = false
@@ -1322,7 +1326,7 @@ extension TodayTabVC : UITableViewDataSource {
         }
         
         let icon = hourWeather?.icon
-        let iconName = Utility.getWeatherIcon(serviceIcon: icon!, dayOrNight: dayOrNight)
+        let iconName = Utility.getWeatherIcon(serviceIcon: icon!, dayOrNight: dayOrNight, weatherStats: hourWeather!)
         
         if iconName != "" {
             cell.summaryIcon.image = UIImage(named: iconName)!
@@ -1363,11 +1367,11 @@ extension TodayTabVC : UITableViewDataSource {
             }
 
             
-            let lWeatherIcon = Utility.getWeatherIcon(serviceIcon: icon!, scheme: GlobalConstants.ColourScheme.Light, dayOrNight: dayOrNight)
+            let lWeatherIcon = Utility.getWeatherIcon(serviceIcon: icon!, scheme: GlobalConstants.ColourScheme.Light, dayOrNight: dayOrNight, weatherStats: hourWeather!)
             cell.summaryIcon.image = UIImage(named: lWeatherIcon)!
             
             // Populate with the correct wind icon scheme
-            let lWindyIconImage = Utility.getWeatherIcon(serviceIcon: "WINDY", scheme: GlobalConstants.ColourScheme.Light, dayOrNight: dayOrNight)
+            let lWindyIconImage = Utility.getWeatherIcon(serviceIcon: "WINDY", scheme: GlobalConstants.ColourScheme.Light, dayOrNight: dayOrNight, weatherStats: hourWeather!)
             cell.windyIcon.image = UIImage(named: lWindyIconImage)!
 
         }
@@ -1481,7 +1485,7 @@ extension TodayTabVC : UITableViewDataSource {
             let dayOrNight = (isDayTime(dateTime: hourTimeStamp!) ? "DAY" : "NIGHT")
 
             let icon = hourWeather?.icon
-            let iconName = Utility.getWeatherIcon(serviceIcon: icon!, dayOrNight: dayOrNight)
+            let iconName = Utility.getWeatherIcon(serviceIcon: icon!, dayOrNight: dayOrNight, weatherStats: hourWeather!)
             
             if iconName != "" {
                 hourWeatherIcon.image = UIImage(named: iconName)!
@@ -1496,7 +1500,7 @@ extension TodayTabVC : UITableViewDataSource {
                 hourSunriseSunsetIcon.isHidden = false
                 hourSunriseSunsetLabel.isHidden = false
 
-                let sunriseIconImage = Utility.getWeatherIcon(serviceIcon: "SUNRISE", dayOrNight: "")
+                let sunriseIconImage = Utility.getWeatherIcon(serviceIcon: "SUNRISE", dayOrNight: "", weatherStats: hourWeather!)
                 hourSunriseSunsetIcon.image = UIImage(named: sunriseIconImage)!
                 hourSunriseSunsetLabel.text = String(sunriseTimeStamp!.shortTimeString())
             }
@@ -1504,7 +1508,7 @@ extension TodayTabVC : UITableViewDataSource {
                 hourSunriseSunsetIcon.isHidden = false
                 hourSunriseSunsetLabel.isHidden = false
 
-                let sunsetIconImage = Utility.getWeatherIcon(serviceIcon: "SUNSET", dayOrNight: "")
+                let sunsetIconImage = Utility.getWeatherIcon(serviceIcon: "SUNSET", dayOrNight: "", weatherStats: hourWeather!)
                 hourSunriseSunsetIcon.image = UIImage(named: sunsetIconImage)!
                 hourSunriseSunsetLabel.text = String(sunsetTimeStamp!.shortTimeString())
             }

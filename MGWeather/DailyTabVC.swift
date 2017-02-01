@@ -1,4 +1,4 @@
-//
+ //
 //  DailyTabVC.swift
 //  Weather
 //
@@ -406,8 +406,18 @@ extension DailyTabVC : UITableViewDataSource {
         // Only show if in alert time range
         
         if (dailyWeather?.weatherAlert == true) {
+        
+            let tomorrow = dayWeather.dateAndTimeStamp?.add(minutes: 720)
+            let today = dayWeather.dateAndTimeStamp
             
-            if (dayWeather.dateAndTimeStamp?.isBetweeen(date: weatherAlertEndTime!, andDate: weatherAlertStartTime!))! {
+            // Check to see if the alert start of end time is in day dange also
+            if (dayWeather.dateAndTimeStamp?.isBetweeen(date: weatherAlertEndTime!,
+                                                        andDate: weatherAlertStartTime!))!
+                ||
+                (weatherAlertStartTime?.isBetweeen(date: tomorrow! as NSDate, andDate: today!))!
+                ||
+                (weatherAlertEndTime?.isBetweeen(date: tomorrow! as NSDate, andDate: today!))!
+            {
                 cell.weatherAlertIcon.isHidden = false
             }
             else {
@@ -447,7 +457,7 @@ extension DailyTabVC : UITableViewDataSource {
         }
         
         let icon = dayWeather.icon
-        let iconName = Utility.getWeatherIcon(serviceIcon: icon!, dayOrNight: "")
+        let iconName = Utility.getWeatherIcon(serviceIcon: icon!, dayOrNight: "", weatherStats: dayWeather)
 
         if iconName != "" {
             cell.dailyWeatherIcon.image = UIImage(named: iconName)!
@@ -477,32 +487,32 @@ extension DailyTabVC : UITableViewDataSource {
         // Populate with the correct rain icon scheme
         
         if (dayWeather.precipType == GlobalConstants.PrecipitationType.Rain) {
-            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
+            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "", weatherStats: dayWeather)
             cell.rainIcon.image = UIImage(named: rainIconImage)!
         }
         else if (dayWeather.precipType == GlobalConstants.PrecipitationType.Sleet) {
-            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "")
+            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "", weatherStats: dayWeather)
             cell.rainIcon.image = UIImage(named: rainIconImage)!
         }
         else if (dayWeather.precipType == GlobalConstants.PrecipitationType.Snow) {
-            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "")
+            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "", weatherStats: dayWeather)
             cell.rainIcon.image = UIImage(named: rainIconImage)!
         }
         else {
             // Default
-            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "")
+            let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "", weatherStats: dayWeather)
             cell.rainIcon.image = UIImage(named: rainIconImage)!
         }
 
         // Populate with the correct windy icon scheme
-        let windyIconImage = Utility.getWeatherIcon(serviceIcon: "WINDY", dayOrNight: "")
+        let windyIconImage = Utility.getWeatherIcon(serviceIcon: "WINDY", dayOrNight: "", weatherStats: dayWeather)
         cell.windyIcon.image = UIImage(named: windyIconImage)!
 
         // Populate with the correct sunrise/sunset icon scheme
-        let sunriseIconImage = Utility.getWeatherIcon(serviceIcon: "SUNRISE", dayOrNight: "")
+        let sunriseIconImage = Utility.getWeatherIcon(serviceIcon: "SUNRISE", dayOrNight: "", weatherStats: dayWeather)
         cell.sunriseIcon.image = UIImage(named: sunriseIconImage)!
 
-        let sunsetIconImage = Utility.getWeatherIcon(serviceIcon: "SUNSET", dayOrNight: "")
+        let sunsetIconImage = Utility.getWeatherIcon(serviceIcon: "SUNSET", dayOrNight: "", weatherStats: dayWeather)
         cell.sunsetIcon.image = UIImage(named: sunsetIconImage)!
         
         

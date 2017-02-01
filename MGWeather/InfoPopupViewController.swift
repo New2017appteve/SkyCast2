@@ -22,6 +22,7 @@ class InfoPopupViewController: UIViewController {
     @IBOutlet weak var outerView: UIView!
     @IBOutlet weak var weatherImage : UIImageView!
     @IBOutlet weak var alertInfoOuterView: UIView!
+    @IBOutlet weak var alertSeverity: UILabel!
     @IBOutlet weak var informationText: UITextView!
     @IBOutlet weak var weatherAlertSourceButtonOuterView: UIView!
     @IBOutlet weak var weatherAlertSourceButton: UIButton!
@@ -30,6 +31,7 @@ class InfoPopupViewController: UIViewController {
     @IBOutlet weak var bannerView: GADBannerView!
 
     var informationString : String!
+    var informationSeverity : String!
     var informationTitleString : String!
     var weatherAlertSourceURL : String!
     
@@ -60,7 +62,17 @@ class InfoPopupViewController: UIViewController {
 
         alertInfoOuterView.layer.cornerRadius = 10.0
         alertInfoOuterView.clipsToBounds = true
+        alertSeverity.layer.cornerRadius = 2.0
+        alertSeverity.clipsToBounds = true
         
+        if (informationSeverity != "") {
+            shadeSeverityLabel()
+            alertSeverity.isHidden = false
+            alertSeverity.text = informationSeverity.capitalized
+        }
+        else {
+            alertSeverity.isHidden = true
+        }
         informationText.text = informationString
         
         setupColourScheme()
@@ -70,6 +82,25 @@ class InfoPopupViewController: UIViewController {
         }
     }
     
+    func shadeSeverityLabel() {
+        
+        /*
+         "Advisory" (an individual should be aware of potentially severe weather)
+         "Watch" (an individual should prepare for potentially severe weather)
+         "Warning" (and individual should take immediate action to protect themselves and others from potentially severe weather).
+        */
+        
+        switch (informationSeverity) {
+        case "advisory":
+            alertSeverity.backgroundColor = GlobalConstants.WeatherWarning.Advisory
+        case "watch":
+            alertSeverity.backgroundColor = GlobalConstants.WeatherWarning.Watch
+        case "warning":
+            alertSeverity.backgroundColor = GlobalConstants.WeatherWarning.Warning
+        default:
+            alertSeverity.backgroundColor = GlobalConstants.WeatherWarning.Advisory
+        }
+    }
     func setupColourScheme() {
         
         // Setup pods and text colour accordingly
@@ -82,6 +113,7 @@ class InfoPopupViewController: UIViewController {
        
         // Labels
         informationText.textColor = textColourScheme
+//        alertSeverity.textColor = textColourScheme
         
         // Pods
         alertInfoOuterView.backgroundColor = podColourScheme

@@ -70,6 +70,24 @@ class WeatherStats: NSObject {
 
         if let lSummary  = weatherDict["summary"] as? String {
             summary = lSummary
+            // Attempt to find out how heavy the perciptation is
+            
+            if lSummary.lowercased().range(of: "drizzle") != nil {
+                percipDecodedIntensity = GlobalConstants.PrecipitationIntensity.Light
+            }
+
+            else if lSummary.lowercased().range(of: "light rain") != nil {
+                percipDecodedIntensity = GlobalConstants.PrecipitationIntensity.Medium
+            }
+
+            else if lSummary.lowercased().range(of: "rain") != nil {
+                percipDecodedIntensity = GlobalConstants.PrecipitationIntensity.Heavy
+            }
+
+            else {
+                percipDecodedIntensity = GlobalConstants.PrecipitationIntensity.Medium
+            }
+            
         }
   
         if let lIcon  = weatherDict["icon"] as? String {
@@ -121,15 +139,16 @@ class WeatherStats: NSObject {
             
             // Attempt to find out how heavy the perciptation is
             
-            if (lPrecipIntensity > 0.00 && lPrecipIntensity <= 0.26) {
-                percipDecodedIntensity = "LIGHT"
-            }
-            else if (lPrecipIntensity > 0.27 && lPrecipIntensity < 0.70) {
-                percipDecodedIntensity = "MEDIUM"
-            }
-            else {
-                percipDecodedIntensity = "HEAVY"
-            }
+//            if (lPrecipIntensity > 0.00 && lPrecipIntensity <= 0.26) {
+//                percipDecodedIntensity = GlobalConstants.PrecipitationIntensity.Light
+//            }
+//            else if (lPrecipIntensity > 0.27 && lPrecipIntensity < 0.70) {
+//                percipDecodedIntensity = GlobalConstants.PrecipitationIntensity.Medium
+//            }
+//            else {
+//                percipDecodedIntensity = GlobalConstants.PrecipitationIntensity.Heavy
+//            }
+//            
        }
         
         if let lPrecipIntensityMax  = weatherDict["precipIntensityMax"] as? Float {

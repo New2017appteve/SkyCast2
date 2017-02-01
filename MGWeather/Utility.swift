@@ -15,7 +15,8 @@ class Utility: NSObject {
         
     }
  
-    class func getWeatherIcon(serviceIcon : String) -> String {
+    class func getWeatherIcon(serviceIcon : String,
+                              weatherStats : WeatherStats) -> String {
         
         var iconName : String!
         
@@ -27,7 +28,7 @@ class Utility: NSObject {
             scheme = GlobalConstants.DefaultColourScheme  // Dark
         }
         
-        iconName = getWeatherIcon(serviceIcon: serviceIcon, scheme: scheme!, dayOrNight: "" )
+        iconName = getWeatherIcon(serviceIcon: serviceIcon, scheme: scheme!, dayOrNight: "", weatherStats: weatherStats)
         
         return iconName
     }
@@ -35,7 +36,10 @@ class Utility: NSObject {
     // Overloaded function, pass in if time is Day or Night so we can get correct icons
     // where necessary.
 
-    class func getWeatherIcon(serviceIcon : String, scheme : String, dayOrNight : String) -> String {
+    class func getWeatherIcon(serviceIcon : String,
+                              scheme : String,
+                              dayOrNight : String,
+                              weatherStats : WeatherStats) -> String {
 
         var iconName : String!
         var lDayOrNight : String!
@@ -57,7 +61,23 @@ class Utility: NSObject {
             case "clear-night" :
                 iconName = GlobalConstants.WeatherIcon.clearNight
             case "rain" :
-                iconName = GlobalConstants.WeatherIcon.rain
+                
+                let intensity = weatherStats.percipDecodedIntensity! as String
+                // Determine the itensity of the rain
+                switch intensity {
+                case GlobalConstants.PrecipitationIntensity.Light :
+                    iconName = GlobalConstants.WeatherIcon.lightRain
+                    
+                case GlobalConstants.PrecipitationIntensity.Medium :
+                    iconName = GlobalConstants.WeatherIcon.rain
+                
+                case GlobalConstants.PrecipitationIntensity.Heavy :
+                    iconName = GlobalConstants.WeatherIcon.heavyRain
+                
+                default :
+                    iconName = GlobalConstants.WeatherIcon.rain
+                }
+                
             case "snow":
                 iconName = GlobalConstants.WeatherIcon.snow
             case "sleet":
@@ -101,7 +121,24 @@ class Utility: NSObject {
             case "clear-night" :
                 iconName = GlobalConstants.WeatherIcon.clearNight_White
             case "rain" :
-                iconName = GlobalConstants.WeatherIcon.rain_White
+                
+                let intensity = weatherStats.percipDecodedIntensity! as String
+                // Determine the itensity of the rain
+                switch intensity {
+                case GlobalConstants.PrecipitationIntensity.Light :
+                    iconName = GlobalConstants.WeatherIcon.lightRain_White
+                    
+                case GlobalConstants.PrecipitationIntensity.Medium :
+                    iconName = GlobalConstants.WeatherIcon.rain_White
+                    
+                case GlobalConstants.PrecipitationIntensity.Heavy :
+                    iconName = GlobalConstants.WeatherIcon.heavyRain_White
+                    
+                default :
+                    iconName = GlobalConstants.WeatherIcon.rain_White
+                }
+
+//                iconName = GlobalConstants.WeatherIcon.rain_White
             case "snow":
                 iconName = GlobalConstants.WeatherIcon.snow_White
             case "sleet":
@@ -145,7 +182,9 @@ class Utility: NSObject {
     
     // Overloaded function, pass in if time is Day or Night so we can get correct icons
     // where necessary.
-    class func getWeatherIcon(serviceIcon : String, dayOrNight : String) -> String {
+    class func getWeatherIcon(serviceIcon : String,
+                              dayOrNight : String,
+                              weatherStats : WeatherStats) -> String {
         
         var iconName : String!
         
@@ -157,7 +196,7 @@ class Utility: NSObject {
             scheme = GlobalConstants.DefaultColourScheme  // Dark
         }
         
-        iconName = getWeatherIcon(serviceIcon: serviceIcon, scheme: scheme!, dayOrNight: dayOrNight )
+        iconName = getWeatherIcon(serviceIcon: serviceIcon, scheme: scheme!, dayOrNight: dayOrNight, weatherStats: weatherStats )
         
         return iconName
     }

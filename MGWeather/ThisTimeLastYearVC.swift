@@ -361,10 +361,10 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
                     sunsetTimeStamp = days.sunsetTimeStamp as NSDate?
                     
                     // Populate with the correct sunrise/sunset icon scheme
-                    let sunriseIconImage = Utility.getWeatherIcon(serviceIcon: "SUNRISE", dayOrNight: "")
+                    let sunriseIconImage = Utility.getWeatherIcon(serviceIcon: "SUNRISE", dayOrNight: "", weatherStats: days)
                     sunriseIcon.image = UIImage(named: sunriseIconImage)!
                     
-                    let sunsetIconImage = Utility.getWeatherIcon(serviceIcon: "SUNSET", dayOrNight: "")
+                    let sunsetIconImage = Utility.getWeatherIcon(serviceIcon: "SUNSET", dayOrNight: "", weatherStats: days)
                     sunsetIcon.image = UIImage(named: sunsetIconImage)!
                     
                 }
@@ -377,8 +377,9 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
                     tomorrowSunriseTimeStamp = days.sunriseTimeStamp as NSDate?
                     tomorrowSunsetTimeStamp = days.sunsetTimeStamp as NSDate?
                 }
-            }
+            }  // days
             
+            // Get the summary from the Hourly sumary
             let hourlyBreakdown = dailyWeather?.hourBreakdown
             todaySummary.text = hourlyBreakdown?.summary
             
@@ -404,13 +405,13 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
             // Populate the weather icons
             
             let weatherIconEnumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
-            let weatherIconName = Utility.getWeatherIcon(serviceIcon: (weatherIconEnumVal?.rawValue)!, dayOrNight: inDayOrNight!)
+            let weatherIconName = Utility.getWeatherIcon(serviceIcon: (weatherIconEnumVal?.rawValue)!, dayOrNight: inDayOrNight!, weatherStats: todayArray)
             
             if !(String(weatherIconName).isEmpty) {
                 currentWeatherIcon.image = UIImage(named: weatherIconName)!
             }
             
-        }
+        }  // todayArray
         
     }
 
