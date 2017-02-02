@@ -16,6 +16,7 @@ class WeatherAlerts: NSObject {
     var alertExpiryDateAndTimeStamp : NSDate?
     var alertDescription : String?
     var alertSeverity : String?
+    var alertRegions : NSArray?
     var uri : String?
     
     override init(){
@@ -53,6 +54,12 @@ class WeatherAlerts: NSObject {
             alertSeverity = lAlertSeverity
         }
         
+        if let lAlertRegions = weatherDict["regions"] as? NSArray {
+            print("...regions dict")
+            
+            alertRegions = lAlertRegions
+        }
+
         if let lUri  = weatherDict["uri"] as? String {
             uri = lUri
         }

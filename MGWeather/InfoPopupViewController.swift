@@ -30,6 +30,7 @@ class InfoPopupViewController: UIViewController {
     /// The banner view.
     @IBOutlet weak var bannerView: GADBannerView!
 
+    var informationRegions : NSArray!
     var informationString : String!
     var informationSeverity : String!
     var informationTitleString : String!
@@ -60,11 +61,16 @@ class InfoPopupViewController: UIViewController {
     
     func initialScreenSetup () {
 
+        let effectedRegionsCount = informationRegions.count - 1
+        var regionString = ""
+        var region = ""
+
         alertInfoOuterView.layer.cornerRadius = 10.0
         alertInfoOuterView.clipsToBounds = true
         alertSeverity.layer.cornerRadius = 2.0
         alertSeverity.clipsToBounds = true
         
+        // Show the severity of the alert
         if (informationSeverity != "") {
             shadeSeverityLabel()
             alertSeverity.isHidden = false
@@ -73,7 +79,20 @@ class InfoPopupViewController: UIViewController {
         else {
             alertSeverity.isHidden = true
         }
-        informationText.text = informationString
+        
+        // Say which regions are effected by the alert
+        for regionCount in 0...effectedRegionsCount {
+            
+            region = informationRegions[regionCount] as! String
+            regionString = regionString + region + ", "
+        }
+
+        if effectedRegionsCount > 0  {
+            informationText.text = informationString + "Effected areas: " + regionString
+        }
+        else {
+            informationText.text = informationString
+        }
         
         setupColourScheme()
 

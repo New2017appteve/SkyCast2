@@ -445,6 +445,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             var weatherAlertDescription = ""
             var alertSeverity = ""
             var weatherAlertURL = ""
+            var alertRegions : NSArray!
             
             // If weather alert, enable the button so user can bring up alert text view
             
@@ -470,6 +471,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                     weatherAlertURL = dailyWeather.weatherAlerts[i].uri!
                     weatherAlertDescription = alertTimeDescription + "\r\n\n" + dailyWeather.weatherAlerts[i].alertDescription! + "\r\n\n"
                     alertSeverity = dailyWeather.weatherAlerts[i].alertSeverity!
+                    alertRegions = dailyWeather.weatherAlerts[i].alertRegions
                 }
             }
             else {
@@ -483,6 +485,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             vc.informationString = weatherAlertDescription
             vc.weatherAlertSourceURL = weatherAlertURL
             vc.informationSeverity = alertSeverity
+            vc.informationRegions = alertRegions
             
         }
         
