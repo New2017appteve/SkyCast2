@@ -17,6 +17,7 @@ protocol TodayTabVCDelegate
     func refreshLocationAndWeatherData()
     func returnRefreshedLocationDetails() -> Location
     func returnRefreshedWeatherDetails() -> Weather
+    func setupDayOrNightIndicator(dayOrNight : String)
 }
 
 class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
@@ -59,6 +60,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     @IBOutlet weak var infoLabel : UILabel!
     
     @IBOutlet weak var nowLabel : UILabel!
+    @IBOutlet weak var nowWeatherAlertIcon : UIImageView!
     @IBOutlet weak var currentTempView : UIView!
     @IBOutlet weak var currentTempDetailView : UIView!
     @IBOutlet weak var currentTemp : UILabel!
@@ -162,6 +164,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         bannerOuterView.isHidden = true
 
         setupColourScheme()
+        checkWhatsNew()
     }
     
 
@@ -489,6 +492,13 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             
         }
         
+        if (segue.identifier == "ChangeLogSegueToday") {
+            
+            let vc:ChangeLogViewController = segue.destination as! ChangeLogViewController
+            vc.startupMode = "STARTUP"
+        }
+
+        
     }
 
     // Display screen functions
@@ -497,7 +507,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         infoLabelTimerCount = 0
         weatherDetailsTimerCount = 0
         
-        _ = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(updateWeatherDetailsOnScreen), userInfo: nil, repeats: true)
+        _ = Timer.scheduledTimer(timeInterval: 4.0, target: self, selector: #selector(updateWeatherDetailsOnScreen), userInfo: nil, repeats: true)
 
     }
     
@@ -870,6 +880,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                 }
             }
 
+            if (dailyWeather?.weatherAlert == true) {
+                getWeatherAlertStartAndEndTimes()
+            }
             
             // Min Temp, Max Temp, Sunrise and Sunset we can get from the 'daily' figures
             
@@ -910,6 +923,29 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                     
                     let sunsetIconImage = Utility.getWeatherIcon(serviceIcon: "SUNSET", dayOrNight: "", weatherStats: todayArray)
                     sunsetIcon.image = UIImage(named: sunsetIconImage)!
+                    
+                    if (dailyWeather?.weatherAlert == true) {
+                        
+                        let tomorrow = days.dateAndTimeStamp?.add(minutes: 720)
+                        let today = days.dateAndTimeStamp
+                        
+                        // Check to see if the alert start of end time is in day dange also
+                        if (days.dateAndTimeStamp?.isBetweeen(date: weatherAlertEndTime!,
+                                                                    andDate: weatherAlertStartTime!))!
+                            ||
+                            (weatherAlertStartTime?.isBetweeen(date: tomorrow! as NSDate, andDate: today!))!
+                            ||
+                            (weatherAlertEndTime?.isBetweeen(date: tomorrow! as NSDate, andDate: today!))!
+                        {
+                            nowWeatherAlertIcon.isHidden = false
+                        }
+                        else {
+                            nowWeatherAlertIcon.isHidden = true
+                        }
+                    }
+                    else {
+                        nowWeatherAlertIcon.isHidden = true
+                    }
 
                 }
                 
@@ -939,7 +975,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             }
 
             // Set the variable at the parent view controller level
-//            parentDayOrNight = isItDayOrNight
+            delegate?.setupDayOrNightIndicator(dayOrNight: isItDayOrNight)
 
             // Populate the weather image
             let icon = todayArray.icon
@@ -984,13 +1020,14 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                 weatherAlertTitle.text = "Weather Alert"
                 weatherAlertButton.setImage(UIImage(named: "Alert"), for: UIControlState.normal)
                 
-                getWeatherAlertStartAndEndTimes()
+              //  getWeatherAlertStartAndEndTimes()
             }
             else {
                 weatherAlertButton.isHidden = true
                 bigWeatherAlertButton.isHidden = true
                 weatherAlertTitle.isHidden = true
             }
+
         }
         
     }
@@ -1143,6 +1180,30 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     func hideHourWeatherDisplay () {
         
         closeHourDetailDisplay()
+    }
+    
+    // MARK:  Whats New Methods
+
+    func checkWhatsNew() {
+        
+        let userDefaults = UserDefaults.standard
+        
+        let lastAppVersion = userDefaults.string(forKey: GlobalConstants.Defaults.WhatsNewLastVersion)
+        let currentAppVersion = Utility.getBuildVersion()
+        
+        if lastAppVersion != currentAppVersion {
+            
+            // Set timer, which will launch the What's New screen
+            _ = Timer.scheduledTimer(timeInterval: 4.0, target: self, selector: #selector(showWhatsNew), userInfo: nil, repeats: false)
+        }
+    }
+    
+    func showWhatsNew() {
+    
+        DispatchQueue.main.async {
+            self.performSegue(withIdentifier: "ChangeLogSegueToday", sender: self)
+        }
+
     }
     
     // MARK:  Notification complete methods

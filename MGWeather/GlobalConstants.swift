@@ -66,7 +66,7 @@ class GlobalConstants: NSObject {
     static var DarkerBlue = UIColor(red: 154/255, green: 181/255, blue: 224/255, alpha: 0.95)
     static var LighterBlue = UIColor(red: 179/255, green: 202/255, blue: 239/255, alpha: 0.95)
 
-        // Day/Night colours for darker theme
+    // Day/Night colours for darker theme
     static var DarkerBlack = UIColor(red: 30/255, green: 30/255, blue: 30/255, alpha: 0.85)
     static var LighterBlack = UIColor(red: 70/255, green: 70/255, blue: 65/255, alpha: 0.85)
 
@@ -176,6 +176,7 @@ class GlobalConstants: NSObject {
         static let SavedDayOrNightColourSetting = "savedDayOrNightColourSetting"
         static let SavedColourScheme = "savedColourScheme"
         static let LastLoadedBackground = "lastLoadedBackground"
+        static let WhatsNewLastVersion = "whatsNewLastVersion"
     }
     
     // NSNotification Keys

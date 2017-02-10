@@ -1,0 +1,28 @@
+Version 1.1 - 10th February 2017
+
+- Added 'This Time Last Year' weather screen.
+- Clicking on each hour now displays a brief summary of the weather for that hour.
+- Improvements to Weather Alert screen.
+- Added extra rain icons to show intensity of rain (Drizzle, Light Rain, Rain).
+- Updated some photos.
+- Bug Fixes.
+
+
+
+Version 1.0.1 - 3rd January 2017
+
+- Added information to show windspeed and icon on the next 7 days screen, when the wind is above a certain speed
+- Minor bug fixes
+
+
+
+Version 1.0 - 22nd December 2016
+
+- Initial Version
+
+
+
+
+
+
+

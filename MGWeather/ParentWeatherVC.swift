@@ -47,7 +47,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     var currentViewController: UIViewController?
     
     var loadingMode = ""  // Can either be 'STARTUP' or 'REFRESHING"
-    var parentDayOrNight = ""  // DAY or NIGHT. Will be set from DailyTabVC and usd in ThisTimeLastYear
+    var parentDayOrNight = ""  // DAY or NIGHT. Will be set from DailyTabVC and used in ThisTimeLastYear
     
     lazy var firstChildTabVC: UIViewController? = {
         let firstChildTabVC = self.storyboard?.instantiateViewController(withIdentifier: "TodayTabVC") as! TodayTabVC
@@ -265,7 +265,12 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         titleBar.topItem?.titleView = titleLabel
 
     }
+    
+    func setupDayOrNightIndicator(dayOrNight : String) {
         
+        // Delegate method. called form DailyTabVC
+        parentDayOrNight = dayOrNight
+    }
     
     // MARK: - Switching Tabs Functions
     @IBAction func switchTabs(_ sender: AnyObject) {
@@ -792,9 +797,12 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             popover.popoverLayoutMargins = UIEdgeInsets(top: 10, left: 4, bottom: 10, right: 4)
         }
         
-        if (AppSettings.showTimelineAndLastYear) {
-            actionMenu.addAction(sunriseSunsetAction)
+        if (AppSettings.showThisTimeLastYear) {
             actionMenu.addAction(thisTimeLastYearAction)
+        }
+
+        if (AppSettings.showTimeline) {
+            actionMenu.addAction(sunriseSunsetAction)
         }
         
         actionMenu.addAction(showSettingsAction)

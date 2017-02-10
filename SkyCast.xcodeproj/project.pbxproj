@@ -17,6 +17,10 @@
 		C019DB211DF99ACA00B381F2 /* SunriseSunsetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C019DB201DF99ACA00B381F2 /* SunriseSunsetViewController.swift */; };
 		C019DB231DF9A08300B381F2 /* SunriseSunsetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C019DB221DF9A08300B381F2 /* SunriseSunsetCell.swift */; };
 		C019DB251DFE9C7600B381F2 /* LaunchScreenVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C019DB241DFE9C7600B381F2 /* LaunchScreenVC.swift */; };
+		C02E4DE01E48BC4E0012261B /* ChangeLog.txt in Resources */ = {isa = PBXBuildFile; fileRef = C02E4DDF1E48BC4E0012261B /* ChangeLog.txt */; };
+		C02E4DE21E4904C40012261B /* SkyCast ChangeLog.htm in Resources */ = {isa = PBXBuildFile; fileRef = C02E4DE11E4904C40012261B /* SkyCast ChangeLog.htm */; };
+		C02E4DE41E4905A00012261B /* ChangeLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C02E4DE31E4905A00012261B /* ChangeLogViewController.swift */; };
+		C02E4DE61E4A8C020012261B /* SkyCast WhatsNew.htm in Resources */ = {isa = PBXBuildFile; fileRef = C02E4DE51E4A8C020012261B /* SkyCast WhatsNew.htm */; };
 		C0617F881DD33BB60003B844 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0617F871DD33BB60003B844 /* AppSettings.swift */; };
 		C0EFA2CD1DCF9DA100D873E9 /* Reach.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EFA2CC1DCF9DA100D873E9 /* Reach.swift */; };
 		C7175A9C1D31683700788F09 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7175A9B1D31683700788F09 /* AppDelegate.swift */; };
@@ -63,6 +67,10 @@
 		C019DB201DF99ACA00B381F2 /* SunriseSunsetViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SunriseSunsetViewController.swift; sourceTree = "<group>"; };
 		C019DB221DF9A08300B381F2 /* SunriseSunsetCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SunriseSunsetCell.swift; sourceTree = "<group>"; };
 		C019DB241DFE9C7600B381F2 /* LaunchScreenVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LaunchScreenVC.swift; sourceTree = "<group>"; };
+		C02E4DDF1E48BC4E0012261B /* ChangeLog.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ChangeLog.txt; sourceTree = "<group>"; };
+		C02E4DE11E4904C40012261B /* SkyCast ChangeLog.htm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "SkyCast ChangeLog.htm"; sourceTree = "<group>"; };
+		C02E4DE31E4905A00012261B /* ChangeLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeLogViewController.swift; sourceTree = "<group>"; };
+		C02E4DE51E4A8C020012261B /* SkyCast WhatsNew.htm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "SkyCast WhatsNew.htm"; sourceTree = "<group>"; };
 		C0617F871DD33BB60003B844 /* AppSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		C0EFA2CC1DCF9DA100D873E9 /* Reach.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reach.swift; sourceTree = "<group>"; };
 		C7175A981D31683700788F09 /* SkyCast.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkyCast.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -145,6 +153,16 @@
 			name = Toast;
 			sourceTree = "<group>";
 		};
+		C02E4DDE1E48BC1F0012261B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C02E4DE51E4A8C020012261B /* SkyCast WhatsNew.htm */,
+				C02E4DE11E4904C40012261B /* SkyCast ChangeLog.htm */,
+				C02E4DDF1E48BC4E0012261B /* ChangeLog.txt */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		C7175A8F1D31683700788F09 = {
 			isa = PBXGroup;
 			children = (
@@ -167,6 +185,7 @@
 		C7175A9A1D31683700788F09 /* MGWeather */ = {
 			isa = PBXGroup;
 			children = (
+				C02E4DDE1E48BC1F0012261B /* Supporting Files */,
 				C003C60B1DC8CE790064CE86 /* Extensions */,
 				C730B9D31DAE3A1600872532 /* ObjC */,
 				C73F897E1DAE3527009FCC30 /* Utils */,
@@ -200,6 +219,7 @@
 				C74B946C1D4023B100BECDA3 /* AboutViewController.swift */,
 				C019DB201DF99ACA00B381F2 /* SunriseSunsetViewController.swift */,
 				C00766641E095E55000721D4 /* ThisTimeLastYearVC.swift */,
+				C02E4DE31E4905A00012261B /* ChangeLogViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -357,9 +377,12 @@
 			files = (
 				C7175AA61D31683700788F09 /* LaunchScreen.storyboard in Resources */,
 				C7175AC81D316A6A00788F09 /* sample_data_cippenham.json in Resources */,
+				C02E4DE61E4A8C020012261B /* SkyCast WhatsNew.htm in Resources */,
+				C02E4DE01E48BC4E0012261B /* ChangeLog.txt in Resources */,
 				C7175AA31D31683700788F09 /* Assets.xcassets in Resources */,
 				C7175AC91D316A6A00788F09 /* sample_data_cippenham2.json in Resources */,
 				C7175AA11D31683700788F09 /* Main.storyboard in Resources */,
+				C02E4DE21E4904C40012261B /* SkyCast ChangeLog.htm in Resources */,
 				C00F9ABA1DE65E3500E373EB /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -430,6 +453,7 @@
 				C770BD9F1D351E11007AD275 /* WeatherAlerts.swift in Sources */,
 				C019DB211DF99ACA00B381F2 /* SunriseSunsetViewController.swift in Sources */,
 				C0617F881DD33BB60003B844 /* AppSettings.swift in Sources */,
+				C02E4DE41E4905A00012261B /* ChangeLogViewController.swift in Sources */,
 				C7175AC41D316A3D00788F09 /* DailyWeatherCell.swift in Sources */,
 				C7FC062C1D75C82F00B6280B /* WeatherSegmentedControl.swift in Sources */,
 				C7C437641D798EDC00A6386D /* Utility.swift in Sources */,

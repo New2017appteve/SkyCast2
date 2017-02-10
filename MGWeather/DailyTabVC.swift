@@ -12,6 +12,7 @@ protocol DailyTabVCDelegate
 {
     func switchViewControllers()
     func returnRefreshedWeatherDetails() -> Weather
+    func setupDayOrNightIndicator(dayOrNight : String)
 }
 
 class DailyTabVC: UIViewController, GADBannerViewDelegate  {
@@ -197,7 +198,7 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
             }
 
             // Set the variable at the parent view controller level
-//            parentDayOrNight = isItDayOrNight
+            delegate?.setupDayOrNightIndicator(dayOrNight: isItDayOrNight)
             
             // Populate the weather image
             let icon = tmpDailyWeather.currentBreakdown.icon

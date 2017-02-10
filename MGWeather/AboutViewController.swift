@@ -29,6 +29,8 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
     @IBOutlet weak var iconSource: UITextView!
     @IBOutlet weak var photoSource: UITextView!
     
+    @IBOutlet weak var changeLogButton: UIButton!
+    
     /// The banner view.
     @IBOutlet weak var bannerView: GADBannerView!
     
@@ -77,6 +79,18 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        super.prepare(for: segue, sender: sender)
+        
+        if (segue.identifier == "ChangeLogSegue") {
+            
+            let vc:ChangeLogViewController = segue.destination as! ChangeLogViewController
+            vc.startupMode = "ABOUT_SCREEN"
+        }
+        
     }
     
     func setupScreen () {
@@ -225,10 +239,13 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
             let minorVersion = ProcessInfo.processInfo.operatingSystemVersion.minorVersion
             
             let iosVersion = String(majorVersion) + "." + String(minorVersion)
+            let appVersion = Utility.getBuildVersion()
             
             var messageBody = "<p>Device Type: " + deviceHardware + "</p>"
             messageBody = messageBody + "<p>iOS Version: " + iosVersion + "</p>"
+            messageBody = messageBody + "<p>App Version: " + appVersion + "</p>"
             
+            mail.setSubject("SkyCast Feedback")
             mail.setMessageBody(messageBody, isHTML: true)
             
             present(mail, animated: true)
@@ -237,8 +254,6 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
             
             let messageText = "Sorry, your device has not been set up to send emails."
             Utility.showMessage(titleString: "Email Error", messageString: messageText )
-            
-
 
         }
     }
@@ -250,6 +265,14 @@ class AboutViewController: UIViewController, MFMailComposeViewControllerDelegate
     @IBAction func backButtonPressed(_ sender: AnyObject) {
         // Dismiss view
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func changeLogButtonPressed(_ sender: AnyObject) {
+        print("Button Prssed")
+        
+        DispatchQueue.main.async {
+            self.performSegue(withIdentifier: "ChangeLogSegue", sender: self)
+        }
     }
 
 }
