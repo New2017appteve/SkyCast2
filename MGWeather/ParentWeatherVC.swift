@@ -723,6 +723,13 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                     
                 }
                 
+                if let countryCode = placeMark.addressDictionary?["CountryCode"] as? NSString
+                {
+                    self.weatherLocation.currentCountryCode = countryCode as String
+                    print(countryCode)
+                    
+                }
+                
                 DispatchQueue.main.async {
                     
                     self.view.hideToastActivity()

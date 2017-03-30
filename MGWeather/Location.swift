@@ -16,6 +16,7 @@ class Location: NSObject {
     var currentStreet: String?
     var currentCity: String?
     var currentCountry: String?
+    var currentCountryCode: String?
     
     var currentLocation: CLLocation?
 //    var compareLocation: CLLocation?
