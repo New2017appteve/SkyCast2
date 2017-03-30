@@ -370,6 +370,8 @@ class Utility: NSObject {
         var retVal = false
         
         let df = DateFormatter()
+        df.timeZone = NSTimeZone(abbreviation: "UTC") as TimeZone!  // Just for use in comparison
+
         df.dateFormat = "yyyy-MM-dd"  // Remove timestamp for comparison
         
         let compareDateString1 = df.string(from: date1 as Date)
@@ -425,7 +427,15 @@ class Utility: NSObject {
     
     class func getTimeInWeatherTimezone(dateAndTime: NSDate) -> NSDate {
         
-        let timezoneOffsetMinutes = GlobalConstants.timezoneOffset * 60
+//        let timezoneOffsetMinutes = GlobalConstants.timezoneOffset * 60
+//        let localDateTimeStamp = dateAndTime.add(minutes: timezoneOffsetMinutes)
+ 
+        // Use the IANA timezone from service since Offset will be deprecated
+        
+        let formatter = DateFormatter()
+        let timeZone = NSTimeZone(name: GlobalConstants.timezoneOffsetIANA) as TimeZone!
+        formatter.timeZone = timeZone as TimeZone!
+        let timezoneOffsetMinutes = (timeZone?.secondsFromGMT())! / 60
         let localDateTimeStamp = dateAndTime.add(minutes: timezoneOffsetMinutes)
         
         return localDateTimeStamp as NSDate

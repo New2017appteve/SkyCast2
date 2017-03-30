@@ -128,7 +128,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
 
         }
         
- //       getLatLngForZip(zipCode: "SL19HL")
+//        getLatLngForZip(zipCode: "SL19HL")
+        getLatLngForZip(zipCode: "AN")
     }
 
     
@@ -343,7 +344,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         
 // http://mhorga.org/2015/08/14/geocoding-in-ios.html
         
-        // NOTE:  Google Maps Geocoding API has to be ENABLES against project in Google
+        // NOTE:  Google Maps Geocoding API has to be ENABLED against project in Google
         
         let baseUrl = "https://maps.googleapis.com/maps/api/geocode/json?"
         let apikey = GlobalConstants.GoogleMapAPIKey
@@ -353,14 +354,16 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         let json = try! JSONSerialization.jsonObject(with: data! as Data, options: JSONSerialization.ReadingOptions.allowFragments) as! NSDictionary
         if let result = json["results"] as? NSArray {
             
-            let x = result[0]
-//            if let geometry = result[0]["geometry"] as? NSDictionary {
-//                if let location = geometry["location"] as? NSDictionary {
-//                    let latitude = location["lat"] as! Float
-//                    let longitude = location["lng"] as! Float
-//                    print("\n\(latitude), \(longitude)")
-  //              }
-//            }
+            let x = result[0] as? NSDictionary
+            
+            let address = x?["formatted_address"] as? String
+            if let geometry = x?["geometry"] as? NSDictionary {
+                if let location = geometry["location"] as? NSDictionary {
+                    let latitude = location["lat"] as! Float
+                    let longitude = location["lng"] as! Float
+                    print("\n\(latitude), \(longitude)" + " - " + address!)
+                }
+            }
         }
     }
     

@@ -23,6 +23,9 @@ extension NSDate {
 
     func shortDayMonthYear() -> String? {
         let dateFormatter = DateFormatter()
+        // Force timezone to UTC for conversion
+        dateFormatter.timeZone = NSTimeZone(abbreviation: "UTC") as TimeZone! // Just for use in comparison
+
         dateFormatter.dateFormat = "dd/MM/yy"
         return dateFormatter.string(from: self as Date)
     }
@@ -32,6 +35,9 @@ extension NSDate {
         //Get Long Date String
         let formatter = DateFormatter()
         formatter.dateStyle = .long
+        // Force timezone to UTC for conversion
+        formatter.timeZone = NSTimeZone(abbreviation: "UTC") as TimeZone! // Just for use in comparison
+
         let timeString = formatter.string(from: self as Date)
         
         //Return Long String
@@ -43,6 +49,9 @@ extension NSDate {
         //Get Short Time String
         let formatter = DateFormatter()
         formatter.timeStyle = .short //.ShortStyle
+        // Force timezone to UTC for conversion
+        formatter.timeZone = NSTimeZone(abbreviation: "UTC") as TimeZone!  // Just for use in comparison
+
         let timeString = formatter.string(from: self as Date)
         
         //Return Short Time String
@@ -54,16 +63,34 @@ extension NSDate {
         
         let formatter = DateFormatter()
         formatter.dateFormat = "h:mm a 'on' MMMM dd, yyyy"
-        //Get Short hour Time String
-        var hour = Calendar.current.component(.hour, from: self as Date)
-        if hour == 0 {
+        // Force timezone to UTC for conversion
+        formatter.timeZone = NSTimeZone(abbreviation: "UTC") as TimeZone!
+
+        let sformatter = DateFormatter()
+        sformatter.timeZone = NSTimeZone(abbreviation: "UTC") as TimeZone!
+        sformatter.dateFormat = "HH"
+        let ts = sformatter.string(from: self as Date)
+        
+        var hour = Int(ts)
+        if hour! == 0 {
             hour = 12
         }
-        
-        if hour > 12 {
-            hour = hour - 12
+    
+        if hour! > 12 {
+            hour = hour! - 12
         }
         
+
+        //Get Short hour Time String
+//        var hour = Calendar.current.component(.hour, from: self as Date)
+//        if hour == 0 {
+//            hour = 12
+//        }
+//        
+//        if hour > 12 {
+//            hour = hour - 12
+//        }
+
         // look for am or pm in string
         let dateString = formatter.string(from: self as Date)
         
@@ -76,7 +103,10 @@ extension NSDate {
         }
         
         //Return Short Time String
-        return String(hour) + amPm
+        
+        let hourString = "\(hour!)\(amPm)"
+        return hourString
+//        return String(hour) + amPm
     }
     
     func getDateSuffix() -> String {

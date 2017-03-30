@@ -4,8 +4,9 @@ Version 1.1 - 10th February 2017
 - Clicking on each hour now displays a brief summary of the weather for that hour.
 - Improvements to Weather Alert screen.
 - Added extra rain icons to show intensity of rain (Drizzle, Light Rain, Rain).
+- Added latest SkyCast changes screen and What's New.
 - Updated some photos.
-- Bug Fixes.
+- Bug fixes.
 
 
 

@@ -132,6 +132,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     private let cellId = "cellId"
     
     @IBOutlet weak var hourlyWeatherTableView : UITableView!
+    @IBOutlet weak var hourlyWeatherImage : UIImageView!
     
     // The banner views.
     @IBOutlet weak var bannerOuterView: UIView!
@@ -230,6 +231,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         
         bannerOuterView.isHidden = true
         closeBannerButton.isHidden = true  // Will only show once banner ad loaded
+
+        if (AppSettings.showHourWeatherImage == false) {
+            hourlyWeatherImage.isHidden = true
+        }
 
         let userDefaults = UserDefaults.standard
         dayOrNightColourSetting = userDefaults.string(forKey: GlobalConstants.Defaults.SavedDayOrNightColourSetting)
@@ -802,12 +807,38 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             feelsLikeTemp.text = "Feels Like: " + String(Int(round(todayArray.apparentTemperature! as Float))) + degreesSymbol
             
             // Inner Pod 2
+            
             let minuteBreakdown = dailyWeather?.minuteBreakdown
-            currentSummary.text = minuteBreakdown?.summary
+            
+            if (minuteBreakdown?.summary != nil) {
+                currentSummary.text = minuteBreakdown?.summary
+            }
+            else {
+                
+                // Use the short summary is no minute breakdown
+                currentSummary.text  = todayArray.summary
+                // No minute stats available for summary, check the hourly stats instead.
+                // Not ideal but better than nothing
+//                let hourBreakdown = dailyWeather?.hourBreakdown
+//
+//                if (hourBreakdown?.summary != nil) {
+//                    currentSummary.text = hourBreakdown?.summary
+//                }
+
+            }
 
             let minuteStats = minuteBreakdown?.minuteStats
-            let rainProbabilityNow = Int(round((minuteStats?[0].precipProbability!)!*100))
             
+            var minuteStatsFound = false
+            var rainProbabilityNow = 0
+            
+            if ((minuteStats?.count)! > 0) {
+                minuteStatsFound = true
+                rainProbabilityNow = Int(round((minuteStats?[0].precipProbability!)!*100))
+            }
+            else {
+                minuteStatsFound = false
+            }
             // Populate with the correct rain icon scheme
             
             if (todayArray.precipType == GlobalConstants.PrecipitationType.Rain) {
@@ -828,11 +859,17 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                 rainNowIcon.image = UIImage(named: rainIconImage)!
             }
 
-            rainProbabilityTitle.text = displayPrecipType + " Probability:"
-            
-            if (rainProbabilityNow > GlobalConstants.RainIconReportThresholdPercent) {
-                rainNowIcon.isHidden = false
-                rainNowProbability.text = String(rainProbabilityNow) + "%"
+            if (minuteStatsFound) {
+                rainProbabilityTitle.text = displayPrecipType + " Probability:"
+                
+                if (rainProbabilityNow > GlobalConstants.RainIconReportThresholdPercent) {
+                    rainNowIcon.isHidden = false
+                    rainNowProbability.text = String(rainProbabilityNow) + "%"
+                }
+                else {
+                    rainNowIcon.isHidden = true
+                    rainNowProbability.text = ""
+                }
             }
             else {
                 rainNowIcon.isHidden = true
@@ -861,23 +898,37 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                 currentWindspeed.text = currentWindspeed.text! + " " + windSpeedUnits + " " + windDirection
             }
             
-            let nearestRain = todayArray.nearestStormDistance!
-        
-            if (nearestRain == 0) {
-                nearestRainDistance.text = displayPrecipType + " nearby" //"Raining"
+            var nearestRain = 99999
+            var nearestRainFound = false
+            
+            if (todayArray.nearestStormDistance != nil) {
+                nearestRain = todayArray.nearestStormDistance!
+                nearestRainFound = true
             }
-            else if (nearestRain > 0 && nearestRain <= GlobalConstants.RainDistanceReportThreshold) {
-                nearestRainDistance.text = displayPrecipType + " nearby"
+            else {
+                nearestRainFound = false
             }
-            else if (nearestRain > GlobalConstants.RainDistanceReportThreshold) {
-                let rainUnits = todayArray.nearestStormDistanceUnits
-                
-                // TODO: Tidy up string concat
-                
-                if ( !(rainDirection.isEmpty) || rainDirection != "") {
-                    nearestRainDistance.text = displayPrecipType + " " + String(todayArray.nearestStormDistance!) + " "
-                    nearestRainDistance.text = nearestRainDistance.text! + rainUnits! + " " + rainDirection
+            
+            if (nearestRainFound) {
+                if (nearestRain == 0) {
+                    nearestRainDistance.text = displayPrecipType + " nearby" //"Raining"
                 }
+                else if (nearestRain > 0 && nearestRain <= GlobalConstants.RainDistanceReportThreshold) {
+                    nearestRainDistance.text = displayPrecipType + " nearby"
+                }
+                else if (nearestRain > GlobalConstants.RainDistanceReportThreshold) {
+                    let rainUnits = todayArray.nearestStormDistanceUnits
+                    
+                    // TODO: Tidy up string concat
+                    
+                    if ( !(rainDirection.isEmpty) || rainDirection != "") {
+                        nearestRainDistance.text = displayPrecipType + " " + String(todayArray.nearestStormDistance!) + " "
+                        nearestRainDistance.text = nearestRainDistance.text! + rainUnits! + " " + rainDirection
+                    }
+                }
+            }
+            else {
+                nearestRainDistance.text = ""
             }
 
             if (dailyWeather?.weatherAlert == true) {
@@ -912,10 +963,23 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                     humidity.text = String(Int(round(days.humidity!*100))) + "%"
                     rainProbability.text = String(Int(round(days.precipProbability!*100))) + "%"
                     
-                    sunrise.text = String(days.sunriseTimeStamp!.shortTimeString())
-                    sunset.text = String(days.sunsetTimeStamp!.shortTimeString())
-                    sunriseTimeStamp = days.sunriseTimeStamp as NSDate?
-                    sunsetTimeStamp = days.sunsetTimeStamp as NSDate?
+                    if (days.sunriseTimeStamp != nil) {
+                        sunrise.text = String(days.sunriseTimeStamp!.shortTimeString())
+                        sunriseTimeStamp = days.sunriseTimeStamp as NSDate?
+                    }
+                    else {
+                        sunrise.text = ""
+                        sunriseTimeStamp = nil
+                    }
+                    
+                    if (days.sunsetTimeStamp != nil) {
+                        sunset.text = String(days.sunsetTimeStamp!.shortTimeString())
+                        sunsetTimeStamp = days.sunsetTimeStamp as NSDate?
+                    }
+                    else {
+                        sunset.text = ""
+                        sunsetTimeStamp = nil
+                    }
                     
                     // Populate with the correct sunrise/sunset icon scheme
                     let sunriseIconImage = Utility.getWeatherIcon(serviceIcon: "SUNRISE", dayOrNight: "", weatherStats: todayArray)
@@ -1050,7 +1114,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     
     func isDayTime (dateTime : NSDate) -> Bool {
         
-        var retVal : Bool!
+        var retVal = false
         
         // Calculate whether current time is in the day or the night
         // Look at tomorrows sunrise and sunset times too incase the results span days
@@ -1113,6 +1177,11 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         weatherDetailView.isHidden = true
         hourlyDetailView.isHidden = false
         
+        if (AppSettings.showHourWeatherImage) {
+            hourlyWeatherImage.isHidden = false
+        }
+        
+//setupHourThumbnailHideTimer()
         setupHourWeatherDisplayHideTimer()  // Close the hour view screen after 10 seconds
 
     }
@@ -1123,6 +1192,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         
         weatherDetailView.isHidden = false
         hourlyDetailView.isHidden = true
+        
+        if (AppSettings.showHourWeatherImage) {
+            hourlyWeatherImage.isHidden = true
+        }
         
         lastSelectedHourIndexRow = -1
         
@@ -1165,6 +1238,21 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     
     
     // MARK: Timer methods
+    
+    func setupHourThumbnailHideTimer() {
+
+        weatherDetailView.isHidden = true
+        hourlyDetailView.isHidden = false
+
+        // Only show the hour display for about 10 seconds
+        
+        if hideDisplayTimer != nil {
+            hideDisplayTimer?.invalidate()
+        }
+        
+        hideDisplayTimer = Timer.scheduledTimer(timeInterval: 10.0, target: self, selector: #selector(hideHourWeatherDisplay), userInfo: nil, repeats: false)
+    }
+
     
     func setupHourWeatherDisplayHideTimer() {
         
@@ -1498,7 +1586,9 @@ extension TodayTabVC : UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
-        openHourDetailDisplay()
+        if AppSettings.showHourWeatherOnSelect {
+            openHourDetailDisplay()
+        }
         
         let colourScheme = Utility.setupColourScheme()
         
@@ -1555,6 +1645,28 @@ extension TodayTabVC : UITableViewDataSource {
                 hourWeatherIcon.image = UIImage(named: iconName)!
             }
 
+            // Hourly Thumbnail background
+            
+            let enumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
+
+            var backgroundImageName = ""
+            if AppSettings.SpecialThemedBackgroundsForEvents {
+                // Get a special background if its a 'themed day (e.g Chrisrmas etc)
+                backgroundImageName = Utility.getSpecialDayWeatherImage(dayOrNight: dayOrNight)
+            }
+            
+            if backgroundImageName == "" {
+                backgroundImageName = Utility.getWeatherImage(serviceIcon: (enumVal?.rawValue)!, dayOrNight: dayOrNight)
+            }
+            
+            // Load previous background just in case
+            if (AppSettings.showHourWeatherImage) {
+                if !(String(backgroundImageName).isEmpty) {
+                    hourlyWeatherImage.image = UIImage(named: backgroundImageName)!
+                    Utility.setLastLoadedBackground(backgroundName: backgroundImageName)
+                }
+            }
+                
             // Sunrise or sunset, if applicable
             
             let sunriseHour = isSunriseHour(dateTime: hourTimeStamp!)
@@ -1566,7 +1678,10 @@ extension TodayTabVC : UITableViewDataSource {
 
                 let sunriseIconImage = Utility.getWeatherIcon(serviceIcon: "SUNRISE", dayOrNight: "", weatherStats: hourWeather!)
                 hourSunriseSunsetIcon.image = UIImage(named: sunriseIconImage)!
-                hourSunriseSunsetLabel.text = String(sunriseTimeStamp!.shortTimeString())
+                
+                if (sunriseTimeStamp != nil) {
+                    hourSunriseSunsetLabel.text = String(sunriseTimeStamp!.shortTimeString())
+                }
             }
             else if sunsetHour {
                 hourSunriseSunsetIcon.isHidden = false
@@ -1574,7 +1689,10 @@ extension TodayTabVC : UITableViewDataSource {
 
                 let sunsetIconImage = Utility.getWeatherIcon(serviceIcon: "SUNSET", dayOrNight: "", weatherStats: hourWeather!)
                 hourSunriseSunsetIcon.image = UIImage(named: sunsetIconImage)!
-                hourSunriseSunsetLabel.text = String(sunsetTimeStamp!.shortTimeString())
+                
+                if (sunsetTimeStamp != nil) {
+                    hourSunriseSunsetLabel.text = String(sunsetTimeStamp!.shortTimeString())
+                }
             }
             else {
                 hourSunriseSunsetIcon.isHidden = true

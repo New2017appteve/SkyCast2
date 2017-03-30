@@ -44,6 +44,9 @@ class Weather: NSObject {
         
         if let lTimezone = weatherDict["timezone"] as? String {
             timezone = lTimezone
+            
+            // Set the timezone offset globally so all classes can use it
+            GlobalConstants.timezoneOffsetIANA  = lTimezone
         }
         
         

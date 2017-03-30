@@ -172,8 +172,10 @@ extension SunriseSunsetViewController : UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        let hourData = hoursForToday[indexPath.row] as! NSDate
+        var hourData = hoursForToday[indexPath.row] as! NSDate
         
+        // Apply the timezone offset, to bring the hour back to midnight
+        hourData = Utility.getTimeInWeatherTimezone(dateAndTime: hourData)
         let hourStamp = hourData.shortHourTimeString()
         
         let sunriseInHour = isSunriseHour(dateTime: hourData)

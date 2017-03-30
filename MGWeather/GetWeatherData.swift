@@ -63,11 +63,14 @@ class GetWeatherData: NSObject {
         
         let configuration = URLSessionConfiguration .default
         let session = URLSession(configuration: configuration)
-        
-        let urlString = url //GlobalConstants.WeatherURL
-
         let request : NSMutableURLRequest = NSMutableURLRequest()
+        
+        let urlString = url
         request.url = NSURL(string: NSString(format: "%@", urlString!) as String) as URL?
+
+        // Use the 2 lines below to test a custom URL
+        //let urlString = GlobalConstants.WeatherURL
+        //request.url = NSURL(string: NSString(format: "%@", urlString) as String) as URL?
         request.httpMethod = "GET"
         request.timeoutInterval = 30
         

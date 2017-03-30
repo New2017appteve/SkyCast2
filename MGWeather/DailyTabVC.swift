@@ -436,6 +436,7 @@ extension DailyTabVC : UITableViewDataSource {
 
             currentWindspeed = String(Int(dayWeather.windSpeed!)) + " " + windSpeedUnits
             
+            // TODO: Show and remove icon instead of hiding (to preserve spacing)
             cell.windyLabel.isHidden = false
             cell.windyIcon.isHidden = false
             
@@ -464,12 +465,25 @@ extension DailyTabVC : UITableViewDataSource {
             cell.dailyWeatherIcon.image = UIImage(named: iconName)!
         }
         
-        let dayDurationSeconds = Int(secondsBetween(date1: dayWeather.sunsetTimeStamp!, date2: dayWeather.sunriseTimeStamp!))
-        let (h,m,_) = secondsToHoursMinutesSeconds(seconds: dayDurationSeconds)
-        let hoursAndMinutes = String(h) + "h " + String(m) + "m"
+        if (dayWeather.sunriseTimeStamp != nil && dayWeather.sunsetTimeStamp != nil) {
+            let dayDurationSeconds = Int(secondsBetween(date1: dayWeather.sunsetTimeStamp!, date2: dayWeather.sunriseTimeStamp!))
+            let (h,m,_) = secondsToHoursMinutesSeconds(seconds: dayDurationSeconds)
+            let hoursAndMinutes = String(h) + "h " + String(m) + "m"
+            
+            cell.sunriseIcon.isHidden = false
+            cell.sunsetIcon.isHidden = false
+            cell.dayDurationLabel.text = hoursAndMinutes
+        }
+        else {
+            
+            // Sometimes we get no sunrise or sunset data (north and south pole places)
+            // Hide icons if so
+            
+            cell.sunriseIcon.isHidden = true
+            cell.sunsetIcon.isHidden = true
+            cell.dayDurationLabel.text = ""
+        }
         
-        cell.dayDurationLabel.text = hoursAndMinutes
-
         // Setup text colour according to colour scheme
         
         let colourScheme = Utility.setupColourScheme()

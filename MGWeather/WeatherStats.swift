@@ -63,7 +63,7 @@ class WeatherStats: NSObject {
         if let lDateAndTime  = weatherDict["time"] as? Double {
             
             dateAndTime = lDateAndTime
-            dateAndTimeStamp = NSDate(timeIntervalSince1970: dateAndTime!)
+            dateAndTimeStamp = NSDate(timeIntervalSince1970: dateAndTime!)  // GMT
             dateAndTimeStamp = Utility.getTimeInWeatherTimezone(dateAndTime: dateAndTimeStamp!)
             
         }

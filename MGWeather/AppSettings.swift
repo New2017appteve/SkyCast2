@@ -25,6 +25,7 @@ class AppSettings: NSObject {
     
     // The following intended for version 1.1.x
     static let showTimeline = false
+    static let showHourWeatherImage = false
     
     // Change this depending on if using simulator or test device
 //    static var AdTestDeviceID = GlobalConstants.BannerAdTestIDs.Simulator

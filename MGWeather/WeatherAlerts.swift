@@ -34,8 +34,8 @@ class WeatherAlerts: NSObject {
             alertDateAndTimeStamp = NSDate(timeIntervalSince1970: alertDateAndTime!)
             alertDateAndTimeStamp = Utility.getTimeInWeatherTimezone(dateAndTime: alertDateAndTimeStamp!)
             
-            let formatter = DateFormatter()
-            formatter.timeZone = TimeZone(secondsFromGMT: 7 * 3600) as TimeZone!  // original string in GMT
+ //           let formatter = DateFormatter()
+ //           formatter.timeZone = TimeZone(secondsFromGMT: 7 * 3600) as TimeZone!  // original string in GMT
             
         }
         
