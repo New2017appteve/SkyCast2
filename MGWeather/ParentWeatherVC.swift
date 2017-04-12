@@ -216,6 +216,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             let vc:ThisTimeLastYearVC = segue.destination as! ThisTimeLastYearVC
             vc.delegate = self
             vc.dailyWeather = weather
+            vc.weatherLocation = weatherLocation
             vc.url = url
             vc.inDayOrNight = parentDayOrNight
         }

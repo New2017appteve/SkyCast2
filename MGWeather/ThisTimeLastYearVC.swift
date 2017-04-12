@@ -20,6 +20,8 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
     var inDayOrNight : String?  // Change Name?
     
     var dailyWeather : Weather!  // This is passed in from ParentWeatherVC
+    var weatherLocation : Location!  // This is passed in from ParentWeatherVC
+    
     var delegate:ThisTimeLastYearVCDelegate?
     
     var dayOrNightColourSetting: String?
@@ -43,8 +45,10 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
     
     @IBOutlet weak var infoView : UIView!
     @IBOutlet weak var infoLabel : UILabel!
-    
-    @IBOutlet weak var nowLabel : UILabel!
+    @IBOutlet weak var locationLabel : UILabel!
+    @IBOutlet weak var locationMinorLabel : UILabel!
+
+//    @IBOutlet weak var nowLabel : UILabel!
     @IBOutlet weak var currentTempView : UIView!
     @IBOutlet weak var currentTempDetailView : UIView!
     @IBOutlet weak var currentTemp : UILabel!
@@ -101,6 +105,9 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
 //        setupScreen()
 //        setupColourScheme()
 //        populateTodayWeatherDetails()
+        
+        updateLocationDetailsOnScreen()
+        updateMinorLocationDetailsOnScreen()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -137,7 +144,7 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
         
         // NOTE:  This will be called from a background thread
         
-        setupDisplayTimer()
+//        setupDisplayTimer()
         setupScreen()
         setupColourScheme()
         populateTodayWeatherDetails()
@@ -191,7 +198,8 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
         // Labels
         
         infoLabel.textColor = textColourScheme
-        nowLabel.textColor = textColourScheme
+        locationLabel.textColor = textColourScheme
+        locationMinorLabel.textColor = textColourScheme
         currentTemp.textColor = textColourScheme
         windspeed.textColor = textColourScheme
         feelsLikeTemp.textColor = textColourScheme
@@ -223,7 +231,9 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
         weatherDetailView.backgroundColor = podColourScheme
         
         // Buttons and Title Labels
-        nowLabel.backgroundColor = titleViewColourScheme
+
+        //locationLabel.backgroundColor = titleViewColourScheme
+        //locationMinorLabel.backgroundColor = titleViewColourScheme
         todayLabel.backgroundColor = titleViewColourScheme
         poweredByDarkSkyButton.backgroundColor = titleViewColourScheme
         
@@ -277,7 +287,8 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
             currentSummary.text = todayArray.summary
             
             let thisTimeLastYearTime = todayArray.dateAndTimeStamp
-            nowLabel.text = "  " + getTimeLastYear(lastYearDate: thisTimeLastYearTime!)
+            //nowLabel.text = "  " + getTimeLastYear(lastYearDate: thisTimeLastYearTime!)
+            infoLabel.text = "  " + getTimeLastYear(lastYearDate: thisTimeLastYearTime!)
             
             let degreesSymbol = GlobalConstants.degreesSymbol + todayArray.temperatureUnits!
             currentTemp.text = String(Int(round(todayArray.temperature! as Float))) + degreesSymbol
@@ -419,35 +430,35 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
 
     // Display Screen Functions
     
-    func setupDisplayTimer() {
-        
-        infoLabelTimerCount = 0
-        weatherDetailsTimerCount = 0
-        
-        _ = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(updateWeatherDetailsOnScreen), userInfo: nil, repeats: true)
-        
-    }
+//    func setupDisplayTimer() {
+//        
+//        infoLabelTimerCount = 0
+//        weatherDetailsTimerCount = 0
+//        
+//        _ = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(updateWeatherDetailsOnScreen), userInfo: nil, repeats: true)
+//        
+//    }
     
-    func updateWeatherDetailsOnScreen() {
-        
-        infoLabelTimerCount += 1
-        weatherDetailsTimerCount += 1
-        
-        infoLabel.text = "Weather Last Year"
-        
-        let detailsMod = infoLabelTimerCount % 3
-        switch (detailsMod) {
-        case 0:
-            hideWeatherDetailsView()
-        case 1:
-            showWeatherDetailsView()
-        case 2:
-        return // Do nothing, this wlll have the effect of showing the weather details longer
-        default:
-            infoLabel.text = ""
-        }
-        
-    }
+//    func updateWeatherDetailsOnScreen() {
+//        
+//        infoLabelTimerCount += 1
+//        weatherDetailsTimerCount += 1
+//        
+//        infoLabel.text = "Weather Last Year"
+//        
+//        let detailsMod = infoLabelTimerCount % 3
+//        switch (detailsMod) {
+//        case 0:
+//            hideWeatherDetailsView()
+//        case 1:
+//            showWeatherDetailsView()
+//        case 2:
+//        return // Do nothing, this wlll have the effect of showing the weather details longer
+//        default:
+//            infoLabel.text = ""
+//        }
+//        
+//    }
     
     func hideWeatherDetailsView () {
         
@@ -523,6 +534,78 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
         
         return returnTime
         
+    }
+    
+    // MARK:  Location related methods
+    
+    func updateLocationDetailsOnScreen() {
+        
+        // Ensure that weatherLocation has a value before setting
+        guard let loc = weatherLocation else {
+            locationLabel.text = GlobalConstants.LocationNotFoundString
+            print("Location name not found")
+            //
+            return
+        }
+        locationLabel.text = getFormattedLocation(locationObj: loc)
+        
+    }
+    
+    func updateMinorLocationDetailsOnScreen() {
+        
+        // Ensure that weatherLocation has a value before setting
+        guard let loc = weatherLocation else {
+            locationLabel.text = GlobalConstants.LocationNotFoundString
+            print("Location name not found")
+            //
+            return
+        }
+        locationMinorLabel.text = getFormattedMinorLocation(locationObj: loc)
+        
+    }
+    
+    func getFormattedLocation(locationObj: Location) -> String {
+        
+        var returnString = ""
+        
+        if locationObj.currentCity != nil && locationObj.currentCountry != nil {
+            returnString = locationObj.currentCity! + ", " + locationObj.currentCountry!
+        }
+        else if locationObj.currentCity != nil && locationObj.currentCountryCode != nil {
+            returnString = locationObj.currentCity! + ", " + locationObj.currentCountryCode!
+        }
+        else if locationObj.currentCity != nil {
+            returnString = locationObj.currentCity!
+        }
+        else if locationObj.currentStreet != nil && locationObj.currentCountry != nil {
+            returnString = locationObj.currentStreet! + ", " + locationObj.currentCountry!
+        }
+            // Check if location has a name before giving up
+        else if locationObj.name != nil {
+            returnString = locationObj.name!
+        }
+        else {
+            returnString = GlobalConstants.LocationNotFoundString
+        }
+        
+        return returnString
+    }
+    
+    func getFormattedMinorLocation(locationObj: Location) -> String {
+        
+        var returnString = ""
+        
+        if locationObj.currentStreet != nil {
+            returnString = locationObj.currentStreet!
+        }
+        else if locationObj.currentPostcode != nil {
+            returnString = locationObj.currentPostcode!
+        }
+        else {
+            returnString = GlobalConstants.LocationNotFoundString
+        }
+        
+        return returnString
     }
 
     // MARK:  Button Methods
