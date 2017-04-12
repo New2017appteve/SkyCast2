@@ -11,6 +11,7 @@ import GoogleMobileAds
 protocol DailyTabVCDelegate
 {
     func switchViewControllers()
+    func returnRefreshedLocationDetails() -> Location
     func returnRefreshedWeatherDetails() -> Weather
     func setupDayOrNightIndicator(dayOrNight : String)
 }
@@ -29,6 +30,9 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
     var weatherAlertEndTime: NSDate?
     
     // Outlets
+    @IBOutlet weak var weatherSummaryView : UIView!
+    @IBOutlet weak var infoLabel : UILabel!
+    @IBOutlet weak var locationLabel : UILabel!
     @IBOutlet weak var dailyWeatherTableView : UITableView!
     @IBOutlet weak var outerScreenView : UIView!
     @IBOutlet weak var weatherImage : UIImageView!
@@ -54,6 +58,8 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
         super.viewWillAppear(animated)
 
         // Register to receive notifications
+        NotificationCenter.default.addObserver(self, selector: #selector(DailyTabVC.locationDataRefreshed), name: GlobalConstants.locationRefreshFinishedKey, object: nil)
+
         NotificationCenter.default.addObserver(self, selector: #selector(DailyTabVC.weatherDataRefreshed), name: GlobalConstants.weatherRefreshFinishedKey, object: nil)
 
         // Ease in the weather image view for effect
@@ -63,9 +69,9 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
             }, completion: nil)
 
         // Ease in the two pods
-        self.nextDaysSummary.alpha = 0.0
+        self.weatherSummaryView.alpha = 0.0
         UIView.animate(withDuration: 1.2, delay: 0.5, options: UIViewAnimationOptions.curveEaseIn, animations: {
-            self.nextDaysSummary.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+            self.weatherSummaryView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
         }, completion: nil)
         
         self.dailyWeatherTableView.alpha = 0.0
@@ -99,12 +105,14 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
         
         closeBannerButton.isHidden = true  // Will only show once banner ad loaded
         
-        nextDaysSummary.layer.cornerRadius = 5.0
-        nextDaysSummary.clipsToBounds = true
+        weatherSummaryView.layer.cornerRadius = 10.0
+        weatherSummaryView.clipsToBounds = true
 
         dailyWeatherTableView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
         dailyWeatherTableView.layer.cornerRadius = 10.0
         dailyWeatherTableView.clipsToBounds = true
+        
+        updateLocationDetailsOnScreen()
 
     }
     
@@ -117,13 +125,16 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
         let textColourScheme = colourScheme.textColourScheme
         let podColourScheme = colourScheme.podColourScheme
 
+        weatherSummaryView.backgroundColor = podColourScheme
         dailyWeatherTableView.backgroundColor = podColourScheme
-        nextDaysSummary.backgroundColor = podColourScheme
+
         
         // Labels
         nextDaysSummary.textColor = textColourScheme
-
-        nextDaysSummary.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+        locationLabel.textColor = textColourScheme
+        infoLabel.textColor = textColourScheme
+        
+        weatherSummaryView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
 
     }
     
@@ -169,6 +180,7 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
                 let sameDay = Utility.areDatesSameDay(date1: (todayArray?.dateAndTimeStamp!)!, date2: days.dateAndTimeStamp!)
                 
                 if sameDay {
+                    // TODO:  Handle if sunrise and sunset timestamps are nil (polar regions)
                     sunriseTimeStamp = days.sunriseTimeStamp as NSDate?
                     sunsetTimeStamp = days.sunsetTimeStamp as NSDate?                    
                 }
@@ -232,6 +244,11 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
         
         var retVal : Bool!
         
+        // Return if no timestaps (if near polar regions)
+        if (sunsetTimeStamp == nil || sunsetTimeStamp == nil) {
+            return true
+        }
+
         // Calculate whether current time is in the day or the night
         // Look at tomorrows sunrise and sunset times too incase the results span days
         
@@ -324,8 +341,87 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
         bannerOuterView.isHidden = true
     }
 
+    // MARK: Location methods (TODO:  this is identical to TodayTab)
+    
+    func updateLocationDetailsOnScreen() {
+        
+        // Ensure that weatherLocation has a value before setting
+        guard let loc = weatherLocation else {
+            locationLabel.text = GlobalConstants.LocationNotFoundString
+            print("Location name not found")
+            //
+            return
+        }
+        locationLabel.text = getFormattedLocation(locationObj: loc)
+        infoLabel.text = getFormattedMinorLocation(locationObj: loc)
+
+    }
+
+    func getFormattedLocation(locationObj: Location) -> String {
+        
+        var returnString = ""
+        
+        if locationObj.currentCity != nil && locationObj.currentCountry != nil {
+            returnString = locationObj.currentCity! + ", " + locationObj.currentCountry!
+        }
+        else if locationObj.currentCity != nil && locationObj.currentCountryCode != nil {
+            returnString = locationObj.currentCity! + ", " + locationObj.currentCountryCode!
+        }
+        else if locationObj.currentCity != nil {
+            returnString = locationObj.currentCity!
+        }
+        else if locationObj.currentStreet != nil && locationObj.currentCountry != nil {
+            returnString = locationObj.currentStreet! + ", " + locationObj.currentCountry!
+        }
+            // Check if location has a name before giving up
+        else if locationObj.name != nil {
+            returnString = locationObj.name!
+        }
+        else {
+            returnString = GlobalConstants.LocationNotFoundString
+        }
+        
+        return returnString
+    }
+
+    func getFormattedMinorLocation(locationObj: Location) -> String {
+        
+        var returnString = ""
+        
+        if locationObj.currentStreet != nil {
+            returnString = locationObj.currentStreet!
+        }
+        else if locationObj.currentPostcode != nil {
+            returnString = locationObj.currentPostcode!
+        }
+        else {
+            returnString = GlobalConstants.LocationNotFoundString
+        }
+        
+        return returnString
+    }
+    
     // MARK:  Notification complete methods
     
+    func locationDataRefreshed() {
+        print("Location Data Refreshed - DailyTab")
+        
+        // NOTE:  This will be called on a background thread
+        
+        // The phone could have moved location since the last refresh.
+        // Get the updated location details after it has been refreshed.
+        
+        DispatchQueue.main.async {
+            self.weatherLocation = nil
+            self.weatherLocation = self.delegate?.returnRefreshedLocationDetails()
+            self.updateLocationDetailsOnScreen()
+        }
+        
+        // NOTE:  We want to keep listening for notifications incase a change is made in
+        // the Settings screen so they have not been removed
+        
+    }
+
     func weatherDataRefreshed() {
         print("Weather Data Refreshed - DailyTab")
 

@@ -10,6 +10,7 @@ import CoreLocation
 
 class Location: NSObject {
     
+    var name: String?
     var currentLatitude: Double?
     var currentLongitude: Double?
     var currentPostcode: String?

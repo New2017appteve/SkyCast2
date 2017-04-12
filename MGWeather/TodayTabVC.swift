@@ -56,10 +56,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     @IBOutlet weak var weatherImageOuterView : UIView!
     @IBOutlet weak var weatherImage : UIImageView!
 
-    @IBOutlet weak var infoView : UIView!
+//    @IBOutlet weak var infoView : UIView!
     @IBOutlet weak var infoLabel : UILabel!
-    
-    @IBOutlet weak var nowLabel : UILabel!
+    @IBOutlet weak var locationLabel : UILabel!
     @IBOutlet weak var nowWeatherAlertIcon : UIImageView!
     @IBOutlet weak var currentTempView : UIView!
     @IBOutlet weak var currentTempDetailView : UIView!
@@ -250,8 +249,8 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         currentTempDetailView.layer.cornerRadius = 10.0
         currentTempDetailView.clipsToBounds = true
         
-        infoView.layer.cornerRadius = 5.0
-        infoView.clipsToBounds = true
+//        infoView.layer.cornerRadius = 5.0
+//        infoView.clipsToBounds = true
         
         weatherDetailOuterView.layer.cornerRadius = 10.0
         weatherDetailOuterView.clipsToBounds = true
@@ -285,6 +284,8 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             hourlyDetailView.isHidden = true
             hourlyWeatherTableView.allowsSelection = false
         }
+        
+        updateLocationDetailsOnScreen()
     }
     
     func setupColourScheme() {
@@ -300,7 +301,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         // Labels
         
         infoLabel.textColor = textColourScheme
-        nowLabel.textColor = textColourScheme
+        locationLabel.textColor = textColourScheme
         currentTemp.textColor = textColourScheme
         windspeed.textColor = textColourScheme
         feelsLikeTemp.textColor = textColourScheme
@@ -342,10 +343,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         
         // Pods
         
-        infoView.backgroundColor = podColourScheme
+       // infoView.backgroundColor = podColourScheme
         currentTempDetailView.backgroundColor = podColourScheme
         
-        infoView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+        //infoView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
         currentTempDetailView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
         weatherDetailOuterView.alpha = 1.0 //CGFloat(GlobalConstants.DisplayViewAlpha)
         
@@ -355,7 +356,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         hourlyDetailView.backgroundColor = podColourScheme
         
         // Buttons and Title Labels
-        nowLabel.backgroundColor = titleViewColourScheme
         todayLabel.backgroundColor = titleViewColourScheme
         poweredByDarkSkyButton.backgroundColor = titleViewColourScheme
         
@@ -405,42 +405,69 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         
         // Ensure that weatherLocation has a value before setting
         guard let loc = weatherLocation else {
-            infoLabel.text = "Location name not found"
+            locationLabel.text = GlobalConstants.LocationNotFoundString
             print("Location name not found")
             //
             return
         }
-        infoLabel.text = getFormattedLocation(locationObj: loc)
+        locationLabel.text = getFormattedLocation(locationObj: loc)
 
     }
     
+    func updateMinorLocationDetailsOnScreen() {
+        
+        // Ensure that weatherLocation has a value before setting
+        guard let loc = weatherLocation else {
+            locationLabel.text = GlobalConstants.LocationNotFoundString
+            print("Location name not found")
+            //
+            return
+        }
+        infoLabel.text = getFormattedMinorLocation(locationObj: loc)
+        
+    }
     
     func getFormattedLocation(locationObj: Location) -> String {
         
         var returnString = ""
         
-        if locationObj.currentStreet != nil && locationObj.currentPostcode != nil {
-            returnString = locationObj.currentStreet! + ", " + locationObj.currentPostcode!
+        if locationObj.currentCity != nil && locationObj.currentCountry != nil {
+            returnString = locationObj.currentCity! + ", " + locationObj.currentCountry!
         }
-        else if locationObj.currentCity != nil && locationObj.currentPostcode != nil {
-            returnString = locationObj.currentCity! + ", " + locationObj.currentPostcode!
-        }
-        else if locationObj.currentCity != nil && locationObj.currentStreet != nil {
-            returnString = locationObj.currentStreet! + ", " + locationObj.currentCity!
+        else if locationObj.currentCity != nil && locationObj.currentCountryCode != nil {
+            returnString = locationObj.currentCity! + ", " + locationObj.currentCountryCode!
         }
         else if locationObj.currentCity != nil {
             returnString = locationObj.currentCity!
         }
-        else if locationObj.currentStreet != nil {
+        else if locationObj.currentStreet != nil && locationObj.currentCountry != nil {
+            returnString = locationObj.currentStreet! + ", " + locationObj.currentCountry!
+        }
+        // Check if location has a name before giving up
+        else if locationObj.name != nil {
+            returnString = locationObj.name!
+        }
+        else {
+            returnString = GlobalConstants.LocationNotFoundString
+        }
+        
+        return returnString
+    }
+    
+    func getFormattedMinorLocation(locationObj: Location) -> String {
+        
+        var returnString = ""
+        
+        if locationObj.currentStreet != nil {
             returnString = locationObj.currentStreet!
         }
         else if locationObj.currentPostcode != nil {
             returnString = locationObj.currentPostcode!
         }
         else {
-            returnString = "Location name not found"
+            returnString = GlobalConstants.LocationNotFoundString
         }
-
+        
         return returnString
     }
     
@@ -529,12 +556,11 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         case 0:
             infoLabel.text = "Pull to refresh"
         case 1:
-            infoLabel.text = "Last Updated: " + lastUpdatedTime
+            infoLabel.text = "Updated: " + lastUpdatedTime
         case 2:
-            infoLabel.text = "Last Updated: " + lastUpdatedTime
+            infoLabel.text = "Updated: " + lastUpdatedTime
         case 3:
-            
-            updateLocationDetailsOnScreen()
+            updateMinorLocationDetailsOnScreen()
         default:
             infoLabel.text = ""
         }
@@ -966,19 +992,23 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                     if (days.sunriseTimeStamp != nil) {
                         sunrise.text = String(days.sunriseTimeStamp!.shortTimeString())
                         sunriseTimeStamp = days.sunriseTimeStamp as NSDate?
+                        sunriseIcon.isHidden = false
                     }
                     else {
                         sunrise.text = ""
                         sunriseTimeStamp = nil
+                        sunriseIcon.isHidden = true
                     }
                     
                     if (days.sunsetTimeStamp != nil) {
                         sunset.text = String(days.sunsetTimeStamp!.shortTimeString())
                         sunsetTimeStamp = days.sunsetTimeStamp as NSDate?
+                        sunsetIcon.isHidden = false
                     }
                     else {
                         sunset.text = ""
                         sunsetTimeStamp = nil
+                        sunsetIcon.isHidden = true
                     }
                     
                     // Populate with the correct sunrise/sunset icon scheme
@@ -1116,6 +1146,11 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         
         var retVal = false
         
+        // Return if no timestaps (if near polar regions)
+        if (sunsetTimeStamp == nil || sunsetTimeStamp == nil) {
+            return true
+        }
+        
         // Calculate whether current time is in the day or the night
         // Look at tomorrows sunrise and sunset times too incase the results span days
         
@@ -1133,7 +1168,12 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     func isSunriseHour (dateTime : NSDate) -> Bool {
         
         var retVal : Bool!
-        
+
+        // Return if no timestaps (if near polar regions)
+        if (sunsetTimeStamp == nil || sunsetTimeStamp == nil) {
+            return true
+        }
+
         // Calculate whether the sun rises in next hour
         
         let nextHourTime = dateTime.add(minutes: 60) as NSDate
@@ -1153,7 +1193,12 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     func isSunsetHour (dateTime : NSDate) -> Bool {
         
         var retVal : Bool!
-        
+
+        // Return if no timestaps (if near polar regions)
+        if (sunsetTimeStamp == nil || sunsetTimeStamp == nil) {
+            return true
+        }
+
         // Calculate whether the sun rises in next hour
         
         let nextHourTime = dateTime.add(minutes: 60) as NSDate
@@ -1672,7 +1717,12 @@ extension TodayTabVC : UITableViewDataSource {
             let sunriseHour = isSunriseHour(dateTime: hourTimeStamp!)
             let sunsetHour = isSunsetHour(dateTime: hourTimeStamp!)
 
-            if sunriseHour {
+            if (sunriseHour && sunsetHour) {
+                // This means they are probably in the polar regions
+                hourSunriseSunsetIcon.isHidden = true
+                hourSunriseSunsetLabel.isHidden = true
+            }
+            else if sunriseHour {
                 hourSunriseSunsetIcon.isHidden = false
                 hourSunriseSunsetLabel.isHidden = false
 

@@ -140,16 +140,23 @@ class GlobalConstants: NSObject {
     static let WeatherIconURL = "https://icons8.com"
     static let WeatherPhotosURL = "https://www.pexels.com"
     
+    // Test URLs
+    
+    static let UseTestWeatherURLs = false
+    
 //    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/51.508146,-0.624004?units=uk2"
 //    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/18.220554,-63.0686?units=uk2" // Anguilla
 //    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/35.6895,139.6917?units=uk2" // Tokyo
 //    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/49.2827291,-123.12073?units=uk2" // Vancover
 //    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/73.50489,80.580917?units=uk2" // Dikson, Russia (COLD!)
-    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/36.5322649,-116.9325?units=uk2" // Death Valley
-//    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/27.98785,86.925026?units=uk2" // Mount Everest
+//    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/36.5322649,-116.9325?units=uk2" // Death Valley
+    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/27.98685,86.922026?units=uk2" // Mount Everest
 //    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/82.668338,-24.307621?units=uk2" // Greenland
 //    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/-84.585421,-24.794449?units=uk2" // Antartica
+//    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/32.3078,-64.7505?units=uk2" // Bermuda
     
+    
+    static let LocationNotFoundString = "" //"Location name not found"
     
     static let BaseWeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/"
 

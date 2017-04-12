@@ -32,6 +32,11 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         case ShowAbout = "About"
     }
     
+    struct lLocation {
+        let latitude: Double
+        let longitude: Double
+    }
+    
     // Custom outlets
     let customBarButtonAction = UIButton(type: .custom)
     
@@ -174,6 +179,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 if sameDay {
                     sunriseTimeStamp = days.sunriseTimeStamp as NSDate?
                     sunsetTimeStamp = days.sunsetTimeStamp as NSDate?
+                    // TODO:  Handle if sunrise and sunset timestamps are nil (polar regions)
                     tempMinTimeStamp = days.temperatureMinTimeStamp
                     tempMaxTimeStamp = days.temperatureMaxTimeStamp
                     tempMin = days.temperatureMin
@@ -316,6 +322,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     func viewControllerForSelectedSegmentIndex(index: Int) -> UIViewController? {
         
         var vc: UIViewController?
+        
         switch index {
         case TabIndex.FirstChildTab.rawValue :
             var vc1: TodayTabVC
@@ -578,6 +585,25 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         return allowed
     }
     
+    func getLatitudeAndLongitudeFromURL(url: String) -> lLocation {
+    
+        var startPos = 66
+        let range: Range<String.Index> = url.range(of: ",")!
+        let midPos: Int = url.distance(from: url.startIndex, to: range.lowerBound)
+
+        let range2: Range<String.Index> = url.range(of: "?")!
+        let endPos: Int = url.distance(from: url.startIndex, to: range2.lowerBound)
+        
+        var latitude = url.customSubstring(with: startPos..<midPos)
+        var longitude = url.customSubstring(with: midPos+1..<endPos)
+        
+        let loc = lLocation(latitude: Double(latitude)!, longitude: Double(longitude)!)
+        
+        return loc
+    }
+    
+
+    
     func getAndSetLocation() {
         
         // Get the current location and the weather data based on location
@@ -587,14 +613,16 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     
     func getLocation() -> Bool {
         
+        // TODO:  If using GlobalConstants.UseTestWeatherURLs, get latitude and longitude from URL
+        //
         //locationManager = CLLocationManager()
-
         var lFound = false
-
+     
         self.view.makeToast("Refreshing data", duration: 2.0, position: .bottom)
         self.view.makeToastActivity(.center)
         iconRefreshButton.isEnabled = false
 
+        
         locationManager.delegate = self;
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestAlwaysAuthorization()
@@ -608,27 +636,43 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedAlways)
         {
             print(locationManager.location ?? "Location Error")
-            if locationManager.location != nil {
+            
+            if (GlobalConstants.UseTestWeatherURLs) {
+                
+                var url = GlobalConstants.WeatherURL
+                
+                let loc = getLatitudeAndLongitudeFromURL(url: url)
+                
+                weatherLocation.currentLatitude = loc.latitude
+                weatherLocation.currentLongitude = loc.longitude
                 
                 lFound = true
-                locationManager.stopUpdatingLocation()
-                locationManager.stopMonitoringSignificantLocationChanges()
-
-                var currentLocation = CLLocation()
-                currentLocation = locationManager.location!
-                
-                weatherLocation.currentLatitude = currentLocation.coordinate.latitude
-                weatherLocation.currentLongitude = currentLocation.coordinate.longitude
-                weatherLocation.currentLocation = currentLocation
-                
                 // Note:  Toast will be hidden in setLocationDetails
                 setLocationDetails()
 
             }
+            else {
+                if locationManager.location != nil {
+                    
+                    lFound = true
+                    locationManager.stopUpdatingLocation()
+                    locationManager.stopMonitoringSignificantLocationChanges()
+
+                    var currentLocation = CLLocation()
+                    currentLocation = locationManager.location!
+                
+                    weatherLocation.currentLatitude = currentLocation.coordinate.latitude
+                    weatherLocation.currentLongitude = currentLocation.coordinate.longitude
+                    weatherLocation.currentLocation = currentLocation
+                    
+                    // Note:  Toast will be hidden in setLocationDetails
+                    setLocationDetails()
+                }
+            }
             
         } else {
             
-            // Location settings not enabled on the phone, prompt user t do it manually
+            // Location settings not enabled on the phone, prompt user to do it manually
             
             Utility.showMessage(titleString: "Error", messageString: "Cannot find your current location.  Please ensure that Skycast is allowed to access your location on this device. \n\nGo to Settings -> SkyCast and turn Location to Always" )
             
@@ -644,6 +688,16 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         }
         
         return lFound
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let lastLocation = locations.last else {
+            NSLog("error no last location")
+            return
+        }
+        let altitude = lastLocation.altitude
+        // Do what you want with your altitude
+        
     }
     
 //    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -691,6 +745,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
                 // Location name
                 if let locationName = placeMark.addressDictionary?["Name"] as? NSString
                 {
+                    self.weatherLocation.name = locationName as String
                     print(locationName)
                 }
 

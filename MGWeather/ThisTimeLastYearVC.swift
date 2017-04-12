@@ -355,6 +355,7 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
                     cloudCover.text = String(Int(round(days.cloudCover!*100))) + "%"
                     humidity.text = String(Int(round(days.humidity!*100))) + "%"
                     
+                    // TODO:  Handle if sunrise and sunset timestamps are nil (polar regions)
                     sunrise.text = String(days.sunriseTimeStamp!.shortTimeString())
                     sunset.text = String(days.sunsetTimeStamp!.shortTimeString())
                     sunriseTimeStamp = days.sunriseTimeStamp as NSDate?
@@ -374,6 +375,7 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
                 let tomorrow = Utility.isTomorrow(date1: days.dateAndTimeStamp!)
                 
                 if tomorrow {
+                    // TODO:  Handle if sunrise and sunset timestamps are nil (polar regions)
                     tomorrowSunriseTimeStamp = days.sunriseTimeStamp as NSDate?
                     tomorrowSunsetTimeStamp = days.sunsetTimeStamp as NSDate?
                 }
