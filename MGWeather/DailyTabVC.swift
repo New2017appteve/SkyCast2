@@ -29,6 +29,9 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
     var weatherAlertStartTime: NSDate?
     var weatherAlertEndTime: NSDate?
     
+    var infoLabelTimerCount = 0
+    var lastUpdatedTime: String?  // TODO:  Later
+    
     // Outlets
     @IBOutlet weak var weatherSummaryView : UIView!
     @IBOutlet weak var infoLabel : UILabel!
@@ -47,6 +50,7 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
         super.viewDidLoad()
 
         setupScreen()
+        setupDisplayTimer()
       //  setupColourScheme()
         setupSwipeGestures()
      //   populateDailyWeatherDetails()
@@ -114,6 +118,15 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
         
         updateLocationDetailsOnScreen()
 
+    }
+
+    // Display screen functions
+    func setupDisplayTimer() {
+        
+        infoLabelTimerCount = 0
+        
+        _ = Timer.scheduledTimer(timeInterval: 4.0, target: self, selector: #selector(updateWeatherDetailsOnScreen), userInfo: nil, repeats: true)
+        
     }
     
     func setupColourScheme() {
@@ -240,12 +253,31 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
         }
     }
     
+    func updateWeatherDetailsOnScreen() {
+        
+        infoLabelTimerCount += 1
+        
+//        lastUpdatedTime = reformatLastUpdatedTimeIfNeeded(lastUpdatedDate: lastUpdatedTimeStamp!)
+        
+        // Do a mod of 4, so that we can display the 'Last Updated' time slightly longer than
+        let mod = infoLabelTimerCount % 2
+        switch (mod) {
+        case 0:
+             updateMinorLocationDetailsOnScreen()
+        case 1:
+            updateAltitudeDetailsOnScreen()
+        default:
+            infoLabel.text = ""
+        }
+        
+    }
+    
     func isDayTime (dateTime : NSDate) -> Bool {
         
         var retVal : Bool!
         
         // Return if no timestaps (if near polar regions)
-        if (sunsetTimeStamp == nil || sunsetTimeStamp == nil) {
+        if (sunriseTimeStamp == nil || sunsetTimeStamp == nil) {
             return true
         }
 
@@ -357,6 +389,33 @@ class DailyTabVC: UIViewController, GADBannerViewDelegate  {
 
     }
 
+    func updateMinorLocationDetailsOnScreen() {
+        
+        // Ensure that weatherLocation has a value before setting
+        guard let loc = weatherLocation else {
+            locationLabel.text = GlobalConstants.LocationNotFoundString
+            print("Location name not found")
+            //
+            return
+        }
+        infoLabel.text = getFormattedMinorLocation(locationObj: loc)
+        
+    }
+    
+    func updateAltitudeDetailsOnScreen() {
+        
+        // Ensure that weatherLocation has a value before setting
+        guard let altitude = weatherLocation.currentAltitude else {
+            infoLabel.text = ""
+            return
+        }
+        
+        // Altitude will be in meteres
+        let units = " meters"
+        infoLabel.text = String(Int(altitude)) + units + " above sea level"
+        
+    }
+    
     func getFormattedLocation(locationObj: Location) -> String {
         
         var returnString = ""

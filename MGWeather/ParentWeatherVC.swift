@@ -697,7 +697,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             return
         }
         let altitude = lastLocation.altitude
-        // Do what you want with your altitude
+        weatherLocation.currentAltitude = altitude
         
     }
     

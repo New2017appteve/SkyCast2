@@ -64,6 +64,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     @IBOutlet weak var currentTempDetailView : UIView!
     @IBOutlet weak var currentTemp : UILabel!
     @IBOutlet weak var windspeed : UILabel!
+    @IBOutlet weak var pullToRefreshLabel : UILabel!
     
     @IBOutlet weak var nowDetailOneView : UIView!
     @IBOutlet weak var feelsLikeTemp : UILabel!
@@ -302,6 +303,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         
         infoLabel.textColor = textColourScheme
         locationLabel.textColor = textColourScheme
+        pullToRefreshLabel.textColor = textColourScheme
         currentTemp.textColor = textColourScheme
         windspeed.textColor = textColourScheme
         feelsLikeTemp.textColor = textColourScheme
@@ -427,6 +429,20 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         
     }
     
+    func updateAltitudeDetailsOnScreen() {
+        
+        // Ensure that weatherLocation has a value before setting
+        guard let altitude = weatherLocation.currentAltitude else {
+            infoLabel.text = ""
+            return
+        }
+        
+        // Altitude will be in meteres
+        let units = " meters"
+        infoLabel.text = String(Int(altitude)) + units + " above sea level"
+        
+    }
+
     func getFormattedLocation(locationObj: Location) -> String {
         
         var returnString = ""
@@ -554,13 +570,13 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         let mod = infoLabelTimerCount % 4
         switch (mod) {
         case 0:
-            infoLabel.text = "Pull to refresh"
+            infoLabel.text = "Updated: " + lastUpdatedTime
         case 1:
             infoLabel.text = "Updated: " + lastUpdatedTime
         case 2:
-            infoLabel.text = "Updated: " + lastUpdatedTime
-        case 3:
             updateMinorLocationDetailsOnScreen()
+        case 3:
+            updateAltitudeDetailsOnScreen()
         default:
             infoLabel.text = ""
         }
@@ -991,7 +1007,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                     
                     if (days.sunriseTimeStamp != nil) {
                         sunrise.text = String(days.sunriseTimeStamp!.shortTimeString())
-                        sunriseTimeStamp = days.sunriseTimeStamp as NSDate?
+                        
+                        sunriseTimeStamp = days.sunriseTimeStamp
+//                        sunriseTimeStamp = days.sunriseTimeStamp as! NSDate
                         sunriseIcon.isHidden = false
                     }
                     else {
@@ -1002,7 +1020,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                     
                     if (days.sunsetTimeStamp != nil) {
                         sunset.text = String(days.sunsetTimeStamp!.shortTimeString())
-                        sunsetTimeStamp = days.sunsetTimeStamp as NSDate?
+                        sunsetTimeStamp = days.sunsetTimeStamp
                         sunsetIcon.isHidden = false
                     }
                     else {
@@ -1147,7 +1165,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         var retVal = false
         
         // Return if no timestaps (if near polar regions)
-        if (sunsetTimeStamp == nil || sunsetTimeStamp == nil) {
+        if (sunriseTimeStamp == nil || sunsetTimeStamp == nil) {
             return true
         }
         
@@ -1170,7 +1188,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         var retVal : Bool!
 
         // Return if no timestaps (if near polar regions)
-        if (sunsetTimeStamp == nil || sunsetTimeStamp == nil) {
+        if (sunriseTimeStamp == nil || sunsetTimeStamp == nil) {
             return true
         }
 
@@ -1195,7 +1213,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         var retVal : Bool!
 
         // Return if no timestaps (if near polar regions)
-        if (sunsetTimeStamp == nil || sunsetTimeStamp == nil) {
+        if (sunriseTimeStamp == nil || sunsetTimeStamp == nil) {
             return true
         }
 
