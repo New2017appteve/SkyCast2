@@ -101,6 +101,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     @IBOutlet weak var sunrise : UILabel!
     @IBOutlet weak var sunsetStackView : UIStackView!
     @IBOutlet weak var sunsetIcon : UIImageView!
+    @IBOutlet weak var dayDurationLabel : UILabel!
     @IBOutlet weak var sunset : UILabel!
     @IBOutlet weak var humidity : UILabel!
 
@@ -318,6 +319,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         rainProbability.textColor = textColourScheme
         sunrise.textColor = textColourScheme
         sunset.textColor = textColourScheme
+        dayDurationLabel.textColor = textColourScheme
         humidity.textColor = textColourScheme
         weatherAlertTitle.textColor = textColourScheme
         
@@ -1069,7 +1071,23 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                     tomorrowSunriseTimeStamp = days.sunriseTimeStamp as NSDate?
                     tomorrowSunsetTimeStamp = days.sunsetTimeStamp as NSDate?
                 }
-            }
+                
+                // Get the length of sunlight in the day
+                if (sunriseTimeStamp != nil && sunsetTimeStamp != nil) {
+                    let dayDurationSeconds = Int(Utility.secondsBetween(date1: sunsetTimeStamp!, date2: sunriseTimeStamp!))
+                    let (h,m,_) = Utility.secondsToHoursMinutesSeconds(seconds: dayDurationSeconds)
+                    let hoursAndMinutes = String(h) + "h " + String(m) + "m"
+                    
+                    dayDurationLabel.text = hoursAndMinutes
+                }
+                else {
+                    
+                    // Sometimes we get no sunrise or sunset data (north and south pole places)
+                    dayDurationLabel.text = ""
+                }
+                
+            } // dayArray
+
             
             let hourlyBreakdown = dailyWeather?.hourBreakdown
             todaySummary.text = hourlyBreakdown?.summary

@@ -446,6 +446,12 @@ class Utility: NSObject {
         return (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
     }
 
+    class func secondsBetween (date1: NSDate, date2: NSDate) -> TimeInterval {
+        
+        let timeDiff =  date1.timeIntervalSince(date2 as Date)
+        return timeDiff
+        
+    }
     
     class func compassDirectionFromDegrees (degrees : Float) -> String {
         

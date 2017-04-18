@@ -620,9 +620,10 @@ extension DailyTabVC : UITableViewDataSource {
             cell.dailyWeatherIcon.image = UIImage(named: iconName)!
         }
         
+        // Get the length of sunlight in the day
         if (dayWeather.sunriseTimeStamp != nil && dayWeather.sunsetTimeStamp != nil) {
-            let dayDurationSeconds = Int(secondsBetween(date1: dayWeather.sunsetTimeStamp!, date2: dayWeather.sunriseTimeStamp!))
-            let (h,m,_) = secondsToHoursMinutesSeconds(seconds: dayDurationSeconds)
+            let dayDurationSeconds = Int(Utility.secondsBetween(date1: dayWeather.sunsetTimeStamp!, date2: dayWeather.sunriseTimeStamp!))
+            let (h,m,_) = Utility.secondsToHoursMinutesSeconds(seconds: dayDurationSeconds)
             let hoursAndMinutes = String(h) + "h " + String(m) + "m"
             
             cell.sunriseIcon.isHidden = false
@@ -705,17 +706,6 @@ extension DailyTabVC : UITableViewDataSource {
         }
   
         return cell
-    }
-    
-    func secondsBetween (date1: NSDate, date2: NSDate) -> TimeInterval {
-        
-        let timeDiff =  date1.timeIntervalSince(date2 as Date)
-        return timeDiff
-
-    }
-    
-    func secondsToHoursMinutesSeconds (seconds : Int) -> (Int, Int, Int) {
-        return (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
     }
 
 }

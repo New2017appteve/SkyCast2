@@ -122,11 +122,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MGWeather/TodayTabVC.swift"
-            timestampString = "514160984.832285"
+            timestampString = "514246779.707615"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "470"
-            endingLineNumber = "470"
+            startingLineNumber = "472"
+            endingLineNumber = "472"
             landmarkName = "getFormattedLocation(locationObj:)"
             landmarkType = "7">
          </BreakpointContent>
