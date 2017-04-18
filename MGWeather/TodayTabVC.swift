@@ -433,7 +433,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         
         // Ensure that weatherLocation has a value before setting
         guard let altitude = weatherLocation.currentAltitude else {
-            infoLabel.text = ""
+            infoLabel.text = GlobalConstants.LocationNotFoundString
             return
         }
         

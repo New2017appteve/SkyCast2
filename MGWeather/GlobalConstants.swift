@@ -156,7 +156,7 @@ class GlobalConstants: NSObject {
 //    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/32.3078,-64.7505?units=uk2" // Bermuda
     
     
-    static let LocationNotFoundString = "" //"Location name not found"
+    static let LocationNotFoundString = " " //"Location name not found"
     
     static let BaseWeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/"
 
