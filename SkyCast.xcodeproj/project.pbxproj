@@ -22,6 +22,9 @@
 		C02E4DE41E4905A00012261B /* ChangeLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C02E4DE31E4905A00012261B /* ChangeLogViewController.swift */; };
 		C02E4DE61E4A8C020012261B /* SkyCast WhatsNew.htm in Resources */ = {isa = PBXBuildFile; fileRef = C02E4DE51E4A8C020012261B /* SkyCast WhatsNew.htm */; };
 		C0617F881DD33BB60003B844 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0617F871DD33BB60003B844 /* AppSettings.swift */; };
+		C07D9A8D1EA784F7006E0FFE /* FeelsLikeViewCV.swift in Sources */ = {isa = PBXBuildFile; fileRef = C07D9A8C1EA784F7006E0FFE /* FeelsLikeViewCV.swift */; };
+		C07D9A8F1EA786CD006E0FFE /* RainViewCV.swift in Sources */ = {isa = PBXBuildFile; fileRef = C07D9A8E1EA786CD006E0FFE /* RainViewCV.swift */; };
+		C07D9A911EA787B6006E0FFE /* WindViewCV.swift in Sources */ = {isa = PBXBuildFile; fileRef = C07D9A901EA787B6006E0FFE /* WindViewCV.swift */; };
 		C0EFA2CD1DCF9DA100D873E9 /* Reach.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EFA2CC1DCF9DA100D873E9 /* Reach.swift */; };
 		C0FA71311E96F609007FD011 /* String+Substring.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FA71301E96F609007FD011 /* String+Substring.swift */; };
 		C7175A9C1D31683700788F09 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7175A9B1D31683700788F09 /* AppDelegate.swift */; };
@@ -73,6 +76,9 @@
 		C02E4DE31E4905A00012261B /* ChangeLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeLogViewController.swift; sourceTree = "<group>"; };
 		C02E4DE51E4A8C020012261B /* SkyCast WhatsNew.htm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "SkyCast WhatsNew.htm"; sourceTree = "<group>"; };
 		C0617F871DD33BB60003B844 /* AppSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		C07D9A8C1EA784F7006E0FFE /* FeelsLikeViewCV.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeelsLikeViewCV.swift; sourceTree = "<group>"; };
+		C07D9A8E1EA786CD006E0FFE /* RainViewCV.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RainViewCV.swift; sourceTree = "<group>"; };
+		C07D9A901EA787B6006E0FFE /* WindViewCV.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WindViewCV.swift; sourceTree = "<group>"; };
 		C0EFA2CC1DCF9DA100D873E9 /* Reach.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reach.swift; sourceTree = "<group>"; };
 		C0FA71301E96F609007FD011 /* String+Substring.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Substring.swift"; sourceTree = "<group>"; };
 		C7175A981D31683700788F09 /* SkyCast.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkyCast.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -166,6 +172,16 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		C07D9A8B1EA7841D006E0FFE /* ContainerViews */ = {
+			isa = PBXGroup;
+			children = (
+				C07D9A8C1EA784F7006E0FFE /* FeelsLikeViewCV.swift */,
+				C07D9A8E1EA786CD006E0FFE /* RainViewCV.swift */,
+				C07D9A901EA787B6006E0FFE /* WindViewCV.swift */,
+			);
+			name = ContainerViews;
+			sourceTree = "<group>";
+		};
 		C7175A8F1D31683700788F09 = {
 			isa = PBXGroup;
 			children = (
@@ -199,6 +215,7 @@
 				C7175ABF1D3169E300788F09 /* REST */,
 				C7175ABC1D3169BA00788F09 /* Constants */,
 				C7175AB01D31692A00788F09 /* Model */,
+				C07D9A8B1EA7841D006E0FFE /* ContainerViews */,
 				C7175AAD1D3168CE00788F09 /* ViewControllers */,
 				C7175A9B1D31683700788F09 /* AppDelegate.swift */,
 				C7175AA71D31683700788F09 /* Info.plist */,
@@ -446,6 +463,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7BE8B5D1D73948F00491F58 /* HourlyWeatherCell.swift in Sources */,
+				C07D9A8F1EA786CD006E0FFE /* RainViewCV.swift in Sources */,
 				C7FC062A1D75C76200B6280B /* ParentWeatherVC.swift in Sources */,
 				C7175AC11D316A0600788F09 /* GetWeatherData.swift in Sources */,
 				C019DB251DFE9C7600B381F2 /* LaunchScreenVC.swift in Sources */,
@@ -462,6 +480,8 @@
 				C7C437641D798EDC00A6386D /* Utility.swift in Sources */,
 				C7C437621D79850200A6386D /* Location.swift in Sources */,
 				C7175ACF1D316CCC00788F09 /* DailyTabVC.swift in Sources */,
+				C07D9A8D1EA784F7006E0FFE /* FeelsLikeViewCV.swift in Sources */,
+				C07D9A911EA787B6006E0FFE /* WindViewCV.swift in Sources */,
 				C7175AB61D31698700788F09 /* DailyBreakdown.swift in Sources */,
 				C0042E831DB81F09007506AC /* Reachability.swift in Sources */,
 				C7175AB91D31698700788F09 /* Weather.swift in Sources */,

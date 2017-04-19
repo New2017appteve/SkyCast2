@@ -150,11 +150,13 @@ class GlobalConstants: NSObject {
 //    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/49.2827291,-123.12073?units=uk2" // Vancover
 //    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/73.50489,80.580917?units=uk2" // Dikson, Russia (COLD!)
 //    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/36.5322649,-116.9325?units=uk2" // Death Valley
-    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/27.98685,86.922026?units=uk2" // Mount Everest
+//    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/27.98685,86.922026?units=uk2" // Mount Everest
 //    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/82.668338,-24.307621?units=uk2" // Greenland
 //    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/-84.585421,-24.794449?units=uk2" // Antartica
 //    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/32.3078,-64.7505?units=uk2" // Bermuda
     
+    static let WeatherURL = "https://api.darksky.net/forecast/2dd6883f4f06cd2acdd6b3b0771a9b7c/33.5156,-91.7539?units=uk2"
+   
     
     static let LocationNotFoundString = " " //"Location name not found"
     

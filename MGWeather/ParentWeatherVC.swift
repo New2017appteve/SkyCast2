@@ -134,7 +134,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         }
         
 //        getLatLngForZip(zipCode: "SL19HL")
-        getLatLngForZip(zipCode: "AN")
+//        getLatLngForZip(zipCode: "AN")
     }
 
     
