@@ -49,6 +49,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     var currentSelectedHourCellColour: UIColor?
     
     weak var hideDisplayTimer = Timer()
+    var rotateNowCollectionViewCount = 0
     
     // MARK: Outlets
     
@@ -56,7 +57,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     @IBOutlet weak var weatherImageOuterView : UIView!
     @IBOutlet weak var weatherImage : UIImageView!
 
-//    @IBOutlet weak var infoView : UIView!
     @IBOutlet weak var infoLabel : UILabel!
     @IBOutlet weak var locationLabel : UILabel!
     @IBOutlet weak var nowWeatherAlertIcon : UIImageView!
@@ -75,6 +75,11 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     @IBOutlet weak var rainNowIcon : UIImageView!
     @IBOutlet weak var rainNowProbability : UILabel!
     @IBOutlet weak var nearestRainDistance : UILabel!
+    
+    // Container Views
+    @IBOutlet weak var feelsLikeCV : UIView!
+    @IBOutlet weak var rainCV : UIView!
+    @IBOutlet weak var windCV : UIView!
     
     @IBOutlet weak var currentSummary : UILabel!
 
@@ -167,6 +172,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
 
         setupColourScheme()
         checkWhatsNew()
+        rotateNowCollectionViews()
     }
     
 
@@ -288,8 +294,17 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         }
         
         updateLocationDetailsOnScreen()
+        
+//        DispatchQueue.main.async { [unowned self] in
+//            UIView.animate(withDuration: 7.0, animations: { () -> Void in
+//                self.windCV.transform = CGAffineTransform(rotationAngle: CGFloat(180 * M_PI))
+//            }) { (succeed) -> Void in
+//                
+//            }
+//        }
     }
     
+
     func setupColourScheme() {
         
         // Setup pods and text colour accordingly
@@ -489,7 +504,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         return returnString
     }
     
-    
+    // MARK: Segue Setup
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
 
@@ -548,6 +563,153 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             vc.startupMode = "STARTUP"
         }
 
+        // ContainerViews
+        if (segue.identifier == "WindViewCVSegue") {
+            
+            var windBearingAngle : Float?
+            var currentWindspeed = ""
+            
+            if let todayArray = dailyWeather?.currentBreakdown {
+                
+                var windDirection = ""
+                if (todayArray.windBearing != nil) {
+                    windDirection = Utility.compassDirectionFromDegrees(degrees: todayArray.windBearing!)
+                }
+                windBearingAngle = todayArray.windBearing!
+                
+                // TODO:  Report KM or MI accordingly.  Create utility to see if units in MPH/KPH from service
+                
+                let windSpeedUnits = todayArray.windSpeedUnits!
+
+                if ( !(windDirection.isEmpty) || windDirection != "") {
+                    currentWindspeed = "Wind: " + String(Int(todayArray.windSpeed!))
+//                    currentWindspeed = currentWindspeed + " " + windSpeedUnits + " " + windDirection
+ //                   currentWindspeed = String(Int(todayArray.windSpeed!))
+                    currentWindspeed = currentWindspeed + " " + windSpeedUnits
+                }
+            }
+            
+            let vc:WindViewCV = segue.destination as! WindViewCV
+            vc.currentWindDirectionDegrees = windBearingAngle
+            vc.currentWindspeedString = currentWindspeed
+        }
+
+        if (segue.identifier == "FeelsLikeCVSegue") {
+ 
+            var feelsLikeTempString = ""
+            var currentWeatherIconName = ""
+
+            if let todayArray = dailyWeather?.currentBreakdown {
+                
+                let degreesSymbol = GlobalConstants.degreesSymbol + todayArray.temperatureUnits!
+
+                feelsLikeTempString = "Feels Like: " + String(Int(round(todayArray.apparentTemperature! as Float))) + degreesSymbol
+                
+                // Get the current weather icon
+                
+                var isItDayOrNight = "NIGHT"
+                
+                var timeNow = NSDate()
+                timeNow = Utility.getTimeInWeatherTimezone(dateAndTime: timeNow)
+                
+                if isDayTime(dateTime: timeNow) {
+                    isItDayOrNight = "DAY"
+                }
+                
+                let icon = todayArray.icon
+                let enumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
+                
+                let weatherIconEnumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
+                let weatherIconName = Utility.getWeatherIcon(serviceIcon: (weatherIconEnumVal?.rawValue)!, dayOrNight: isItDayOrNight, weatherStats: todayArray)
+
+                currentWeatherIconName = weatherIconName
+            }
+            
+            let vc:FeelsLikeViewCV = segue.destination as! FeelsLikeViewCV
+            vc.feelsLikeTempString = feelsLikeTempString
+            vc.currentWeatherIconName = currentWeatherIconName
+
+        }
+        
+        if (segue.identifier == "RainViewCVSegue") {
+            
+            var nearestRainDistanceString = ""
+            var rainProbabilityNow = 0
+            var rainNowProbabilityText = ""
+            
+            if let todayArray = dailyWeather?.currentBreakdown {
+                
+                var rainDirection = ""
+                if (todayArray.nearestStormBearing != nil) {
+                    rainDirection = Utility.compassDirectionFromDegrees(degrees: Float(todayArray.nearestStormBearing!))
+                }
+
+                // Find out if we want to report rain, sleet or snow
+                
+                var displayPrecipType = "Rain"  // Default
+                if (todayArray.precipType == GlobalConstants.PrecipitationType.Rain) {
+                    displayPrecipType = "Rain"
+                }
+                else if (todayArray.precipType == GlobalConstants.PrecipitationType.Sleet) {
+                    displayPrecipType = "Sleet"
+                }
+                else if (todayArray.precipType == GlobalConstants.PrecipitationType.Snow) {
+                    displayPrecipType = "Snow"
+                }
+                
+                var nearestRain = 99999
+                var nearestRainFound = false
+                
+                if (todayArray.nearestStormDistance != nil) {
+                    nearestRain = todayArray.nearestStormDistance!
+                    nearestRainFound = true
+                }
+                else {
+                    nearestRainFound = false
+                }
+                
+                if (nearestRainFound) {
+                    if (nearestRain == 0) {
+                        nearestRainDistanceString = displayPrecipType + " nearby" //"Raining"
+                    }
+                    else if (nearestRain > 0 && nearestRain <= GlobalConstants.RainDistanceReportThreshold) {
+                        nearestRainDistanceString = displayPrecipType + " nearby"
+                    }
+                    else if (nearestRain > GlobalConstants.RainDistanceReportThreshold) {
+                        let rainUnits = todayArray.nearestStormDistanceUnits
+                        
+                        // TODO: Tidy up string concat
+                        
+                        if ( !(rainDirection.isEmpty) || rainDirection != "") {
+                            nearestRainDistanceString = displayPrecipType + " " + String(todayArray.nearestStormDistance!) + " "
+                            nearestRainDistanceString = nearestRainDistanceString + rainUnits! + " " + rainDirection
+                        }
+                    }
+                }
+                else {
+                    nearestRainDistance.text = ""
+                }
+
+                rainProbabilityNow = Int(round((todayArray.precipProbability!)*100))
+            
+                if (rainProbabilityNow > GlobalConstants.RainIconReportThresholdPercent) {
+                    //rainNowIcon.isHidden = false
+                    rainNowProbabilityText = String(rainProbabilityNow) + "%"
+                }
+                else {
+                   // rainNowIcon.isHidden = true
+                    rainNowProbabilityText = ""
+                }
+
+
+            } // TodayArray
+            
+            let vc:RainViewCV = segue.destination as! RainViewCV
+            vc.dailyWeather = dailyWeather
+            vc.nearestRainDistanceString = nearestRainDistanceString
+            vc.rainNowProbabilityString = rainNowProbabilityText
+            vc.rainNowProbabilityPercent = rainProbabilityNow
+        }
         
     }
 
@@ -583,6 +745,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             infoLabel.text = ""
         }
         
+        // TODO:  Delete below and related methods
         let detailsMod = infoLabelTimerCount % 3
         switch (detailsMod) {
         case 0:
@@ -596,6 +759,8 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         default:
             infoLabel.text = ""
         }
+        
+        rotateNowCollectionViews()
 
     }
     
@@ -632,28 +797,100 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         
         self.todayLabel.text = "  Next 24 Hours"
         self.nowDetailTwoView.alpha = 0
-        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-            self.nowDetailTwoView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-        }, completion: nil)
-        
-        self.nowDetailOneView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-            self.nowDetailOneView.alpha = 0
-        }, completion: nil)
+// MG Remove
+//        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+//            self.nowDetailTwoView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+//        }, completion: nil)
+//        
+//        self.nowDetailOneView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+//        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+//            self.nowDetailOneView.alpha = 0
+//        }, completion: nil)
     }
     
     func hideNowDetailsTwoView () {
         
         self.nowDetailOneView.alpha = 0
-        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-            self.nowDetailOneView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-        }, completion: nil)
-        
-        self.nowDetailTwoView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-            self.nowDetailTwoView.alpha = 0
-        }, completion: nil)
+// MG Remove
+//        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+//            self.nowDetailOneView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+//        }, completion: nil)
+//        
+//        self.nowDetailTwoView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+//        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+//            self.nowDetailTwoView.alpha = 0
+//        }, completion: nil)
     }
+    
+    func rotateNowCollectionViews () {
+        
+        rotateNowCollectionViewCount += 1
+            
+        // Transition between feelsLikeCV, windCV, rainCV
+        
+        let rotateNowCollectionViewMod = rotateNowCollectionViewCount % 3
+        switch (rotateNowCollectionViewMod) {
+        case 0:
+            
+            self.feelsLikeCV.alpha = 0
+            UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+                self.feelsLikeCV.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+            }, completion: nil)
+            
+            self.windCV.alpha = 0
+//            self.windCV.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+//            UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+//                self.windCV.alpha = 0
+//            }, completion: nil)
+            
+            self.rainCV.alpha = 0
+//            self.rainCV.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+//            UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+//                self.rainCV.alpha = 0
+//            }, completion: nil)
+            
+        case 1:
+            self.rainCV.alpha = 0
+            UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+                self.rainCV.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+            }, completion: nil)
+            
+            self.feelsLikeCV.alpha = 0
+//            self.feelsLikeCV.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+//            UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+//                self.feelsLikeCV.alpha = 0
+//            }, completion: nil)
+            
+            self.windCV.alpha = 0
+//            self.windCV.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+//            UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+//                self.windCV.alpha = 0
+//            }, completion: nil)
+
+        case 2:
+            self.windCV.alpha = 0
+            UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+                self.windCV.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+            }, completion: nil)
+            
+            self.rainCV.alpha = 0
+//            self.rainCV.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+//            UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+//                self.rainCV.alpha = 0
+//            }, completion: nil)
+            
+            self.feelsLikeCV.alpha = 0
+//            self.feelsLikeCV.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+//            UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+//                self.feelsLikeCV.alpha = 0
+//            }, completion: nil)
+
+        default:
+            self.windCV.alpha = 0
+        }
+
+    }
+
 
     // MARK:  Swipe Gesture functions
     

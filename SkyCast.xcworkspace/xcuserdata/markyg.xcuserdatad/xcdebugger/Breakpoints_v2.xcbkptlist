@@ -122,13 +122,91 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MGWeather/TodayTabVC.swift"
-            timestampString = "514246779.707615"
+            timestampString = "515372087.954136"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "472"
-            endingLineNumber = "472"
+            startingLineNumber = "487"
+            endingLineNumber = "487"
             landmarkName = "getFormattedLocation(locationObj:)"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MGWeather/FeelsLikeViewCV.swift"
+            timestampString = "515368764.43003"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "13"
+            endingLineNumber = "13"
+            landmarkName = "FeelsLikeViewCV"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SkyCast.FeelsLikeViewCV.cvBackgroundView.getter : weak Swift.ImplicitlyUnwrappedOptional&lt;__ObjC.UIView&gt;"
+                  moduleName = "SkyCast"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/markyg/Dev/iPhone/MGWeather/MGWeather/FeelsLikeViewCV.swift"
+                  timestampString = "515368915.05425"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "13"
+                  endingLineNumber = "13"
+                  offsetFromSymbolStart = "34">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SkyCast.FeelsLikeViewCV.cvBackgroundView.setter : weak Swift.ImplicitlyUnwrappedOptional&lt;__ObjC.UIView&gt;"
+                  moduleName = "SkyCast"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/markyg/Dev/iPhone/MGWeather/MGWeather/FeelsLikeViewCV.swift"
+                  timestampString = "515368915.056977"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "13"
+                  endingLineNumber = "13"
+                  offsetFromSymbolStart = "47">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SkyCast.FeelsLikeViewCV.init (nibName : Swift.Optional&lt;Swift.String&gt;, bundle : Swift.Optional&lt;__ObjC.Bundle&gt;) -&gt; SkyCast.FeelsLikeViewCV"
+                  moduleName = "SkyCast"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/markyg/Dev/iPhone/MGWeather/MGWeather/FeelsLikeViewCV.swift"
+                  timestampString = "515368915.059914"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "13"
+                  endingLineNumber = "13"
+                  offsetFromSymbolStart = "80">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SkyCast.FeelsLikeViewCV.init (coder : __ObjC.NSCoder) -&gt; Swift.Optional&lt;SkyCast.FeelsLikeViewCV&gt;"
+                  moduleName = "SkyCast"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/markyg/Dev/iPhone/MGWeather/MGWeather/FeelsLikeViewCV.swift"
+                  timestampString = "515368915.063029"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "13"
+                  endingLineNumber = "13"
+                  offsetFromSymbolStart = "40">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
