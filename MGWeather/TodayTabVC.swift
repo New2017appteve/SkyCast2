@@ -66,15 +66,16 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     @IBOutlet weak var windspeed : UILabel!
     @IBOutlet weak var pullToRefreshLabel : UILabel!
     
-    @IBOutlet weak var nowDetailOneView : UIView!
-    @IBOutlet weak var feelsLikeTemp : UILabel!
-    @IBOutlet weak var currentWeatherIcon : UIImageView!
-    
-    @IBOutlet weak var nowDetailTwoView : UIView!
-    @IBOutlet weak var rainNowInfoStackView : UIStackView!
-    @IBOutlet weak var rainNowIcon : UIImageView!
-    @IBOutlet weak var rainNowProbability : UILabel!
-    @IBOutlet weak var nearestRainDistance : UILabel!
+// MG Remove
+//    @IBOutlet weak var nowDetailOneView : UIView!
+//    @IBOutlet weak var feelsLikeTemp : UILabel!
+//    @IBOutlet weak var currentWeatherIcon : UIImageView!
+//    
+//    @IBOutlet weak var nowDetailTwoView : UIView!
+//    @IBOutlet weak var rainNowInfoStackView : UIStackView!
+//    @IBOutlet weak var rainNowIcon : UIImageView!
+//    @IBOutlet weak var rainNowProbability : UILabel!
+//    @IBOutlet weak var nearestRainDistance : UILabel!
     
     // Container Views
     @IBOutlet weak var feelsLikeCV : UIView!
@@ -90,7 +91,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     @IBOutlet weak var todayLabel : UILabel!
     @IBOutlet weak var todaySummary : UILabel!
     @IBOutlet weak var todayHighLowTemp : UILabel!
-    @IBOutlet weak var currentWindspeed : UILabel!
+//    @IBOutlet weak var currentWindspeed : UILabel!
     @IBOutlet weak var cloudCover : UILabel!
     @IBOutlet weak var rainProbability : UILabel!
     
@@ -115,7 +116,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     @IBOutlet weak var poweredByDarkSkyButton : UIButton!
 
     @IBOutlet weak var hourlyDetailView : UIView!
-    @IBOutlet weak var hourlyDetailCloseButton : UIButton!
+//    @IBOutlet weak var hourlyDetailCloseButton : UIButton!
     @IBOutlet weak var hourlyDetailStackView : UIStackView!
     @IBOutlet weak var hourSummaryTitle : UILabel!
     @IBOutlet weak var hourTemperature : UILabel!
@@ -267,11 +268,11 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
        // hourlyDetailView.backgroundColor = GlobalConstants.TableViewSelectedHourShading
         
         poweredByDarkSkyButton.titleEdgeInsets.right = 10 // Add right padding of text
-        
-        nowDetailOneView.backgroundColor = UIColor.clear
-        nowDetailTwoView.backgroundColor = UIColor.clear
-        nowDetailOneView.alpha = 0
-        nowDetailTwoView.alpha = 1
+// MG Remove
+//        nowDetailOneView.backgroundColor = UIColor.clear
+//        nowDetailTwoView.backgroundColor = UIColor.clear
+//        nowDetailOneView.alpha = 0
+//        nowDetailTwoView.alpha = 0
         
         // Hide weather details initially until timer starts
         self.weatherDetailStackView.alpha = 0
@@ -322,10 +323,11 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         pullToRefreshLabel.textColor = textColourScheme
         currentTemp.textColor = textColourScheme
         windspeed.textColor = textColourScheme
-        feelsLikeTemp.textColor = textColourScheme
-        rainNowProbability.textColor = textColourScheme
-        nearestRainDistance.textColor = textColourScheme
-        currentWindspeed.textColor = textColourScheme
+// MG Remove
+//        feelsLikeTemp.textColor = textColourScheme
+//        rainNowProbability.textColor = textColourScheme
+//        nearestRainDistance.textColor = textColourScheme
+//        currentWindspeed.textColor = textColourScheme
         currentSummary.textColor = textColourScheme
         todayLabel.textColor = textColourScheme
         todaySummary.textColor = textColourScheme
@@ -568,6 +570,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             
             var windBearingAngle : Float?
             var currentWindspeed = ""
+            var compassIconImage = ""
             
             if let todayArray = dailyWeather?.currentBreakdown {
                 
@@ -587,11 +590,16 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
  //                   currentWindspeed = String(Int(todayArray.windSpeed!))
                     currentWindspeed = currentWindspeed + " " + windSpeedUnits
                 }
+                
+                // Populate with the correct windy icon scheme
+                compassIconImage = Utility.getWeatherIcon(serviceIcon: "COMPASS-ARROW", dayOrNight: "", weatherStats: todayArray)
             }
             
             let vc:WindViewCV = segue.destination as! WindViewCV
             vc.currentWindDirectionDegrees = windBearingAngle
             vc.currentWindspeedString = currentWindspeed
+            vc.compassIconImage = compassIconImage
+            
         }
 
         if (segue.identifier == "FeelsLikeCVSegue") {
@@ -686,9 +694,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
                         }
                     }
                 }
-                else {
-                    nearestRainDistance.text = ""
-                }
+                // MG Remove
+//                else {
+//                    nearestRainDistance.text = ""
+//                }
 
                 rainProbabilityNow = Int(round((todayArray.precipProbability!)*100))
             
@@ -796,7 +805,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     func hideNowDetailsOneView () {
         
         self.todayLabel.text = "  Next 24 Hours"
-        self.nowDetailTwoView.alpha = 0
+//        self.nowDetailTwoView.alpha = 0
 // MG Remove
 //        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
 //            self.nowDetailTwoView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
@@ -810,7 +819,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     
     func hideNowDetailsTwoView () {
         
-        self.nowDetailOneView.alpha = 0
+//        self.nowDetailOneView.alpha = 0
 // MG Remove
 //        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
 //            self.nowDetailOneView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
@@ -1083,9 +1092,9 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             
             let degreesSymbol = GlobalConstants.degreesSymbol + todayArray.temperatureUnits!
             currentTemp.text = String(Int(round(todayArray.temperature! as Float))) + degreesSymbol
-            
+// MG Remove
             // Inner Pod 1
-            feelsLikeTemp.text = "Feels Like: " + String(Int(round(todayArray.apparentTemperature! as Float))) + degreesSymbol
+//            feelsLikeTemp.text = "Feels Like: " + String(Int(round(todayArray.apparentTemperature! as Float))) + degreesSymbol
             
             // Inner Pod 2
             
@@ -1108,109 +1117,109 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
 
             }
 
-            let minuteStats = minuteBreakdown?.minuteStats
-            
-            var minuteStatsFound = false
-            var rainProbabilityNow = 0
-            
-            if ((minuteStats?.count)! > 0) {
-                minuteStatsFound = true
-                rainProbabilityNow = Int(round((minuteStats?[0].precipProbability!)!*100))
-            }
-            else {
-                minuteStatsFound = false
-            }
-            // Populate with the correct rain icon scheme
-            
-            if (todayArray.precipType == GlobalConstants.PrecipitationType.Rain) {
-                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "", weatherStats: todayArray)
-                rainNowIcon.image = UIImage(named: rainIconImage)!
-            }
-            else if (todayArray.precipType == GlobalConstants.PrecipitationType.Sleet) {
-                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "", weatherStats: todayArray)
-                rainNowIcon.image = UIImage(named: rainIconImage)!
-            }
-            else if (todayArray.precipType == GlobalConstants.PrecipitationType.Snow) {
-                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "", weatherStats: todayArray)
-                rainNowIcon.image = UIImage(named: rainIconImage)!
-            }
-            else {
-                // Default
-                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "", weatherStats: todayArray)
-                rainNowIcon.image = UIImage(named: rainIconImage)!
-            }
-
-            if (minuteStatsFound) {
-                rainProbabilityTitle.text = displayPrecipType + " Probability:"
-                
-                if (rainProbabilityNow > GlobalConstants.RainIconReportThresholdPercent) {
-                    rainNowIcon.isHidden = false
-                    rainNowProbability.text = String(rainProbabilityNow) + "%"
-                }
-                else {
-                    rainNowIcon.isHidden = true
-                    rainNowProbability.text = ""
-                }
-            }
-            else {
-                rainNowIcon.isHidden = true
-                rainNowProbability.text = ""
-            }
-            
-            var windDirection = ""
-            if (todayArray.windBearing != nil) {
-                windDirection = Utility.compassDirectionFromDegrees(degrees: todayArray.windBearing!)
-            }
-            
-            var rainDirection = ""
-            if (todayArray.nearestStormBearing != nil) {
-                rainDirection = Utility.compassDirectionFromDegrees(degrees: Float(todayArray.nearestStormBearing!))
-            }
-
-            // TODO:  Report KM or MI accordingly.  Create utility to see if units in MPH/KPH from service
-            
-            let windSpeedUnits = todayArray.windSpeedUnits!
-            
-            // TODO: Tidy up string concat
-            
-            //if (windDirection != nil || windDirection != "") {
-            if ( !(windDirection.isEmpty) || windDirection != "") {
-                currentWindspeed.text = "Wind: " + String(Int(todayArray.windSpeed!))
-                currentWindspeed.text = currentWindspeed.text! + " " + windSpeedUnits + " " + windDirection
-            }
-            
-            var nearestRain = 99999
-            var nearestRainFound = false
-            
-            if (todayArray.nearestStormDistance != nil) {
-                nearestRain = todayArray.nearestStormDistance!
-                nearestRainFound = true
-            }
-            else {
-                nearestRainFound = false
-            }
-            
-            if (nearestRainFound) {
-                if (nearestRain == 0) {
-                    nearestRainDistance.text = displayPrecipType + " nearby" //"Raining"
-                }
-                else if (nearestRain > 0 && nearestRain <= GlobalConstants.RainDistanceReportThreshold) {
-                    nearestRainDistance.text = displayPrecipType + " nearby"
-                }
-                else if (nearestRain > GlobalConstants.RainDistanceReportThreshold) {
-                    let rainUnits = todayArray.nearestStormDistanceUnits
-                    
-                    // TODO: Tidy up string concat
-                    
-                    if ( !(rainDirection.isEmpty) || rainDirection != "") {
-                        nearestRainDistance.text = displayPrecipType + " " + String(todayArray.nearestStormDistance!) + " "
-                        nearestRainDistance.text = nearestRainDistance.text! + rainUnits! + " " + rainDirection
-                    }
-                }
-            }
-            else {
-                nearestRainDistance.text = ""
-            }
+//            let minuteStats = minuteBreakdown?.minuteStats
+//            
+//            var minuteStatsFound = false
+//            var rainProbabilityNow = 0
+//            
+//            if ((minuteStats?.count)! > 0) {
+//                minuteStatsFound = true
+//                rainProbabilityNow = Int(round((minuteStats?[0].precipProbability!)!*100))
+//            }
+//            else {
+//                minuteStatsFound = false
+//            }
+//            // Populate with the correct rain icon scheme
+//            
+//            if (todayArray.precipType == GlobalConstants.PrecipitationType.Rain) {
+//                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "", weatherStats: todayArray)
+//                rainNowIcon.image = UIImage(named: rainIconImage)!
+//            }
+//            else if (todayArray.precipType == GlobalConstants.PrecipitationType.Sleet) {
+//                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "", weatherStats: todayArray)
+//                rainNowIcon.image = UIImage(named: rainIconImage)!
+//            }
+//            else if (todayArray.precipType == GlobalConstants.PrecipitationType.Snow) {
+//                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "", weatherStats: todayArray)
+//                rainNowIcon.image = UIImage(named: rainIconImage)!
+//            }
+//            else {
+//                // Default
+//                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "", weatherStats: todayArray)
+//                rainNowIcon.image = UIImage(named: rainIconImage)!
+//            }
+//
+//            if (minuteStatsFound) {
+//                rainProbabilityTitle.text = displayPrecipType + " Probability:"
+//                
+//                if (rainProbabilityNow > GlobalConstants.RainIconReportThresholdPercent) {
+//                    rainNowIcon.isHidden = false
+//                    rainNowProbability.text = String(rainProbabilityNow) + "%"
+//                }
+//                else {
+//                    rainNowIcon.isHidden = true
+//                    rainNowProbability.text = ""
+//                }
+//            }
+//            else {
+//                rainNowIcon.isHidden = true
+//                rainNowProbability.text = ""
+//            }
+//            
+//            var windDirection = ""
+//            if (todayArray.windBearing != nil) {
+//                windDirection = Utility.compassDirectionFromDegrees(degrees: todayArray.windBearing!)
+//            }
+//            
+//            var rainDirection = ""
+//            if (todayArray.nearestStormBearing != nil) {
+//                rainDirection = Utility.compassDirectionFromDegrees(degrees: Float(todayArray.nearestStormBearing!))
+//            }
+//
+//            // TODO:  Report KM or MI accordingly.  Create utility to see if units in MPH/KPH from service
+//            
+//            let windSpeedUnits = todayArray.windSpeedUnits!
+//            
+//            // TODO: Tidy up string concat
+//            
+//            //if (windDirection != nil || windDirection != "") {
+//            if ( !(windDirection.isEmpty) || windDirection != "") {
+//                currentWindspeed.text = "Wind: " + String(Int(todayArray.windSpeed!))
+//                currentWindspeed.text = currentWindspeed.text! + " " + windSpeedUnits + " " + windDirection
+//            }
+//            
+//            var nearestRain = 99999
+//            var nearestRainFound = false
+//            
+//            if (todayArray.nearestStormDistance != nil) {
+//                nearestRain = todayArray.nearestStormDistance!
+//                nearestRainFound = true
+//            }
+//            else {
+//                nearestRainFound = false
+//            }
+//            
+//            if (nearestRainFound) {
+//                if (nearestRain == 0) {
+//                    nearestRainDistance.text = displayPrecipType + " nearby" //"Raining"
+//                }
+//                else if (nearestRain > 0 && nearestRain <= GlobalConstants.RainDistanceReportThreshold) {
+//                    nearestRainDistance.text = displayPrecipType + " nearby"
+//                }
+//                else if (nearestRain > GlobalConstants.RainDistanceReportThreshold) {
+//                    let rainUnits = todayArray.nearestStormDistanceUnits
+//                    
+//                    // TODO: Tidy up string concat
+//                    
+//                    if ( !(rainDirection.isEmpty) || rainDirection != "") {
+//                        nearestRainDistance.text = displayPrecipType + " " + String(todayArray.nearestStormDistance!) + " "
+//                        nearestRainDistance.text = nearestRainDistance.text! + rainUnits! + " " + rainDirection
+//                    }
+//                }
+//            }
+//            else {
+//                nearestRainDistance.text = ""
+//            }
 
             if (dailyWeather?.weatherAlert == true) {
                 getWeatherAlertStartAndEndTimes()
@@ -1365,14 +1374,14 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             }
             
             // Populate the weather icons
-            
-            let weatherIconEnumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
-            let weatherIconName = Utility.getWeatherIcon(serviceIcon: (weatherIconEnumVal?.rawValue)!, dayOrNight: isItDayOrNight, weatherStats: todayArray)
-            
-            //if String(weatherIconName).isEmpty != nil {
-            if !(String(weatherIconName).isEmpty) {
-                currentWeatherIcon.image = UIImage(named: weatherIconName)!
-            }
+// MG Remove            
+//            let weatherIconEnumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
+//            let weatherIconName = Utility.getWeatherIcon(serviceIcon: (weatherIconEnumVal?.rawValue)!, dayOrNight: isItDayOrNight, weatherStats: todayArray)
+//            
+//            //if String(weatherIconName).isEmpty != nil {
+//            if !(String(weatherIconName).isEmpty) {
+//                currentWeatherIcon.image = UIImage(named: weatherIconName)!
+//            }
             
             // If weather alert, enable the button so user can bring up alert text view
             if (dailyWeather?.weatherAlert == true) {

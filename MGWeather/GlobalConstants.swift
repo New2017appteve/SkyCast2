@@ -358,7 +358,8 @@ class GlobalConstants: NSObject {
         
         static var lightRain = "Light Rain-50"
         static var heavyRain = "Heavy Rain-50"
-
+        static var compassArrow = "Compass-Arrow"
+        
         //
         // WHITE
         //
@@ -389,6 +390,7 @@ class GlobalConstants: NSObject {
 
         static var lightRain_White = "Light-Rain-White"
         static var heavyRain_White = "Heavy-Rain-White"
+        static var compassArrow_White = "Compass-Arrow-White"
 
     }
     

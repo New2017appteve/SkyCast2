@@ -108,6 +108,8 @@ class Utility: NSObject {
                 iconName = GlobalConstants.WeatherIcon.windy
             case "SNOWFLAKE":
                 iconName = GlobalConstants.WeatherIcon.snowflake
+            case "COMPASS-ARROW":
+                iconName = GlobalConstants.WeatherIcon.compassArrow
                 
             default:
                 iconName = ""
@@ -169,6 +171,8 @@ class Utility: NSObject {
                 iconName = GlobalConstants.WeatherIcon.windy_White
             case "SNOWFLAKE":
                 iconName = GlobalConstants.WeatherIcon.snowflake_White
+            case "COMPASS-ARROW":
+                iconName = GlobalConstants.WeatherIcon.compassArrow_White
                
             default:
                 iconName = ""

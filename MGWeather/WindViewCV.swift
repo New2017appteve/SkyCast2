@@ -21,7 +21,8 @@ class WindViewCV: UIViewController {
     @IBOutlet weak var eastLabel : UILabel!
 
     var currentWindspeedString : String?
-    var currentWindDirectionDegrees  : Float?
+    var currentWindDirectionDegrees : Float?
+    var compassIconImage : String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,6 +45,8 @@ class WindViewCV: UIViewController {
         compassView.layer.borderWidth = 1
         compassView.layer.borderColor = UIColor.white.cgColor
         
+        compassArrow.image = UIImage(named: compassIconImage!)
+
         rotateCompassArrow(angleDegrees: currentWindDirectionDegrees!)
         currentWindspeed.text = currentWindspeedString
     }
