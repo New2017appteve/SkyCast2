@@ -203,6 +203,7 @@ class GlobalConstants: NSObject {
     
     static let weatherRefreshFinishedKey = Notification.Name("WeatherRefreshedFinished")
     static let locationRefreshFinishedKey = Notification.Name("LocationRefreshedFinished")
+    static let todayScreenRefreshFinishedKey = Notification.Name("TodayScreenRefreshFinishedKey")
     
     // Temperature Units
     struct TemperatureUnits {

@@ -18,9 +18,12 @@ protocol TodayTabVCDelegate
     func returnRefreshedLocationDetails() -> Location
     func returnRefreshedWeatherDetails() -> Weather
     func setupDayOrNightIndicator(dayOrNight : String)
+    
+//    func isDayTime (dateTime : NSDate) -> Bool
+
 }
 
-class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
+class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate, FeelsLikeViewCVDelegate, RainViewCVDelegate, WindViewCVDelegate {
     
     var dailyWeather : Weather!  // This is passed in from ParentWeatherVC
     var weatherLocation : Location!  // This is passed in from ParentWeatherVC
@@ -66,17 +69,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     @IBOutlet weak var windspeed : UILabel!
     @IBOutlet weak var pullToRefreshLabel : UILabel!
     
-// MG Remove
-//    @IBOutlet weak var nowDetailOneView : UIView!
-//    @IBOutlet weak var feelsLikeTemp : UILabel!
-//    @IBOutlet weak var currentWeatherIcon : UIImageView!
-//    
-//    @IBOutlet weak var nowDetailTwoView : UIView!
-//    @IBOutlet weak var rainNowInfoStackView : UIStackView!
-//    @IBOutlet weak var rainNowIcon : UIImageView!
-//    @IBOutlet weak var rainNowProbability : UILabel!
-//    @IBOutlet weak var nearestRainDistance : UILabel!
-    
     // Container Views
     @IBOutlet weak var feelsLikeCV : UIView!
     @IBOutlet weak var rainCV : UIView!
@@ -91,7 +83,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     @IBOutlet weak var todayLabel : UILabel!
     @IBOutlet weak var todaySummary : UILabel!
     @IBOutlet weak var todayHighLowTemp : UILabel!
-//    @IBOutlet weak var currentWindspeed : UILabel!
     @IBOutlet weak var cloudCover : UILabel!
     @IBOutlet weak var rainProbability : UILabel!
     
@@ -116,7 +107,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     @IBOutlet weak var poweredByDarkSkyButton : UIButton!
 
     @IBOutlet weak var hourlyDetailView : UIView!
-//    @IBOutlet weak var hourlyDetailCloseButton : UIButton!
     @IBOutlet weak var hourlyDetailStackView : UIStackView!
     @IBOutlet weak var hourSummaryTitle : UILabel!
     @IBOutlet weak var hourTemperature : UILabel!
@@ -173,7 +163,11 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
 
         setupColourScheme()
         checkWhatsNew()
-        rotateNowCollectionViews()
+        
+        self.rainCV.alpha = 0
+        self.feelsLikeCV.alpha = 1
+        self.windCV.alpha = 0
+      //  rotateNowCollectionViews()
     }
     
 
@@ -237,6 +231,11 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     
     func setupScreen () {
         
+        feelsLikeCV.backgroundColor = UIColor.clear
+        feelsLikeCV.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
+        windCV.backgroundColor = UIColor.clear
+        rainCV.backgroundColor = UIColor.clear
+        
         bannerOuterView.isHidden = true
         closeBannerButton.isHidden = true  // Will only show once banner ad loaded
 
@@ -258,9 +257,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         currentTempDetailView.layer.cornerRadius = 10.0
         currentTempDetailView.clipsToBounds = true
         
-//        infoView.layer.cornerRadius = 5.0
-//        infoView.clipsToBounds = true
-        
         weatherDetailOuterView.layer.cornerRadius = 10.0
         weatherDetailOuterView.clipsToBounds = true
         
@@ -268,11 +264,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
        // hourlyDetailView.backgroundColor = GlobalConstants.TableViewSelectedHourShading
         
         poweredByDarkSkyButton.titleEdgeInsets.right = 10 // Add right padding of text
-// MG Remove
-//        nowDetailOneView.backgroundColor = UIColor.clear
-//        nowDetailTwoView.backgroundColor = UIColor.clear
-//        nowDetailOneView.alpha = 0
-//        nowDetailTwoView.alpha = 0
         
         // Hide weather details initially until timer starts
         self.weatherDetailStackView.alpha = 0
@@ -284,8 +275,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             
             hourlyDetailView.layer.cornerRadius = 10.0
             hourlyDetailView.clipsToBounds = true
-           // hourlyDetailView.layer.borderWidth = 2
-           // hourlyDetailView.layer.borderColor = UIColor.white.cgColor
             
             hourlyWeatherTableView.allowsSelection = true
         }
@@ -296,13 +285,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         
         updateLocationDetailsOnScreen()
         
-//        DispatchQueue.main.async { [unowned self] in
-//            UIView.animate(withDuration: 7.0, animations: { () -> Void in
-//                self.windCV.transform = CGAffineTransform(rotationAngle: CGFloat(180 * M_PI))
-//            }) { (succeed) -> Void in
-//                
-//            }
-//        }
     }
     
 
@@ -323,11 +305,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         pullToRefreshLabel.textColor = textColourScheme
         currentTemp.textColor = textColourScheme
         windspeed.textColor = textColourScheme
-// MG Remove
-//        feelsLikeTemp.textColor = textColourScheme
-//        rainNowProbability.textColor = textColourScheme
-//        nearestRainDistance.textColor = textColourScheme
-//        currentWindspeed.textColor = textColourScheme
+
         currentSummary.textColor = textColourScheme
         todayLabel.textColor = textColourScheme
         todaySummary.textColor = textColourScheme
@@ -360,7 +338,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         hourWindspeed.textColor = textColourScheme
         hourCloudCover.textColor = textColourScheme
         hourRainProbability.textColor = textColourScheme
- //       hourSunriseSunsetIcon.backgroundColor = textColourScheme
         
         // Pods
         
@@ -568,156 +545,26 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         // ContainerViews
         if (segue.identifier == "WindViewCVSegue") {
             
-            var windBearingAngle : Float?
-            var currentWindspeed = ""
-            var compassIconImage = ""
-            
-            if let todayArray = dailyWeather?.currentBreakdown {
-                
-                var windDirection = ""
-                if (todayArray.windBearing != nil) {
-                    windDirection = Utility.compassDirectionFromDegrees(degrees: todayArray.windBearing!)
-                }
-                windBearingAngle = todayArray.windBearing!
-                
-                // TODO:  Report KM or MI accordingly.  Create utility to see if units in MPH/KPH from service
-                
-                let windSpeedUnits = todayArray.windSpeedUnits!
-
-                if ( !(windDirection.isEmpty) || windDirection != "") {
-                    currentWindspeed = "Wind: " + String(Int(todayArray.windSpeed!))
-//                    currentWindspeed = currentWindspeed + " " + windSpeedUnits + " " + windDirection
- //                   currentWindspeed = String(Int(todayArray.windSpeed!))
-                    currentWindspeed = currentWindspeed + " " + windSpeedUnits
-                }
-                
-                // Populate with the correct windy icon scheme
-                compassIconImage = Utility.getWeatherIcon(serviceIcon: "COMPASS-ARROW", dayOrNight: "", weatherStats: todayArray)
-            }
-            
             let vc:WindViewCV = segue.destination as! WindViewCV
-            vc.currentWindDirectionDegrees = windBearingAngle
-            vc.currentWindspeedString = currentWindspeed
-            vc.compassIconImage = compassIconImage
+            vc.dailyWeather = dailyWeather
+            vc.delegate = self
             
         }
 
         if (segue.identifier == "FeelsLikeCVSegue") {
- 
-            var feelsLikeTempString = ""
-            var currentWeatherIconName = ""
-
-            if let todayArray = dailyWeather?.currentBreakdown {
-                
-                let degreesSymbol = GlobalConstants.degreesSymbol + todayArray.temperatureUnits!
-
-                feelsLikeTempString = "Feels Like: " + String(Int(round(todayArray.apparentTemperature! as Float))) + degreesSymbol
-                
-                // Get the current weather icon
-                
-                var isItDayOrNight = "NIGHT"
-                
-                var timeNow = NSDate()
-                timeNow = Utility.getTimeInWeatherTimezone(dateAndTime: timeNow)
-                
-                if isDayTime(dateTime: timeNow) {
-                    isItDayOrNight = "DAY"
-                }
-                
-                let icon = todayArray.icon
-                let enumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
-                
-                let weatherIconEnumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
-                let weatherIconName = Utility.getWeatherIcon(serviceIcon: (weatherIconEnumVal?.rawValue)!, dayOrNight: isItDayOrNight, weatherStats: todayArray)
-
-                currentWeatherIconName = weatherIconName
-            }
             
             let vc:FeelsLikeViewCV = segue.destination as! FeelsLikeViewCV
-            vc.feelsLikeTempString = feelsLikeTempString
-            vc.currentWeatherIconName = currentWeatherIconName
+            vc.dailyWeather = dailyWeather
+            vc.delegate = self
 
         }
         
         if (segue.identifier == "RainViewCVSegue") {
             
-            var nearestRainDistanceString = ""
-            var rainProbabilityNow = 0
-            var rainNowProbabilityText = ""
-            
-            if let todayArray = dailyWeather?.currentBreakdown {
-                
-                var rainDirection = ""
-                if (todayArray.nearestStormBearing != nil) {
-                    rainDirection = Utility.compassDirectionFromDegrees(degrees: Float(todayArray.nearestStormBearing!))
-                }
-
-                // Find out if we want to report rain, sleet or snow
-                
-                var displayPrecipType = "Rain"  // Default
-                if (todayArray.precipType == GlobalConstants.PrecipitationType.Rain) {
-                    displayPrecipType = "Rain"
-                }
-                else if (todayArray.precipType == GlobalConstants.PrecipitationType.Sleet) {
-                    displayPrecipType = "Sleet"
-                }
-                else if (todayArray.precipType == GlobalConstants.PrecipitationType.Snow) {
-                    displayPrecipType = "Snow"
-                }
-                
-                var nearestRain = 99999
-                var nearestRainFound = false
-                
-                if (todayArray.nearestStormDistance != nil) {
-                    nearestRain = todayArray.nearestStormDistance!
-                    nearestRainFound = true
-                }
-                else {
-                    nearestRainFound = false
-                }
-                
-                if (nearestRainFound) {
-                    if (nearestRain == 0) {
-                        nearestRainDistanceString = displayPrecipType + " nearby" //"Raining"
-                    }
-                    else if (nearestRain > 0 && nearestRain <= GlobalConstants.RainDistanceReportThreshold) {
-                        nearestRainDistanceString = displayPrecipType + " nearby"
-                    }
-                    else if (nearestRain > GlobalConstants.RainDistanceReportThreshold) {
-                        let rainUnits = todayArray.nearestStormDistanceUnits
-                        
-                        // TODO: Tidy up string concat
-                        
-                        if ( !(rainDirection.isEmpty) || rainDirection != "") {
-                            nearestRainDistanceString = displayPrecipType + " " + String(todayArray.nearestStormDistance!) + " "
-                            nearestRainDistanceString = nearestRainDistanceString + rainUnits! + " " + rainDirection
-                        }
-                    }
-                }
-                // MG Remove
-//                else {
-//                    nearestRainDistance.text = ""
-//                }
-
-                rainProbabilityNow = Int(round((todayArray.precipProbability!)*100))
-            
-                if (rainProbabilityNow > GlobalConstants.RainIconReportThresholdPercent) {
-                    //rainNowIcon.isHidden = false
-                    rainNowProbabilityText = String(rainProbabilityNow) + "%"
-                }
-                else {
-                   // rainNowIcon.isHidden = true
-                    rainNowProbabilityText = ""
-                }
-
-
-            } // TodayArray
-            
             let vc:RainViewCV = segue.destination as! RainViewCV
             vc.dailyWeather = dailyWeather
-            vc.nearestRainDistanceString = nearestRainDistanceString
-            vc.rainNowProbabilityString = rainNowProbabilityText
-            vc.rainNowProbabilityPercent = rainProbabilityNow
+            vc.delegate = self
+
         }
         
     }
@@ -805,30 +652,10 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     func hideNowDetailsOneView () {
         
         self.todayLabel.text = "  Next 24 Hours"
-//        self.nowDetailTwoView.alpha = 0
-// MG Remove
-//        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-//            self.nowDetailTwoView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-//        }, completion: nil)
-//        
-//        self.nowDetailOneView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-//        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-//            self.nowDetailOneView.alpha = 0
-//        }, completion: nil)
     }
     
     func hideNowDetailsTwoView () {
         
-//        self.nowDetailOneView.alpha = 0
-// MG Remove
-//        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-//            self.nowDetailOneView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-//        }, completion: nil)
-//        
-//        self.nowDetailTwoView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-//        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-//            self.nowDetailTwoView.alpha = 0
-//        }, completion: nil)
     }
     
     func rotateNowCollectionViews () {
@@ -847,17 +674,8 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             }, completion: nil)
             
             self.windCV.alpha = 0
-//            self.windCV.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-//            UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-//                self.windCV.alpha = 0
-//            }, completion: nil)
-            
             self.rainCV.alpha = 0
-//            self.rainCV.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-//            UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-//                self.rainCV.alpha = 0
-//            }, completion: nil)
-            
+
         case 1:
             self.rainCV.alpha = 0
             UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
@@ -865,16 +683,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             }, completion: nil)
             
             self.feelsLikeCV.alpha = 0
-//            self.feelsLikeCV.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-//            UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-//                self.feelsLikeCV.alpha = 0
-//            }, completion: nil)
-            
             self.windCV.alpha = 0
-//            self.windCV.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-//            UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-//                self.windCV.alpha = 0
-//            }, completion: nil)
 
         case 2:
             self.windCV.alpha = 0
@@ -883,16 +692,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             }, completion: nil)
             
             self.rainCV.alpha = 0
-//            self.rainCV.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-//            UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-//                self.rainCV.alpha = 0
-//            }, completion: nil)
-            
             self.feelsLikeCV.alpha = 0
-//            self.feelsLikeCV.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-//            UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-//                self.feelsLikeCV.alpha = 0
-//            }, completion: nil)
 
         default:
             self.windCV.alpha = 0
@@ -1623,6 +1423,11 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
     
     // MARK:  Notification complete methods
     
+    func returnRefreshedWeatherDetails() -> Weather {
+        
+        return dailyWeather!
+    }
+
     func weatherDataRefreshed() {
         print("Weather Data Refreshed - TodayTab")
         
@@ -1631,7 +1436,12 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         DispatchQueue.main.async {
             self.dailyWeather = self.delegate?.returnRefreshedWeatherDetails()
             
-            // Double check to see if the user has changed day/night setings before reloading 
+            // Post a notification to Containerviews that the weather has refreshed and 
+            // dailyWeather has new value
+            
+            NotificationCenter.default.post(name: GlobalConstants.todayScreenRefreshFinishedKey, object: nil)
+
+            // Double check to see if the user has changed day/night setings before reloading
             // the hour tableView.  It may have not got written to in time the first time around
             
             let userDefaults = UserDefaults.standard
@@ -1643,7 +1453,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
             
             // Scroll to the top of the table view
             self.hourlyWeatherTableView.contentOffset = CGPoint(x: 0, y: 0 - self.hourlyWeatherTableView.contentInset.top)
-            
+         
             // NOTE:  We want to keep listening for notifications incase a change is made in
             // the Settings screen so they have not been removed
 
@@ -1678,7 +1488,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate {
         // show the delete ad button
         closeBannerButton.isHidden = false
     }
-    
+
 }
 
 
