@@ -8,7 +8,7 @@
 import UIKit
 import CoreLocation
 
-class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsViewControllerDelegate, SunriseSunsetViewControllerDelegate, TodayTabVCDelegate, DailyTabVCDelegate, ThisTimeLastYearVCDelegate  {
+class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsViewControllerDelegate, SunriseSunsetViewControllerDelegate, TodayTabVCDelegate, DailyTabVCDelegate, ThisTimeLastYearVCDelegate, UIPickerViewDelegate, UIPickerViewDataSource  {
 
     // https://ahmedabdurrahman.com/2015/08/31/how-to-switch-view-controllers-using-segmented-control-swift/
     
@@ -24,12 +24,16 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     @IBOutlet weak var weatherImage : UIImageView!
     @IBOutlet weak var iconRefreshButton : UIButton!
 
+    @IBOutlet weak var menuPicker: UIPickerView!
+    
     enum Menu: String {
         case Weather = "Weather"
+        case CompassView = "Compass View"
         case ThisTimeLastYear = "This Time Last Year"
         case SunriseSunset = "Daily Timeline"
         case ShowSettings = "App Settings"
         case ShowAbout = "About"
+        case ShowCancel = "Cancel"
     }
     
     struct lLocation {
@@ -54,6 +58,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     var loadingMode = ""  // Can either be 'STARTUP' or 'REFRESHING"
     var parentDayOrNight = ""  // DAY or NIGHT. Will be set from DailyTabVC and used in ThisTimeLastYear
     
+    var pickerData: [String] = [String]()
+    
     lazy var firstChildTabVC: UIViewController? = {
         let firstChildTabVC = self.storyboard?.instantiateViewController(withIdentifier: "TodayTabVC") as! TodayTabVC
         return firstChildTabVC
@@ -69,6 +75,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         super.viewDidLoad()
         
         loadingMode = "STARTUP"
+        
+       // createMenuPickerData()
         getURLUnits()
         setupScreen()
         segmentedControl.isEnabled = false
@@ -153,6 +161,14 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             vc.delegate = self
         }
         
+        if (segue.identifier == "CompassViewSegue") {
+            
+            let vc:CompassViewController = segue.destination as! CompassViewController
+            vc.dailyWeather = weather
+            //        vc.delegate = self
+            
+        }
+
         if (segue.identifier == "sunriseSunsetSegue") {
             
             // Get todays sunrise and sunset data to pass to view controller
@@ -226,6 +242,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     // MARK:  Setup Screen 
     
     func setupScreen() {
+        
+        menuPicker.isHidden = true
         
         let lastLoadedBackground = Utility.getLastLoadedBackground()
 
@@ -414,7 +432,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             
             let today = Date()
             let lastYear = Calendar.current.date(byAdding: .year, value: -1, to: today)
-            var thisTimeLastYear = lastYear?.timeIntervalSince1970
+            let thisTimeLastYear = lastYear?.timeIntervalSince1970
             
            // Note:  lround removes the .0 from the rounded Double
             urlWithLocation = urlWithLocation + "," + String(lround(Double((thisTimeLastYear!.description))!))
@@ -595,8 +613,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         let range2: Range<String.Index> = url.range(of: "?")!
         let endPos: Int = url.distance(from: url.startIndex, to: range2.lowerBound)
         
-        var latitude = url.customSubstring(with: startPos..<midPos)
-        var longitude = url.customSubstring(with: midPos+1..<endPos)
+        let latitude = url.customSubstring(with: startPos..<midPos)
+        let longitude = url.customSubstring(with: midPos+1..<endPos)
         
         let loc = lLocation(latitude: Double(latitude)!, longitude: Double(longitude)!)
         
@@ -640,7 +658,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             
             if (GlobalConstants.UseTestWeatherURLs) {
                 
-                var url = GlobalConstants.WeatherURL
+                let url = GlobalConstants.WeatherURL
                 
                 let loc = getLatitudeAndLongitudeFromURL(url: url)
                 
@@ -854,6 +872,11 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     
     @IBAction func barBtnActionPressed(_ sender: AnyObject) {
         
+      //  menuPicker.isHidden = false
+      //  let pickerMenuView = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 10))
+      //  self.view.addSubview(pickerMenuView)
+        
+        
         let actionMenu = UIAlertController(title: "Menu", message: "", preferredStyle: UIAlertControllerStyle.actionSheet)
         
         if let popover = actionMenu.popoverPresentationController{
@@ -863,6 +886,8 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             popover.popoverLayoutMargins = UIEdgeInsets(top: 10, left: 4, bottom: 10, right: 4)
         }
         
+        actionMenu.addAction(compassViewAction)
+
         if (AppSettings.showThisTimeLastYear) {
             actionMenu.addAction(thisTimeLastYearAction)
         }
@@ -882,12 +907,21 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
     
     // MARK:- Menu action methods
 
+    var compassViewAction: UIAlertAction {
+        return UIAlertAction(title: Menu.CompassView.rawValue, style: .default, handler: { (alert) -> Void in
+            
+            DispatchQueue.main.async {
+                self.performSegue(withIdentifier: "CompassViewSegue", sender: self)
+            }
+        })
+    }
+
     var thisTimeLastYearAction: UIAlertAction {
         return UIAlertAction(title: Menu.ThisTimeLastYear.rawValue, style: .default, handler: { (alert) -> Void in
             
             DispatchQueue.main.async {
                 self.performSegue(withIdentifier: "ThisTimeLastYearSegue", sender: self)
-            }
+           }
         })
     }
     
@@ -918,6 +952,72 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         })
     }
     
+    // UIPickerView methods
+    
+    func createMenuPickerData() {
+        
+        pickerData = [Menu.CompassView.rawValue,
+                      Menu.ThisTimeLastYear.rawValue,
+                      Menu.SunriseSunset.rawValue,
+                      Menu.ShowSettings.rawValue,
+                      Menu.ShowAbout.rawValue,
+                      Menu.ShowCancel.rawValue];
+        
+        // Connect data:
+        self.menuPicker.delegate = self
+        self.menuPicker.dataSource = self
+        
+    }
+    
+    // DataSource
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return pickerData.count
+    }
+    
+    // Delegate
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return pickerData[row]
+    }
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        
+       /*
+        pickerData = [Menu.CompassView.rawValue,
+                      Menu.ThisTimeLastYear.rawValue,
+                      Menu.SunriseSunset.rawValue,
+                      Menu.ShowSettings.rawValue,
+                      Menu.ShowAbout.rawValue,
+                      Menu.ShowCancel.rawValue];
+        */
+        
+        switch row {
+        case 0:
+            DispatchQueue.main.async {
+                self.performSegue(withIdentifier: "CompassViewSegue", sender: self)
+            }
+        case 1:
+            DispatchQueue.main.async {
+                self.performSegue(withIdentifier: "ThisTimeLastYearSegue", sender: self)
+            }
+        case 2:
+            DispatchQueue.main.async {
+                self.performSegue(withIdentifier: "sunriseSunsetSegue", sender: self)
+            }
+        case 3:
+            DispatchQueue.main.async {
+                self.performSegue(withIdentifier: "settingsScreenSegue", sender: self)
+            }
+        case 4:
+            DispatchQueue.main.async {
+                self.performSegue(withIdentifier: "aboutScreenSegue", sender: self)
+            }
+        default: break
+        }
+    }
+
 
     func refreshData() {
         print("refreshing data")

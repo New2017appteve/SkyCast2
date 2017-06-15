@@ -87,7 +87,7 @@ class GetWeatherData: NSObject {
             // 1: Check HTTP Response for successful GET request
             guard let httpResponse = response as? HTTPURLResponse, let receivedData = data
                 else {
-                    print("Skycast: error not a valid http response or timed out: \(error)")
+                    print("Skycast: error not a valid http response or timed out: \(error ?? "" as! Error)")
                     block("", nil,nil,2000)
                     
                     return

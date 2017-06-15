@@ -53,7 +53,7 @@ class WindViewCV: UIViewController, CLLocationManagerDelegate {
 
         locationManager = CLLocationManager()
         locationManager.delegate = self
-        locationManager.startUpdatingHeading()
+        //locationManager.startUpdatingHeading()
 
     }
     
@@ -173,17 +173,4 @@ class WindViewCV: UIViewController, CLLocationManagerDelegate {
 
     }
 
-    // This function will be called whenever your heading is updated. Since you asked for best
-    // accuracy, this function will be called a lot of times. Better make it very efficient
-    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        print(newHeading.magneticHeading)
-        
-        // just need a single snapshot of thid
-    
-        rotateCompassLine(degrees:newHeading.magneticHeading)
-    }
-
-    func rotateCompassLine(degrees : Double) {
-        compassLine.transform = CGAffineTransform(rotationAngle: CGFloat(degrees * M_PI/180));
-    }
 }

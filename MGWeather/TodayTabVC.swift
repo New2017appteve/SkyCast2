@@ -1173,16 +1173,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate, F
                 Utility.setLastLoadedBackground(backgroundName: backgroundImageName)
             }
             
-            // Populate the weather icons
-// MG Remove            
-//            let weatherIconEnumVal = GlobalConstants.Images.ServiceIcon(rawValue: icon!)
-//            let weatherIconName = Utility.getWeatherIcon(serviceIcon: (weatherIconEnumVal?.rawValue)!, dayOrNight: isItDayOrNight, weatherStats: todayArray)
-//            
-//            //if String(weatherIconName).isEmpty != nil {
-//            if !(String(weatherIconName).isEmpty) {
-//                currentWeatherIcon.image = UIImage(named: weatherIconName)!
-//            }
-            
             // If weather alert, enable the button so user can bring up alert text view
             if (dailyWeather?.weatherAlert == true) {
                 
@@ -1196,7 +1186,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate, F
                 weatherAlertTitle.text = "Weather Alert"
                 weatherAlertButton.setImage(UIImage(named: "Alert"), for: UIControlState.normal)
                 
-              //  getWeatherAlertStartAndEndTimes()
             }
             else {
                 weatherAlertButton.isHidden = true

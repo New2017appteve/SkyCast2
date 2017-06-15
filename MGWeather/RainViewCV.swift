@@ -157,7 +157,7 @@ class RainViewCV: UIViewController {
         let colourScheme = Utility.setupColourScheme()
         
         let textColourScheme = colourScheme.textColourScheme
-        let podColourScheme = colourScheme.podColourScheme
+//        let podColourScheme = colourScheme.podColourScheme
         
         // Labels
         
