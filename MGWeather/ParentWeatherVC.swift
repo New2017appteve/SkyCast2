@@ -32,6 +32,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         case ThisTimeLastYear = "This Time Last Year"
         case SunriseSunset = "Daily Timeline"
         case ShowSettings = "App Settings"
+        case Upgrades = "Upgrades"
         case ShowAbout = "About"
         case ShowCancel = "Cancel"
     }
@@ -897,6 +898,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         }
         
         actionMenu.addAction(showSettingsAction)
+        actionMenu.addAction(upgradesAction)
         actionMenu.addAction(showAboutAction)
         // Adding Cancel allows user to click outside of menu to dismiss alert
         actionMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -943,6 +945,15 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         })
     }
     
+    var upgradesAction: UIAlertAction {
+        return UIAlertAction(title: Menu.Upgrades.rawValue, style: .default, handler: { (alert) -> Void in
+            
+            DispatchQueue.main.async {
+                self.performSegue(withIdentifier: "showUpgradesSegue", sender: self)
+            }
+        })
+    }
+
     var showAboutAction: UIAlertAction {
         return UIAlertAction(title: Menu.ShowAbout.rawValue, style: .default, handler: { (alert) -> Void in
             

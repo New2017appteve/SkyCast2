@@ -25,6 +25,12 @@
 		C07D9A8D1EA784F7006E0FFE /* FeelsLikeViewCV.swift in Sources */ = {isa = PBXBuildFile; fileRef = C07D9A8C1EA784F7006E0FFE /* FeelsLikeViewCV.swift */; };
 		C07D9A8F1EA786CD006E0FFE /* RainViewCV.swift in Sources */ = {isa = PBXBuildFile; fileRef = C07D9A8E1EA786CD006E0FFE /* RainViewCV.swift */; };
 		C07D9A911EA787B6006E0FFE /* WindViewCV.swift in Sources */ = {isa = PBXBuildFile; fileRef = C07D9A901EA787B6006E0FFE /* WindViewCV.swift */; };
+		C09526231EFC7F99006620B0 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C09526221EFC7F99006620B0 /* StoreKit.framework */; };
+		C09526261EFC807A006620B0 /* SkyCastProducts.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09526251EFC807A006620B0 /* SkyCastProducts.swift */; };
+		C09526281EFC8109006620B0 /* IAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09526271EFC8109006620B0 /* IAPHelper.swift */; };
+		C095262A1EFC83D8006620B0 /* IAPSkyCastMasterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09526291EFC83D8006620B0 /* IAPSkyCastMasterVC.swift */; };
+		C095262C1EFC83F3006620B0 /* IAPSkyCastDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C095262B1EFC83F3006620B0 /* IAPSkyCastDetailVC.swift */; };
+		C095262E1EFC8595006620B0 /* ProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C095262D1EFC8595006620B0 /* ProductCell.swift */; };
 		C0EFA2CD1DCF9DA100D873E9 /* Reach.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EFA2CC1DCF9DA100D873E9 /* Reach.swift */; };
 		C0FA71311E96F609007FD011 /* String+Substring.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FA71301E96F609007FD011 /* String+Substring.swift */; };
 		C0FD60CC1EDE1E160030244C /* CompassViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FD60CB1EDE1E160030244C /* CompassViewController.swift */; };
@@ -80,6 +86,12 @@
 		C07D9A8C1EA784F7006E0FFE /* FeelsLikeViewCV.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeelsLikeViewCV.swift; sourceTree = "<group>"; };
 		C07D9A8E1EA786CD006E0FFE /* RainViewCV.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RainViewCV.swift; sourceTree = "<group>"; };
 		C07D9A901EA787B6006E0FFE /* WindViewCV.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WindViewCV.swift; sourceTree = "<group>"; };
+		C09526221EFC7F99006620B0 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		C09526251EFC807A006620B0 /* SkyCastProducts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SkyCastProducts.swift; sourceTree = "<group>"; };
+		C09526271EFC8109006620B0 /* IAPHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPHelper.swift; sourceTree = "<group>"; };
+		C09526291EFC83D8006620B0 /* IAPSkyCastMasterVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPSkyCastMasterVC.swift; sourceTree = "<group>"; };
+		C095262B1EFC83F3006620B0 /* IAPSkyCastDetailVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPSkyCastDetailVC.swift; sourceTree = "<group>"; };
+		C095262D1EFC8595006620B0 /* ProductCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductCell.swift; sourceTree = "<group>"; };
 		C0EFA2CC1DCF9DA100D873E9 /* Reach.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reach.swift; sourceTree = "<group>"; };
 		C0FA71301E96F609007FD011 /* String+Substring.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Substring.swift"; sourceTree = "<group>"; };
 		C0FD60CB1EDE1E160030244C /* CompassViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompassViewController.swift; sourceTree = "<group>"; };
@@ -124,6 +136,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F6DB3C68BDB15A4CCE941088 /* Pods_SkyCast.framework in Frameworks */,
+				C09526231EFC7F99006620B0 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,6 +155,7 @@
 		6438E5B6FF10B73C20D88F44 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C09526221EFC7F99006620B0 /* StoreKit.framework */,
 				FD5CA8BFB97787AD2769194A /* Pods_SkyCast.framework */,
 			);
 			name = Frameworks;
@@ -184,6 +198,18 @@
 			name = ContainerViews;
 			sourceTree = "<group>";
 		};
+		C09526241EFC8016006620B0 /* In App Purchases */ = {
+			isa = PBXGroup;
+			children = (
+				C09526251EFC807A006620B0 /* SkyCastProducts.swift */,
+				C09526271EFC8109006620B0 /* IAPHelper.swift */,
+				C09526291EFC83D8006620B0 /* IAPSkyCastMasterVC.swift */,
+				C095262B1EFC83F3006620B0 /* IAPSkyCastDetailVC.swift */,
+				C095262D1EFC8595006620B0 /* ProductCell.swift */,
+			);
+			name = "In App Purchases";
+			sourceTree = "<group>";
+		};
 		C7175A8F1D31683700788F09 = {
 			isa = PBXGroup;
 			children = (
@@ -206,6 +232,7 @@
 		C7175A9A1D31683700788F09 /* MGWeather */ = {
 			isa = PBXGroup;
 			children = (
+				C09526241EFC8016006620B0 /* In App Purchases */,
 				C02E4DDE1E48BC1F0012261B /* Supporting Files */,
 				C003C60B1DC8CE790064CE86 /* Extensions */,
 				C730B9D31DAE3A1600872532 /* ObjC */,
@@ -366,8 +393,11 @@
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = SCV8CWA773;
 						LastSwiftMigration = 0800;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
 							com.apple.Keychain = {
 								enabled = 1;
 							};
@@ -466,8 +496,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7BE8B5D1D73948F00491F58 /* HourlyWeatherCell.swift in Sources */,
+				C095262E1EFC8595006620B0 /* ProductCell.swift in Sources */,
 				C07D9A8F1EA786CD006E0FFE /* RainViewCV.swift in Sources */,
 				C7FC062A1D75C76200B6280B /* ParentWeatherVC.swift in Sources */,
+				C09526281EFC8109006620B0 /* IAPHelper.swift in Sources */,
 				C7175AC11D316A0600788F09 /* GetWeatherData.swift in Sources */,
 				C019DB251DFE9C7600B381F2 /* LaunchScreenVC.swift in Sources */,
 				C7175A9C1D31683700788F09 /* AppDelegate.swift in Sources */,
@@ -479,12 +511,14 @@
 				C019DB211DF99ACA00B381F2 /* SunriseSunsetViewController.swift in Sources */,
 				C0617F881DD33BB60003B844 /* AppSettings.swift in Sources */,
 				C02E4DE41E4905A00012261B /* ChangeLogViewController.swift in Sources */,
+				C09526261EFC807A006620B0 /* SkyCastProducts.swift in Sources */,
 				C7175AC41D316A3D00788F09 /* DailyWeatherCell.swift in Sources */,
 				C7FC062C1D75C82F00B6280B /* WeatherSegmentedControl.swift in Sources */,
 				C7C437641D798EDC00A6386D /* Utility.swift in Sources */,
 				C7C437621D79850200A6386D /* Location.swift in Sources */,
 				C7175ACF1D316CCC00788F09 /* DailyTabVC.swift in Sources */,
 				C07D9A8D1EA784F7006E0FFE /* FeelsLikeViewCV.swift in Sources */,
+				C095262A1EFC83D8006620B0 /* IAPSkyCastMasterVC.swift in Sources */,
 				C07D9A911EA787B6006E0FFE /* WindViewCV.swift in Sources */,
 				C7175AB61D31698700788F09 /* DailyBreakdown.swift in Sources */,
 				C0042E831DB81F09007506AC /* Reachability.swift in Sources */,
@@ -504,6 +538,7 @@
 				C00A7B181DE25F0300C8F996 /* ColourScheme.swift in Sources */,
 				C018BA061DA2FE64009706F9 /* Toast.swift in Sources */,
 				C7175AD01D316CCC00788F09 /* TodayTabVC.swift in Sources */,
+				C095262C1EFC83F3006620B0 /* IAPSkyCastDetailVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -619,14 +654,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = SkyCast.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = SCV8CWA773;
 				INFOPLIST_FILE = MGWeather/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MGSoft.SkyCast;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "9a93c9fd-43af-4965-b96d-c9dea6f9dcbc";
-				PROVISIONING_PROFILE_SPECIFIER = "XC iOS: com.MGSoft.SkyCast";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "MGWeather/MGWeather-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -640,14 +675,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = SkyCast.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = SCV8CWA773;
 				INFOPLIST_FILE = MGWeather/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MGSoft.SkyCast;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "9a93c9fd-43af-4965-b96d-c9dea6f9dcbc";
-				PROVISIONING_PROFILE_SPECIFIER = "XC iOS: com.MGSoft.SkyCast";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "MGWeather/MGWeather-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
