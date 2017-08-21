@@ -138,21 +138,28 @@ class IAPSkyCastMainVC: UIViewController {
     func populatePurchasesLabel() {
         
         NSLog (" Purchased Products count = " + purchasedProducts.count.description)
- //       let purchases: [String] = ["Remove Banner Ads", "14 Day Summary", "This time last year"]
         var purchasesString = ""
         
         for i in purchasedProducts {
             purchasesString = purchasesString + "  - " + i.localizedTitle + "\n"
         }
         
+        if purchasesString == "" {
+            purchasesString = "  None"
+        }
         purchasesLabel.text = "  Purchases:\n\n" + purchasesString
     }
+    
     
     // In-App Purchase methods
     
     func reload() {
         products = []
         
+        // Make a toast to say data is refreshing
+        self.view.makeToast("Obtaining purchases", duration: 1.0, position: .bottom)
+        self.view.makeToastActivity(.center)
+
         productsTableView.reloadData()
         
         SkyCastProducts.store.requestProducts{success, products in
@@ -163,7 +170,8 @@ class IAPSkyCastMainVC: UIViewController {
                 self.getPurchasedProducts()
             }
             
-     //       self.refreshControl?.endRefreshing()
+            self.refreshControl?.endRefreshing()
+            self.view.hideToastActivity()
         }
     }
     
@@ -179,13 +187,14 @@ class IAPSkyCastMainVC: UIViewController {
             }
             else {
                 // Remove after testing
-                purchasedProducts .append(product)
+               // purchasedProducts .append(product)
             }
         }
         
         populatePurchasesLabel()
     }
     
+
 
     func handlePurchaseNotification(_ notification: Notification) {
         guard let productID = notification.object as? String else { return }

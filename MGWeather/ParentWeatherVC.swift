@@ -77,6 +77,20 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         
         loadingMode = "STARTUP"
         
+        // Check to see what has been purchased and set app flags accordingly.
+        // TODO:  Cater for the fact that the purchanse cant be checked
+        let userDefaults = UserDefaults.standard
+
+        if SkyCastProducts.store.isProductPurchased(SkyCastProducts.RemoveBannerAds) {
+            NSLog("Remove Banner Ads Purchased")
+            AppSettings.ShowBannerAds = false
+            userDefaults.set(false, forKey: GlobalConstants.Defaults.ShowBannerAds)
+        }
+        else {
+            AppSettings.ShowBannerAds = true
+            userDefaults.set(true, forKey: GlobalConstants.Defaults.ShowBannerAds)
+        }
+        
        // createMenuPickerData()
         getURLUnits()
         setupScreen()

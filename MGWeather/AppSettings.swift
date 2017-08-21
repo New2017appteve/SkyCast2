@@ -12,7 +12,7 @@ class AppSettings: NSObject {
     static let DemoMode = false
     static let ChangeLogAcknowledgementSavingOn = true
     
-    static let ShowBannerAds = true
+    static var ShowBannerAds = true
     static let SpecialThemedBackgroundsForEvents = true
     
     static let BannerAdsTestMode = false    // Set this to TRUE to show test ads

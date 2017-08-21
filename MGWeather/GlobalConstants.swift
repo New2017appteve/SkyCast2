@@ -197,6 +197,7 @@ class GlobalConstants: NSObject {
         static let SavedColourScheme = "savedColourScheme"
         static let LastLoadedBackground = "lastLoadedBackground"
         static let WhatsNewLastVersion = "whatsNewLastVersion"
+        static let ShowBannerAds = "showBannerAds"
     }
     
     // NSNotification Keys
