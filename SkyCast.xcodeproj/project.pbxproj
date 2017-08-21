@@ -31,6 +31,7 @@
 		C095262A1EFC83D8006620B0 /* IAPSkyCastMasterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09526291EFC83D8006620B0 /* IAPSkyCastMasterVC.swift */; };
 		C095262C1EFC83F3006620B0 /* IAPSkyCastDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C095262B1EFC83F3006620B0 /* IAPSkyCastDetailVC.swift */; };
 		C095262E1EFC8595006620B0 /* ProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C095262D1EFC8595006620B0 /* ProductCell.swift */; };
+		C09526301F039979006620B0 /* IAPSkyCastMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C095262F1F039979006620B0 /* IAPSkyCastMainVC.swift */; };
 		C0EFA2CD1DCF9DA100D873E9 /* Reach.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EFA2CC1DCF9DA100D873E9 /* Reach.swift */; };
 		C0FA71311E96F609007FD011 /* String+Substring.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FA71301E96F609007FD011 /* String+Substring.swift */; };
 		C0FD60CC1EDE1E160030244C /* CompassViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FD60CB1EDE1E160030244C /* CompassViewController.swift */; };
@@ -92,6 +93,7 @@
 		C09526291EFC83D8006620B0 /* IAPSkyCastMasterVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPSkyCastMasterVC.swift; sourceTree = "<group>"; };
 		C095262B1EFC83F3006620B0 /* IAPSkyCastDetailVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPSkyCastDetailVC.swift; sourceTree = "<group>"; };
 		C095262D1EFC8595006620B0 /* ProductCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductCell.swift; sourceTree = "<group>"; };
+		C095262F1F039979006620B0 /* IAPSkyCastMainVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPSkyCastMainVC.swift; sourceTree = "<group>"; };
 		C0EFA2CC1DCF9DA100D873E9 /* Reach.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reach.swift; sourceTree = "<group>"; };
 		C0FA71301E96F609007FD011 /* String+Substring.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Substring.swift"; sourceTree = "<group>"; };
 		C0FD60CB1EDE1E160030244C /* CompassViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompassViewController.swift; sourceTree = "<group>"; };
@@ -206,6 +208,7 @@
 				C09526291EFC83D8006620B0 /* IAPSkyCastMasterVC.swift */,
 				C095262B1EFC83F3006620B0 /* IAPSkyCastDetailVC.swift */,
 				C095262D1EFC8595006620B0 /* ProductCell.swift */,
+				C095262F1F039979006620B0 /* IAPSkyCastMainVC.swift */,
 			);
 			name = "In App Purchases";
 			sourceTree = "<group>";
@@ -519,6 +522,7 @@
 				C7175ACF1D316CCC00788F09 /* DailyTabVC.swift in Sources */,
 				C07D9A8D1EA784F7006E0FFE /* FeelsLikeViewCV.swift in Sources */,
 				C095262A1EFC83D8006620B0 /* IAPSkyCastMasterVC.swift in Sources */,
+				C09526301F039979006620B0 /* IAPSkyCastMainVC.swift in Sources */,
 				C07D9A911EA787B6006E0FFE /* WindViewCV.swift in Sources */,
 				C7175AB61D31698700788F09 /* DailyBreakdown.swift in Sources */,
 				C0042E831DB81F09007506AC /* Reachability.swift in Sources */,

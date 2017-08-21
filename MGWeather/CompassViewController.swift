@@ -38,6 +38,7 @@ class CompassViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var eastLabel : UILabel!
 
     @IBOutlet weak var compassDescriptionView : UIView!
+    @IBOutlet weak var instructions : UILabel!
     
     // The following are read in setupView and calculated in setupData
     var currentWindspeedString : String?
@@ -52,6 +53,7 @@ class CompassViewController: UIViewController, CLLocationManagerDelegate {
         setupData()
         setupView()
         setupColourScheme()
+        showCompassInstructions()
         
 //        NotificationCenter.default.addObserver(self, selector: #selector(WindViewCV.weatherDataRefreshed), name: GlobalConstants.todayScreenRefreshFinishedKey, object: nil)
         
@@ -159,6 +161,26 @@ class CompassViewController: UIViewController, CLLocationManagerDelegate {
         compassView.backgroundColor = podColourScheme
         compassDescriptionView.backgroundColor = podColourScheme
         compassStatsView.backgroundColor = podColourScheme
+    }
+    
+    func showCompassInstructions () {
+        
+        var compassInstructions = ""
+        
+        if compassOnDevice() {
+            compassInstructions = "Line up the coloured arrow with North, N.  The wind will be blowing in the direction of the white arrow."
+        }
+        else {
+            compassInstructions = "Your device does not have a compass.  The wind will be blowing from the direction wherever North is to you"
+        }
+        
+        instructions.text = compassInstructions
+    }
+    
+    func compassOnDevice() -> Bool {
+        
+        // TODO:  Work In Progress
+        return true
     }
     
     func rotateCompassArrow(angleDegrees : Float) {

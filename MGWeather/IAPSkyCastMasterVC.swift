@@ -112,7 +112,10 @@ extension IAPSkyCastMasterVC {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! ProductCell
+        
+//         let cell:DailyWeatherCell = self.dailyWeatherTableView.dequeueReusableCell(withIdentifier: "DailyWeatherCellID") as! DailyWeatherCell
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell2", for: indexPath) as! ProductCell
         
         let product = products[(indexPath as NSIndexPath).row]
         

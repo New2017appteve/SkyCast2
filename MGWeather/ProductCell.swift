@@ -36,6 +36,14 @@ class ProductCell: UITableViewCell {
     var buyButtonHandler: ((_ product: SKProduct) -> ())?
     
     var product: SKProduct? {
+        
+        /**
+        Product cells should behave differently depending on the value returned by
+        canMakePayments(). For example, if canMakePayments() returns false, then
+        the Buy button should not be shown and the price should be replaced
+        by “Not Available”
+        */
+        
         didSet {
             guard let product = product else { return }
             
@@ -45,12 +53,14 @@ class ProductCell: UITableViewCell {
                 accessoryType = .checkmark
                 accessoryView = nil
                 detailTextLabel?.text = ""
-            } else {
+            } else if IAPHelper.canMakePayments() {
                 ProductCell.priceFormatter.locale = product.priceLocale
                 detailTextLabel?.text = ProductCell.priceFormatter.string(from: product.price)
                 
                 accessoryType = .none
-                accessoryView = newBuyButton()
+                accessoryView = self.newBuyButton()
+            } else {
+                detailTextLabel?.text = "Not available"
             }
         }
     }
