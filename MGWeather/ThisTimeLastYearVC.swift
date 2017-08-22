@@ -321,25 +321,6 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
                 currentWindspeed.text = currentWindspeed.text! + " " + windSpeedUnits + " " + windDirection
             }
             
-// NOT NEEDED            let nearestRain = todayArray.nearestStormDistance!
-            
-//            if (nearestRain == 0) {
-//                nearestRainDistance.text = "Rain nearby" //"Raining"
-//            }
-//            else if (nearestRain > 0 && nearestRain <= GlobalConstants.RainDistanceReportThreshold) {
-//                nearestRainDistance.text = "Rain nearby"
-//            }
-//            else if (nearestRain > GlobalConstants.RainDistanceReportThreshold) {
-//                let rainUnits = todayArray.nearestStormDistanceUnits
-//                
-//                // TODO: Tidy up string concat
-//                
-//                if ( !(rainDirection.isEmpty) || rainDirection != "") {
-//                    nearestRainDistance.text = "Rain " + String(todayArray.nearestStormDistance!) + " "
-//                    nearestRainDistance.text = nearestRainDistance.text! + rainUnits! + " " + rainDirection
-//                }
-//            }
-            
             
             // Min Temp, Max Temp, Sunrise and Sunset we can get from the 'daily' figures
             
@@ -489,17 +470,6 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
         }, completion: nil)
     }
     
-//    func hideNowDetailsOneView () {
-//        
-//        self.todayLabel.text = "  Day Summary"
-//        
-//        self.nowDetailOneView.alpha = CGFloat(GlobalConstants.DisplayViewAlpha)
-//        UIView.animate(withDuration: 0.6, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-//            self.nowDetailOneView.alpha = 0
-//        }, completion: nil)
-//    }
-
-    
     
     func isDayTime (dateTime : NSDate) -> Bool {
         
@@ -524,7 +494,6 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
         var today = NSDate()
         today = Utility.getTimeInWeatherTimezone(dateAndTime: today)
         
-     //   var returnTime = lastYearDate.shortTimeString()
         var returnTime = lastYearDate.longDateString()
         
         if !Utility.areDatesSameDay(date1: today, date2: lastYearDate) {

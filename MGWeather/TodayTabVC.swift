@@ -907,119 +907,8 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate, F
                 
                 // Use the short summary is no minute breakdown
                 currentSummary.text  = todayArray.summary
-                // No minute stats available for summary, check the hourly stats instead.
-                // Not ideal but better than nothing
-//                let hourBreakdown = dailyWeather?.hourBreakdown
-//
-//                if (hourBreakdown?.summary != nil) {
-//                    currentSummary.text = hourBreakdown?.summary
-//                }
 
             }
-
-//            let minuteStats = minuteBreakdown?.minuteStats
-//            
-//            var minuteStatsFound = false
-//            var rainProbabilityNow = 0
-//            
-//            if ((minuteStats?.count)! > 0) {
-//                minuteStatsFound = true
-//                rainProbabilityNow = Int(round((minuteStats?[0].precipProbability!)!*100))
-//            }
-//            else {
-//                minuteStatsFound = false
-//            }
-//            // Populate with the correct rain icon scheme
-//            
-//            if (todayArray.precipType == GlobalConstants.PrecipitationType.Rain) {
-//                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "", weatherStats: todayArray)
-//                rainNowIcon.image = UIImage(named: rainIconImage)!
-//            }
-//            else if (todayArray.precipType == GlobalConstants.PrecipitationType.Sleet) {
-//                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "", weatherStats: todayArray)
-//                rainNowIcon.image = UIImage(named: rainIconImage)!
-//            }
-//            else if (todayArray.precipType == GlobalConstants.PrecipitationType.Snow) {
-//                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "SNOWFLAKE", dayOrNight: "", weatherStats: todayArray)
-//                rainNowIcon.image = UIImage(named: rainIconImage)!
-//            }
-//            else {
-//                // Default
-//                let rainIconImage = Utility.getWeatherIcon(serviceIcon: "UMBRELLA", dayOrNight: "", weatherStats: todayArray)
-//                rainNowIcon.image = UIImage(named: rainIconImage)!
-//            }
-//
-//            if (minuteStatsFound) {
-//                rainProbabilityTitle.text = displayPrecipType + " Probability:"
-//                
-//                if (rainProbabilityNow > GlobalConstants.RainIconReportThresholdPercent) {
-//                    rainNowIcon.isHidden = false
-//                    rainNowProbability.text = String(rainProbabilityNow) + "%"
-//                }
-//                else {
-//                    rainNowIcon.isHidden = true
-//                    rainNowProbability.text = ""
-//                }
-//            }
-//            else {
-//                rainNowIcon.isHidden = true
-//                rainNowProbability.text = ""
-//            }
-//            
-//            var windDirection = ""
-//            if (todayArray.windBearing != nil) {
-//                windDirection = Utility.compassDirectionFromDegrees(degrees: todayArray.windBearing!)
-//            }
-//            
-//            var rainDirection = ""
-//            if (todayArray.nearestStormBearing != nil) {
-//                rainDirection = Utility.compassDirectionFromDegrees(degrees: Float(todayArray.nearestStormBearing!))
-//            }
-//
-//            // TODO:  Report KM or MI accordingly.  Create utility to see if units in MPH/KPH from service
-//            
-//            let windSpeedUnits = todayArray.windSpeedUnits!
-//            
-//            // TODO: Tidy up string concat
-//            
-//            //if (windDirection != nil || windDirection != "") {
-//            if ( !(windDirection.isEmpty) || windDirection != "") {
-//                currentWindspeed.text = "Wind: " + String(Int(todayArray.windSpeed!))
-//                currentWindspeed.text = currentWindspeed.text! + " " + windSpeedUnits + " " + windDirection
-//            }
-//            
-//            var nearestRain = 99999
-//            var nearestRainFound = false
-//            
-//            if (todayArray.nearestStormDistance != nil) {
-//                nearestRain = todayArray.nearestStormDistance!
-//                nearestRainFound = true
-//            }
-//            else {
-//                nearestRainFound = false
-//            }
-//            
-//            if (nearestRainFound) {
-//                if (nearestRain == 0) {
-//                    nearestRainDistance.text = displayPrecipType + " nearby" //"Raining"
-//                }
-//                else if (nearestRain > 0 && nearestRain <= GlobalConstants.RainDistanceReportThreshold) {
-//                    nearestRainDistance.text = displayPrecipType + " nearby"
-//                }
-//                else if (nearestRain > GlobalConstants.RainDistanceReportThreshold) {
-//                    let rainUnits = todayArray.nearestStormDistanceUnits
-//                    
-//                    // TODO: Tidy up string concat
-//                    
-//                    if ( !(rainDirection.isEmpty) || rainDirection != "") {
-//                        nearestRainDistance.text = displayPrecipType + " " + String(todayArray.nearestStormDistance!) + " "
-//                        nearestRainDistance.text = nearestRainDistance.text! + rainUnits! + " " + rainDirection
-//                    }
-//                }
-//            }
-//            else {
-//                nearestRainDistance.text = ""
-//            }
 
             if (dailyWeather?.weatherAlert == true) {
                 getWeatherAlertStartAndEndTimes()
@@ -1045,8 +934,7 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate, F
                     todayHighLowTemp.text = maxTempString + " / " + minTempString
                     
                     let windspeedUnits = days.windSpeedUnits
-                    
-//                    windspeed.text = String(Int(round(days.windSpeed! * GlobalConstants.MetersPerSecondToMph))) + " " + windspeedUnits!
+                
                     windspeed.text = String(Int(days.windSpeed!)) + " " + windspeedUnits!
 
                     cloudCover.text = String(Int(round(days.cloudCover!*100))) + "%"
@@ -1057,7 +945,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate, F
                         sunrise.text = String(days.sunriseTimeStamp!.shortTimeString())
                         
                         sunriseTimeStamp = days.sunriseTimeStamp
-//                        sunriseTimeStamp = days.sunriseTimeStamp as! NSDate
                         sunriseIcon.isHidden = false
                     }
                     else {
@@ -1297,7 +1184,6 @@ class TodayTabVC: UIViewController, UITextViewDelegate, GADBannerViewDelegate, F
             hourlyWeatherImage.isHidden = false
         }
         
-//setupHourThumbnailHideTimer()
         setupHourWeatherDisplayHideTimer()  // Close the hour view screen after 10 seconds
 
     }
@@ -1621,10 +1507,6 @@ extension TodayTabVC : UITableViewDataSource {
             cell.hourLabel.textColor = UIColor.black
             cell.temperatureLabel.textColor = UIColor.black
             cell.rainProbabilityLabel.textColor = UIColor.black
-            
-            // Force rain umbrella, windy and weather icon black
-//            let lRainIconImage = GlobalConstants.WeatherIcon.umbrella
-//            cell.rainIcon.image = UIImage(named: lRainIconImage)!
             
             if (hourWeather?.precipType == GlobalConstants.PrecipitationType.Rain) {
                 let lRainIconImage = GlobalConstants.WeatherIcon.umbrella

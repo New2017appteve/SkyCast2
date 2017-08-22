@@ -180,7 +180,6 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
             
             let vc:CompassViewController = segue.destination as! CompassViewController
             vc.dailyWeather = weather
-            //        vc.delegate = self
             
         }
 

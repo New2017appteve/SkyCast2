@@ -13,7 +13,6 @@ class IAPSkyCastMainVC: UIViewController {
 
     // Outlets
     @IBOutlet weak var productsNaviBar : UINavigationBar!
-//    @IBOutlet weak var rightBarButtonItem : UIBarButtonItem!
     
     @IBOutlet weak var itemsAvailableTitleLabel : UILabel!
     @IBOutlet weak var productsTableView : UITableView!
@@ -61,15 +60,6 @@ class IAPSkyCastMainVC: UIViewController {
         super.viewDidLoad()
         
         title = "SkyCast"
-        
-  //      refreshControl = UIRefreshControl()
-   //     refreshControl?.addTarget(self, action: #selector(IAPSkyCastMainVC.reload), for: .valueChanged)
-        
-//        let restoreButton = UIBarButtonItem(title: "Restore",
-//                                            style: .plain,
-//                                            target: self,
-//                                            action: #selector(IAPSkyCastMainVC.restoreTapped(_:)))
-// //       rightBarButtonItem = restoreButton
         
         NotificationCenter.default.addObserver(self, selector: #selector(IAPSkyCastMainVC.handlePurchaseNotification(_:)),
                                                name: NSNotification.Name(rawValue: IAPHelper.IAPHelperPurchaseNotification),
@@ -184,10 +174,6 @@ class IAPSkyCastMainVC: UIViewController {
                 
                 NSLog("Product purchased")
                 purchasedProducts .append(product)
-            }
-            else {
-                // Remove after testing
-               // purchasedProducts .append(product)
             }
         }
         

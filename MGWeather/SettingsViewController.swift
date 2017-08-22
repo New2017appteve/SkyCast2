@@ -348,13 +348,6 @@ class SettingsViewController: UIViewController {
         
         GlobalConstants.urlUnitsChosen = urlUnits!  // Important
 
-//        if (tempUnitsControl.selectedSegmentIndex == 0) {
-//            celsuisOrFahrenheit = GlobalConstants.TemperatureUnits.Celsuis
-//        }
-//        else {
-//            celsuisOrFahrenheit = GlobalConstants.TemperatureUnits.Fahrenheit
-//        }
-
         if (dayNightColourControl.selectedSegmentIndex == 0) {
             dayOrNightColours = "ON"
         }

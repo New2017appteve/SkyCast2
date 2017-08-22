@@ -132,7 +132,6 @@ class InfoPopupViewController: UIViewController {
        
         // Labels
         informationText.textColor = textColourScheme
-//        alertSeverity.textColor = textColourScheme
         
         // Pods
         alertInfoOuterView.backgroundColor = podColourScheme

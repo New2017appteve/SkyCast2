@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MGWeather/ParentWeatherVC.swift"
-            timestampString = "525050915.699823"
+            timestampString = "525079730.003795"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "405"
-            endingLineNumber = "405"
+            startingLineNumber = "404"
+            endingLineNumber = "404"
             landmarkName = "getLatLngForZip(zipCode:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MGWeather/ParentWeatherVC.swift"
-            timestampString = "525050915.699823"
+            timestampString = "525079730.003795"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "398"
-            endingLineNumber = "398"
+            startingLineNumber = "397"
+            endingLineNumber = "397"
             landmarkName = "getLatLngForZip(zipCode:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MGWeather/DailyTabVC.swift"
-            timestampString = "514160984.832285"
+            timestampString = "525079730.003795"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "555"
-            endingLineNumber = "555"
+            startingLineNumber = "544"
+            endingLineNumber = "544"
             landmarkName = "tableView(_:cellForRowAt:)"
             landmarkType = "7">
          </BreakpointContent>
