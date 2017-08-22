@@ -916,6 +916,10 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         // Adding Cancel allows user to click outside of menu to dismiss alert
         actionMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
 
+//                var height:NSLayoutConstraint = NSLayoutConstraint(item: actionMenu.view, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: self.view.frame.height * 0.80)
+//                actionMenu.view.addConstraint(height);
+//                self.present(actionMenu, animated: true, completion: nil)
+        
         self.present(actionMenu, animated: true, completion: nil)
         
     }

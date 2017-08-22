@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreLocation
+import DeviceKit
 
 protocol CompassViewDelegate
 {
@@ -91,11 +92,9 @@ class CompassViewController: UIViewController, CLLocationManagerDelegate {
         compassView.layer.borderColor = UIColor.white.cgColor
 
         compassStatsView.clipsToBounds = true
-       // compassStatsView.layer.borderWidth = 1
         compassStatsView.layer.cornerRadius = 10
 
         compassDescriptionView.clipsToBounds = true
-       // compassDescriptionView.layer.borderWidth = 1
         compassDescriptionView.layer.cornerRadius = 10
 
         compassArrow.image = UIImage(named: compassIconImage!)
@@ -179,8 +178,16 @@ class CompassViewController: UIViewController, CLLocationManagerDelegate {
     
     func compassOnDevice() -> Bool {
         
-        // TODO:  Work In Progress
-        return true
+        var retVal = false
+        
+        let device = Device()  // Returns real or simulator
+        if device.isPod {
+            retVal = false
+        } else if device.isPhone {
+            retVal = true
+        }
+        
+        return retVal
     }
     
     func rotateCompassArrow(angleDegrees : Float) {
@@ -205,27 +212,13 @@ class CompassViewController: UIViewController, CLLocationManagerDelegate {
         
     }
     
-//    func weatherDataRefreshed() {
-//        print("Weather Data Refreshed - WindViewCV")
-//        
-//        dailyWeather = nil
-//        dailyWeather = delegate?.returnRefreshedWeatherDetails()
-//        
-//        currentWindspeedString = ""
-//        currentWindDirectionDegrees = 0
-//        compassIconImage = ""
-//        
-//        setupData()
-//        setupView()
-//        
-//    }
     
     // This function will be called whenever your heading is updated. Since you asked for best
     // accuracy, this function will be called a lot of times. Better make it very efficient
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         print(newHeading.magneticHeading)
         
-        // just need a single snapshot of thid
+        // just need a single snapshot of this
         
         rotateCompassLine(degrees:newHeading.magneticHeading)
     }

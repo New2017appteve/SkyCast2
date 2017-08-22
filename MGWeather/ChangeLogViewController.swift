@@ -34,7 +34,6 @@ class ChangeLogViewController: UIViewController {
         }
         else {
             changeFileName = "SkyCast ChangeLog"
-//            changeFileName = "SkyCast WhatsNew"
         }
         
         webView.loadRequest(URLRequest(url: URL(fileURLWithPath: Bundle.main.path(forResource: changeFileName, ofType: "htm")!)))
