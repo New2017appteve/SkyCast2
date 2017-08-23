@@ -235,6 +235,12 @@ extension IAPSkyCastMainVC : UITableViewDataSource {
             SkyCastProducts.store.buyProduct(product)
         }
         
+        cell.selectionStyle = .none
+        // If product purchased, make cell disabled
+        if SkyCastProducts.store.isProductPurchased(product.productIdentifier) {
+            cell.isUserInteractionEnabled = false
+        }
+        
         // Setup text colour according to colour scheme
         
         let colourScheme = Utility.setupColourScheme()

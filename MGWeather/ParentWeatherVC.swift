@@ -32,7 +32,7 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         case ThisTimeLastYear = "This Time Last Year"
         case SunriseSunset = "Daily Timeline"
         case ShowSettings = "App Settings"
-        case Upgrades = "Upgrades"
+        case Upgrades = "Purchases"
         case ShowAbout = "About"
         case ShowCancel = "Cancel"
     }
@@ -78,24 +78,13 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         loadingMode = "STARTUP"
         
         // Check to see what has been purchased and set app flags accordingly.
-        // TODO:  Cater for the fact that the purchanse cant be checked
-        let userDefaults = UserDefaults.standard
 
-        if SkyCastProducts.store.isProductPurchased(SkyCastProducts.RemoveBannerAds) {
-            NSLog("Remove Banner Ads Purchased")
-            AppSettings.ShowBannerAds = false
-            userDefaults.set(false, forKey: GlobalConstants.Defaults.ShowBannerAds)
-        }
-        else {
-            AppSettings.ShowBannerAds = true
-            userDefaults.set(true, forKey: GlobalConstants.Defaults.ShowBannerAds)
-        }
+        checkPurchases()
         
        // createMenuPickerData()
         getURLUnits()
         setupScreen()
         segmentedControl.isEnabled = false
-        // barButtonAction.isEnabled = false
         customBarButtonAction.isEnabled = false
         
         setViewControllerTitle()
@@ -311,6 +300,27 @@ class ParentWeatherVC: UIViewController, CLLocationManagerDelegate, SettingsView
         // Delegate method. called form DailyTabVC
         parentDayOrNight = dayOrNight
     }
+    
+    func checkPurchases () {
+        
+//        let userDefaults = UserDefaults.standard
+//        AppSettings.ShowBannerAds = false
+//        userDefaults.set(false, forKey: GlobalConstants.Defaults.ShowBannerAds)
+
+        let userDefaults = UserDefaults.standard
+        
+        if SkyCastProducts.store.isProductPurchased(SkyCastProducts.RemoveBannerAds) {
+            NSLog("Remove Banner Ads Purchased")
+            AppSettings.ShowBannerAds = false
+            userDefaults.set(false, forKey: GlobalConstants.Defaults.ShowBannerAds)
+        }
+        else {
+            AppSettings.ShowBannerAds = true
+            userDefaults.set(true, forKey: GlobalConstants.Defaults.ShowBannerAds)
+        }
+
+    }
+    
     
     // MARK: - Switching Tabs Functions
     @IBAction func switchTabs(_ sender: AnyObject) {

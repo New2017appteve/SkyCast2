@@ -101,10 +101,6 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
         getWeatherDataFromService()
         
         // Do any additional setup after loading the view.
-//        setupDisplayTimer()
-//        setupScreen()
-//        setupColourScheme()
-//        populateTodayWeatherDetails()
         
         updateLocationDetailsOnScreen()
         updateMinorLocationDetailsOnScreen()
@@ -113,6 +109,7 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        bannerOuterView.isHidden = true
         if AppSettings.ShowBannerAds {
             loadBannerAd()
             bannerOuterView.isHidden = false
@@ -127,7 +124,7 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
     
 
     func setupScreenBeforeDataLoad() {
-    
+        
         let lastLoadedBackground = Utility.getLastLoadedBackground()
         
         // Ease in the image view
@@ -152,7 +149,6 @@ class ThisTimeLastYearVC: UIViewController, GADBannerViewDelegate {
     
     func setupScreen () {
         
-       // bannerOuterView.isHidden = true
         closeBannerButton.isHidden = true  // Will only show once banner ad loaded
         
         let userDefaults = UserDefaults.standard
