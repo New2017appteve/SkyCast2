@@ -1,4 +1,4 @@
-Version 1.1.4 - 26th August 2017
+Version 1.1.5 - 26th August 2017
 
 - Added in-app purchases to remove banner ads.
 - Bug fixes.
