@@ -56,6 +56,8 @@ class ProductCell: UITableViewCell {
             } else if IAPHelper.canMakePayments() {
                 ProductCell.priceFormatter.locale = product.priceLocale
                 detailTextLabel?.text = ProductCell.priceFormatter.string(from: product.price)
+ 
+               // detailTextLabel?.text = "Remove Banner Ads - £0.99"
                 
                 accessoryType = .none
                 accessoryView = self.newBuyButton()
