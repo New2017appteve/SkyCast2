@@ -17,8 +17,8 @@ import Foundation
 
 public struct SkyCastProducts {
     
-    // com.MGSoft.SkyCast.RemoveBannerAds
-    public static let RemoveBannerAds = "com.MGSoft.SkyCast.RemoveBannerAds"
+    // com.MGSoft.SkyCast.RemoveBannerAdsNew
+    public static let RemoveBannerAds = "com.MGSoft.SkyCast.RemoveBannerAdsNew"
     
     fileprivate static let productIdentifiers: Set<ProductIdentifier> = [SkyCastProducts.RemoveBannerAds]
     
